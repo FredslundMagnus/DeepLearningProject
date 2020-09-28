@@ -2,7 +2,6 @@ import gym
 import sys
 
 params = sys.argv[1:]
-print(bool(params))
 if params:
     # Runs un server
     pass
