@@ -1,10 +1,10 @@
 import gym
 import sys
-
+from Utils.server import getvals
 params = sys.argv[1:]
 if params:
-    # Runs un server
-    pass
+    name, lossf, discount, lambd, lr, dropout = getvals(params)
+    print(name, lossf, discount, lambd, lr, dropout)
 else:
     env = gym.make('procgen:procgen-coinrun-v0')
     obs = env.reset()

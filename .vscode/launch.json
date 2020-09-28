@@ -5,10 +5,33 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Current File",
+      "name": "Main Run",
       "type": "python",
       "request": "launch",
+      "env": { "PYTHONPATH": "${workspaceRoot}" },
+      "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}\\main.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Simulate Server",
+      "type": "python",
+      "request": "launch",
+      "env": { "PYTHONPATH": "${workspaceRoot}" },
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}\\main.py",
+      "console": "integratedTerminal",
+      "args": [
+        "testing_name -lossf MME -discount 0.7 -lambd 0.5 -lr 0.0001 -dropout 0"
+      ]
+    },
+    {
+      "name": "Generate Experiments",
+      "type": "python",
+      "request": "launch",
+      "env": { "PYTHONPATH": "${workspaceRoot}" },
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}\\Utils\\generateExperiments.py",
       "console": "integratedTerminal"
     }
   ]
