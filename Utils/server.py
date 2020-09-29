@@ -1,9 +1,10 @@
 import cProfile
-import sys
-import time
-from Utils.debug import profilingStats
+from Utils.debug import getvals, profilingStats, Timer, enablePrint, disablePrint, checkServer
+
+isServer = checkServer()
 
 defaults = {
+    'name': "Agent",
     'lossf': 'MME',
     'discount': 0.9,
     'lambd': 0.9,
@@ -11,28 +12,16 @@ defaults = {
     'dropout': 0,
 }
 
-
-def getvals(args):
-    for i, s_ in enumerate(args):
-        s = s_[1:]
-        if s in defaults:
-            try:
-                defaults[s] = float(args[i + 1])
-            except:
-                defaults[s] = args[i + 1]
-    return tuple([args[0].split(' ')[0]] + list(defaults.values()))
+params = getvals(defaults) if isServer else None
 
 
 def debugger(nGames, addAgent, Thename, p, chooserfunction, env):
+    disablePrint()
     explore, doTrain, impala, calcprobs, minmax, lossf, K, dropout, alpha, discount, lambd, lr, network, Features = p.explore, p.doTrain, p.ImpaleIsActivated, p.calcprobs, p.minimaxi, p.lossf, p.K, p.dropout, p.alpha, p.discount, p.lambd, p.lr, p.network, p.Features
     winNumber, maxRolls, Eatreward, basereward, stepreward = env.winNumber, env.maxRolls, env.Eatreward, env.basereward, env.stepreward
-    start = time.time()
-    cProfile.run(f'controller.run(NGames={nGames}, AddAgent={addAgent}, UI=False)', 'stats')
-    end = time.time()
-    sys.stdout = sys.__stdout__
+    timer = Timer(lambda: cProfile.run(f'controller.run(NGames={nGames}, AddAgent={addAgent}, UI=False)', 'stats'))
+    enablePrint()
     print(f"# Parameters for {Thename}\n")
-
-    print(f"    Use the agent :             {sys.argv[4]}.\n")
 
     print(f"    Play for :                  {nGames} games.")
     print(f"      Add Agent every :         {addAgent} game.")
@@ -75,7 +64,7 @@ def debugger(nGames, addAgent, Thename, p, chooserfunction, env):
 
     print(f'    Chooserfunction :           {str(chooserfunction)}.\n')
 
-    print(f'    Minutes used :              {int((end-start)//60)} minutes.')
-    print(f'    Hours used :                {int((end-start)//3600)} hours.\n')
+    print(f'    Minutes used :              {timer.minutes} minutes.')
+    print(f'    Hours used :                {timer.hours} hours.\n')
 
     profilingStats()

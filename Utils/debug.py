@@ -1,5 +1,7 @@
 from pstats import func_get_function_name, func_std_string, f8, Stats
 import os
+import time
+import sys
 
 
 def print_title(self):
@@ -57,3 +59,37 @@ def profilingStats():
     p.strip_dirs().sort_stats('cumulative').print_stats(p, 100)
     os.remove('stats')
     print(f"# Other prints\n")
+
+
+class Timer:
+    def __init__(self, f) -> None:
+        self.start = time.time()
+        f()
+        self.time = time.time() - self.start
+        self.minutes = int(self.time // 60)
+        self.hours = int(self.time // 3600)
+
+
+def enablePrint():
+    sys.stdout = sys.__stdout__
+
+
+def disablePrint():
+    sys.stdout = open(os.devnull, 'w')
+
+
+def getvals(defaults):
+    args = sys.argv[1].split(' ')
+    defaults['name'] = args[0]
+    for i, s_ in enumerate(args):
+        s = s_[1:]
+        if s in defaults:
+            try:
+                defaults[s] = float(args[i + 1])
+            except:
+                defaults[s] = args[i + 1]
+    return tuple(defaults.values())
+
+
+def checkServer():
+    return bool(sys.argv[1:])
