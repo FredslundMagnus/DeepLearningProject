@@ -33,6 +33,15 @@
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}\\Utils\\generateExperiments.py",
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Play Yourself",
+      "type": "python",
+      "request": "launch",
+      "env": { "PYTHONPATH": "${workspaceRoot}" },
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}\\environments.py",
+      "console": "integratedTerminal"
     }
   ]
 }
