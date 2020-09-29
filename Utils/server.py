@@ -1,5 +1,5 @@
 import cProfile
-from Utils.debug import getvals, profilingStats, Timer, enablePrint, disablePrint, checkServer
+from Utils.debug import checkServer, getvals, profilingStats, Timer, enablePrint, disablePrint
 
 isServer = checkServer()
 
