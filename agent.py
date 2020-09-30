@@ -32,7 +32,7 @@ class Agent:
 # Example network from week 5
 class NetWork(nn.Module):
     def __init__(self):
-        super(Agent, self).__init__()
+        super(NetWork, self).__init__()
 
         # Recurrent layer
         # YOUR CODE HERE!
