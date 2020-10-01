@@ -9,10 +9,14 @@ if isServer:
 else:
     env = Environment(render=True).coinrun  # env = Environment(render=True)["coinrun"]
     agent = Agent()
-    obs = env.reset()
+    obs_old = env.reset()
     while True:
-        obs, rew, done, info = env.step(env.action_space.sample())
+        act = env.action_space.sample()
+        obs, rew, done, info = env.step(act)
+        agent.remember(obs, act, obs_old, rew)
         env.render()
         if done:
             break
+        obs_old = obs
     env.close()
+    print(agent.memory.sample(5))

@@ -16,6 +16,7 @@ class Agent:
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.network.parameters(), lr=3e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(1000)
+        self.remember = self.memory.remember()
 
     def choose(self, obs):
         result = NetWork(obs)
@@ -24,15 +25,9 @@ class Agent:
     def learn(self):
         pass
 
-    def remember(self, *args):
-        if len(self.memory) < self.memory.size:
-            self.memory.append(*args)
-        else:
-            self.remember = self.memory.appendFast(self.memory.size, self.memory.memory)
-            self.remember(*args)
-
-
 # Example network from week 5
+
+
 class NetWork(nn.Module):
     def __init__(self):
         super(NetWork, self).__init__()
@@ -60,11 +55,3 @@ class NetWork(nn.Module):
         x = self.l_out(x)
 
         return x
-
-
-agent = Agent()
-start = time.time()
-for i in range(5000000):
-    agent.remember(1, 2, 3, 4)
-end = time.time()
-print(end - start)
