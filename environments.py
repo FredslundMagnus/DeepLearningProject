@@ -2,6 +2,9 @@ import gym
 
 """
 https://github.com/openai/procgen#environment-options
+
+obs : Box(64, 64, 3) = shape(64, 64, 3)
+action_space : Discrete(15) = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}
 """
 
 
@@ -26,8 +29,7 @@ class Environment:
         self.plunder = 'procgen:procgen-plunder-v0'
         self.starpilot = 'procgen:procgen-starpilot-v0'
 
-    def __getattribute__(self, name: str) -> str:
-
+    def __getattribute__(self, name: str):
         evn_name = object.__getattribute__(self, name)
         if object.__getattribute__(self, 'render'):
             return gym.make(evn_name, render_mode="human")
@@ -45,11 +47,4 @@ class Environment:
 if __name__ == "__main__":
     from procgen.interactive import make_interactive, ENV_NAMES
     print(ENV_NAMES)
-    kwargs = {}
-    kwargs["distribution_mode"] = "hard"
-    kwargs["start_level"] = 0
-    kwargs["num_levels"] = 0
-    ia = make_interactive(
-        "human", record_dir=None, env_name=input(), **kwargs
-    )
-    ia.run()
+    make_interactive("human", record_dir=None, env_name=input(), distribution_mode="hard", start_level=0, num_levels=0).run()
