@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from memory import ReplayBuffer
+import numpy as np
 import time
 
 
@@ -19,8 +20,9 @@ class Agent:
         self.remember = self.memory.remember()
 
     def choose(self, obs):
-        result = NetWork(obs)
-        return "action"
+        result = self.network(torch.tensor(np.transpose(obs, (2, 0, 1))).reshape(-1, 3, 64, 64).float())
+        print(np.argmax(result.detach().numpy()), end=", ")
+        return np.argmax(result.detach().numpy())
 
     def learn(self):
         pass
@@ -32,26 +34,19 @@ class NetWork(nn.Module):
     def __init__(self):
         super(NetWork, self).__init__()
 
-        # Recurrent layer
-        # YOUR CODE HERE!
-        self.lstm = nn.LSTM(input_size=50,
-                            hidden_size=10,
-                            num_layers=1,
-                            bidirectional=False)
-
-        # Output layer
-        self.l_out = nn.Linear(in_features=10,
-                               out_features=50,
-                               bias=False)
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=10, kernel_size=3)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(in_channels=10, out_channels=20, kernel_size=3)
+        self.size_after_conv = 3920
+        self.fc1 = nn.Linear(self.size_after_conv, 120)
+        self.fc2 = nn.Linear(120, 60)
+        self.fc3 = nn.Linear(60, 15)
 
     def forward(self, x):
-        # RNN returns output and last hidden state
-        x, (h, c) = self.lstm(x)
-
-        # Flatten output for feed-forward layer
-        x = x.view(-1, self.lstm.hidden_size)
-
-        # Output layer
-        x = self.l_out(x)
-
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(-1, self.size_after_conv)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
         return x
