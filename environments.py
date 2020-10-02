@@ -5,6 +5,22 @@ https://github.com/openai/procgen#environment-options
 
 obs : Box(64, 64, 3) = shape(64, 64, 3)
 action_space : Discrete(15) = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}
+
+("LEFT", "DOWN"),
+("LEFT",),
+("LEFT", "UP"),
+("DOWN",),
+(),
+("UP",),
+("RIGHT", "DOWN"),
+("RIGHT",),
+("RIGHT", "UP"),
+("D",),
+("A",),
+("W",),
+("S",),
+("Q",),
+("E",),
 """
 
 
@@ -45,6 +61,9 @@ class Environment:
 
 
 if __name__ == "__main__":
+    """
+    https://github.com/openai/procgen/blob/master/procgen/env.py
+    """
     from procgen.interactive import make_interactive, ENV_NAMES
     print(ENV_NAMES)
     make_interactive("human", record_dir=None, env_name=input(), distribution_mode="hard", start_level=0, num_levels=0).run()
