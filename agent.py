@@ -8,11 +8,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from memory import ReplayBuffer
 import numpy as np
-import time
-
-
-def tensor(obs):
-    return torch.tensor(obs.transpose(2, 0, 1).reshape(-1, 3, 64, 64)).float()
 
 
 class Agent:
@@ -24,7 +19,8 @@ class Agent:
         self.remember = self.memory.remember()
 
     def choose(self, obs):
-        result = self.network(tensor(obs))
+        result = self.network(torch.tensor(np.transpose(obs, (2, 0, 1))).reshape(-1, 3, 64, 64).float())
+        # print(np.argmax(result.detach().numpy()), end=", ")
         return np.argmax(result.detach().numpy())
 
     def learn(self):
