@@ -21,7 +21,7 @@ class Agent:
 
     def choose(self, obs):
         result = self.network(torch.tensor(np.transpose(obs, (2, 0, 1))).reshape(-1, 3, 64, 64).float())
-        print(np.argmax(result.detach().numpy()), end=", ")
+        # print(np.argmax(result.detach().numpy()), end=", ")
         return np.argmax(result.detach().numpy())
 
     def learn(self):
