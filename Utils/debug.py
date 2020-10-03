@@ -79,6 +79,7 @@ def disablePrint():
 
 
 def getvals(defaults):
+    print(list(sys.argv))
     args = sys.argv[1].split(' ')
     print(args)
     defaults['name'] = args[0]
