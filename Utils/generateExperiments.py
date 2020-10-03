@@ -3,7 +3,7 @@ from server import defaults
 file = open('Utils/experiments.sh', 'w')
 file.write('#!/bin/sh\n')
 
-features, folders = set(defaults.keys()), ['Markdown', 'csv', 'trained', 'TrainingCurve', 'Weights', 'Elo_Rating', 'Increase_in_Elo_over_time', 'data']
+features, folders = set(defaults.keys()), ['', 'Markdown', 'csv', 'trained', 'TrainingCurve', 'Weights', 'Elo_Rating', 'Increase_in_Elo_over_time', 'data']
 
 
 def check(params):
@@ -13,7 +13,6 @@ def check(params):
 
 
 def createFolders(name):
-    file.write(f"mkdir ../outputs/{name}\n")
     for folder in folders:
         file.write(f"mkdir ../outputs/{name}/{folder}\n")
 
