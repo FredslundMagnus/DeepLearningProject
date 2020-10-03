@@ -1,0 +1,18 @@
+cd Desktop
+mkdir DeepAI
+cd DeepAI
+module load python3/3.8.2       module swap python3/3.8.2
+python3 -m venv project-env
+source project-env/bin/activate
+python -m pip install torch torchvision gym matplotlib procgen
+git config --global credential.helper store
+git clone https://github.com/FredslundMagnus/DeepLearningProject.git
+cd DeepLearningProject
+chmod +x run.sh
+chmod +x save.sh
+
+
+cd Desktop/DeepLearningProject/DeepLearningProject/
+./run.sh
+watch bstat
+./save.sh
