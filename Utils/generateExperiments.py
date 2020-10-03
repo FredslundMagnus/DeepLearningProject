@@ -25,6 +25,6 @@ def genExperiments(name, n=10, **params):
         file.write(f'bsub -o "../outputs/{name}/{name}_{i}.md" -J "{name}_{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
 
 
-genExperiments('Discount_0.70', lossf='MME', discount=0.20, lambd=0.3, lr=0.0001, dropout=0)
+# genExperiments('Discount_0.70', lossf='MME', discount=0.20, lambd=0.3, lr=0.0001, dropout=0)
 
 file.close()
