@@ -22,9 +22,9 @@ def genExperiments(name, n=10, **params):
     createFolders(name)
     check(params)
     for i in range(n):
-        file.write(f'bsub -o "../outputs/{name}/{name}-{i}.md" -J "{name}-{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
+        file.write(f'bsub -o "../outputs/{name}/{name}_{i}.md" -J "{name}_{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
 
 
-genExperiments('Discount-0.70', lossf='MME', discount=0.70, lambd=0.5, lr=0.0001, dropout=0)
+genExperiments('Discount_0.70', lossf='MME', discount=0.70, lambd=0.5, lr=0.0001, dropout=0)
 
 file.close()
