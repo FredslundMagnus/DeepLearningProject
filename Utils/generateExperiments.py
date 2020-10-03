@@ -3,7 +3,7 @@ from server import defaults
 file = open('Utils/experiments.sh', 'w')
 file.write('#!/bin/sh\n')
 
-features, folders = set(defaults.keys()), ['csv', 'trained', 'TrainingCurve', 'Weights', 'Elo_Rating', 'Increase_in_Elo_over_time', 'data']
+features, folders = set(defaults.keys()), ['Markdown', 'csv', 'trained', 'TrainingCurve', 'Weights', 'Elo_Rating', 'Increase_in_Elo_over_time', 'data']
 
 
 def check(params):
@@ -22,7 +22,7 @@ def genExperiments(name, n=10, **params):
     createFolders(name)
     check(params)
     for i in range(n):
-        file.write(f'bsub -o "../outputs/{name}/{name}_{i}.md" -J "{name}_{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
+        file.write(f'bsub -o "../outputs/{name}/Markdown/{name}_{i}.md" -J "{name}_{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
 
 
 # genExperiments('Discount_0.70', lossf='MME', discount=0.20, lambd=0.3, lr=0.0001, dropout=0)
