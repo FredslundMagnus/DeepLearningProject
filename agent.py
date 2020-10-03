@@ -4,10 +4,10 @@
 
 from torch import as_tensor
 from torch.nn import Module, Conv2d, MaxPool2d, Linear, CrossEntropyLoss
-from torch.nn.functional import relu, softmax
+from torch.nn.functional import relu
 from torch.optim import Adam
 from memory import ReplayBuffer
-from numpy.random import choice
+from exploration import Exploration
 
 
 class Agent:
@@ -17,11 +17,12 @@ class Agent:
         self.optimizer = Adam(self.network.parameters(), lr=3e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(1000)
         self.remember = self.memory.remember()
-        self.K = 100
+        self.exploration = Exploration()
+        self.explore = self.exploration.softmax
 
     def choose(self, obs):
-        chances = softmax(self.network(as_tensor(obs.transpose(2, 0, 1)).reshape(-1, 3, 64, 64).float()).reshape(15) / self.K, dim=0).detach().numpy()
-        return int(choice(15, 1, p=chances))
+        vals = self.network(as_tensor(obs.transpose(2, 0, 1)).reshape(-1, 3, 64, 64).float()).reshape(15)
+        return self.explore(vals)
 
     def learn(self):
         pass
