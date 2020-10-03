@@ -12,7 +12,7 @@ chmod +x run.sh
 chmod +x save.sh
 
 
-cd Desktop/DeepLearningProject/DeepLearningProject/
+cd Desktop/DeepAI/DeepLearningProject/
 ./run.sh
 watch bstat
 ./save.sh
