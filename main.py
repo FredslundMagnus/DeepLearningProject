@@ -1,6 +1,7 @@
 from environments import Environment
 from Utils.server import isServer, params
 from agent import Agent
+from helpers import clean
 
 
 if isServer:
@@ -9,11 +10,12 @@ if isServer:
 else:
     env = Environment(render=True).coinrun  # env = Environment(render=True)["coinrun"]
     agent = Agent()
-    obs = env.reset()
+    obs = clean(env.reset())
     while True:
-        act, obs_old = agent.choose(obs), obs  # env.action_space.sample()
+        act, obs_old = agent.choose(obs)  # env.action_space.sample()
         obs, rew, done, info = env.step(act)
-        agent.remember(obs, act, obs_old, rew)
+        obs = agent.remember(obs_old, act, clean(obs), rew)
+        agent.learn()
         env.render()
         if done:
             break

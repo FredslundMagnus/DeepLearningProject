@@ -2,12 +2,14 @@
 [1] https://www.element61.be/en/resource/quick-guide-reinforcement-learning-and-how-experiment-using-openai-gym
 """
 
-from torch import as_tensor
+
+from torch import squeeze
 from torch.nn import Module, Conv2d, MaxPool2d, Linear, CrossEntropyLoss
 from torch.nn.functional import relu
 from torch.optim import Adam
 from memory import ReplayBuffer
 from exploration import Exploration
+import torch
 
 
 class Agent:
@@ -20,12 +22,16 @@ class Agent:
         self.exploration = Exploration()
         self.explore = self.exploration.softmax
 
-    def choose(self, obs):
-        vals = self.network(as_tensor(obs.transpose(2, 0, 1)).reshape(-1, 3, 64, 64).float()).reshape(15)
-        return self.explore(vals)
+    def choose(self, pixels):
+        vals = self.network(pixels).reshape(15)
+        return self.explore(vals), pixels
 
     def learn(self):
-        pass
+        gamma = 0.99
+        obs, action, obs_next, reward = self.memory.sample(2)
+        v_s_next, input_indexes = torch.max(self.network(obs_next), 1)
+        v_s = torch.gather(self.network(obs), 1, action).squeeze(1)
+        td = reward + gamma * v_s_next - v_s
 
 
 class NetWork(Module):
@@ -48,3 +54,26 @@ class NetWork(Module):
         x = relu(self.fc2(x))
         x = self.fc3(x)
         return x
+
+
+if __name__ == "__main__":
+    from torch import rand
+    from time import time
+    from helpers import stack
+    a = rand((1, 3, 64, 64))
+    agent = Agent()
+    for _ in range(1000):
+        agent.remember(a, 23, a, 0.0)
+
+    sample = agent.memory.sample(20)
+    start = time()
+    for i in range(10000):
+        stack(sample)
+    end = time()
+    print(end - start)
+    sample = agent.memory.sample(25)
+    start = time()
+    for i in range(10000):
+        stack(sample)
+    end = time()
+    print(end - start)

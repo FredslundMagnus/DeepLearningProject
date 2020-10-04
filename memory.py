@@ -1,15 +1,5 @@
 import random
-from typing import List
-
-
-class Transition:
-    __slots__ = 'state', 'action', 'next_state', 'reward'
-
-    def __init__(self, args) -> None:
-        self.state, self.action, self.next_state, self.reward = args
-
-    def __repr__(self):
-        return f"Transition(state{self.state.shape}, {self.action}, next_state{self.next_state.shape}, {self.reward})"
+from helpers import stack
 
 
 class ReplayBuffer:
@@ -20,13 +10,14 @@ class ReplayBuffer:
         size, memory = self.size, self.memory
 
         def inner(*args):
-            memory[self.position % size] = Transition(args)
+            memory[self.position % size] = args
             self.position += 1
+            return args[2]
         return inner
 
-    def sample(self, batch_size: int) -> List[Transition]:
+    def sample(self, batch_size: int):
         l = len(self)
-        return random.sample(self.memory[:l], min(batch_size, l))
+        return stack(random.sample(self.memory[:l], min(batch_size, l)))
 
     def __len__(self):
         return min(self.position, self.size)

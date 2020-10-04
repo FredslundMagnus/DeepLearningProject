@@ -93,3 +93,12 @@ def getvals(defaults):
 
 def checkServer():
     return bool(sys.argv[1:])
+
+
+def showParams(timer):
+    print(f"# Parameters for {params[0]}\n")
+
+    print(f"    Play for :                  {1} games.")
+
+    print(f'    Minutes used :              {timer.minutes} minutes.')
+    print(f'    Hours used :                {timer.hours} hours.\n')
