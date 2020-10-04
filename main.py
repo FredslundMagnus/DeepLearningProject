@@ -1,5 +1,5 @@
 from environments import Environment
-from Utils.server import isServer, params, printInfo
+from Utils.server import isServer, params, serverRun
 from agent import Agent
 from helpers import clean
 
@@ -22,7 +22,7 @@ if isServer:
                 env.render()
                 if done:
                     break
-    printInfo()
+    serverRun()
 else:
     env = Environment(render=True).coinrun  # env = Environment(render=True)["coinrun"]
     agent = Agent()

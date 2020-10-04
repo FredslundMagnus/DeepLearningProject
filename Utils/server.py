@@ -15,6 +15,6 @@ defaults = {
 params = getvals(defaults) if isServer else None
 
 
-def printInfo():
+def serverRun():
     showParams()
     profilingStats()
