@@ -2,6 +2,7 @@ from pstats import func_get_function_name, func_std_string, f8, Stats
 import os
 import time
 import sys
+import cProfile
 
 
 def print_title(self):
@@ -62,9 +63,9 @@ def profilingStats():
 
 
 class Timer:
-    def __init__(self, f) -> None:
+    def __init__(self, code) -> None:
         self.start = time.time()
-        f()
+        cProfile.run(code, 'stats')
         self.time = time.time() - self.start
         self.minutes = int(self.time // 60)
         self.hours = int(self.time // 3600)

@@ -1,4 +1,4 @@
-import cProfile
+
 from Utils.debug import checkServer, getvals, profilingStats, Timer, enablePrint, disablePrint, showParams
 
 isServer = checkServer()
@@ -17,7 +17,7 @@ params = getvals(defaults) if isServer else None
 
 def debugger():
     disablePrint()
-    timer = Timer(lambda: cProfile.run(f'main_function()', 'stats'))
+    timer = Timer('main_function()')
     enablePrint()
     showParams(timer)
     profilingStats()
