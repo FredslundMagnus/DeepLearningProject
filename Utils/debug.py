@@ -96,7 +96,7 @@ def checkServer():
 
 
 def showParams(timer):
-    print(f"# Parameters for {params[0]}\n")
+    # print(f"# Parameters for {params[0]}\n")
 
     print(f"    Play for :                  {1} games.")
 
