@@ -1,5 +1,5 @@
 
-from Utils.debug import checkServer, getvals, profilingStats, Timer, enablePrint, disablePrint, showParams
+from Utils.debug import checkServer, getvals, profilingStats, showParams
 
 isServer = checkServer()
 
@@ -15,9 +15,6 @@ defaults = {
 params = getvals(defaults) if isServer else None
 
 
-def debugger():
-    disablePrint()
-    timer = Timer('main_function()')
-    enablePrint()
-    showParams(timer)
+def printInfo():
+    showParams()
     profilingStats()

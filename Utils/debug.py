@@ -6,7 +6,7 @@ import cProfile
 
 
 def print_title(self):
-    print('           ncalls  tottime  percall  cumtime  percall', end=' ', file=self.stream)
+    print('                  ncalls  tottime  percall  cumtime  percall', end=' ', file=self.stream)
     print('filename:lineno(function)', file=self.stream)
 
 
@@ -15,7 +15,7 @@ def print_line(self, func):  # hack: should print percentages
     c = str(nc)
     if nc != cc:
         c = c + '/' + str(cc)
-    print('       ', c.rjust(9), end=' ', file=self.stream)
+    print('       ', c.rjust(15), end=' ', file=self.stream)
     print(f8(tt), end=' ', file=self.stream)
     if nc == 0:
         print(' ' * 8, end=' ', file=self.stream)
@@ -63,9 +63,9 @@ def profilingStats():
 
 
 class Timer:
-    def __init__(self, code) -> None:
+    def __init__(self) -> None:
         self.start = time.time()
-        cProfile.run(code, 'stats')
+        cProfile.run("main()", 'stats')
         self.time = time.time() - self.start
         self.minutes = int(self.time // 60)
         self.hours = int(self.time // 3600)
@@ -96,7 +96,10 @@ def checkServer():
     return bool(sys.argv[1:])
 
 
-def showParams(timer):
+def showParams():
+    disablePrint()
+    timer = Timer()
+    enablePrint()
     # print(f"# Parameters for {params[0]}\n")
 
     print(f"    Play for :                  {1} games.")
