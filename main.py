@@ -24,16 +24,17 @@ if isServer:
                     break
     serverRun()
 else:
-    env = Environment(render=True).coinrun  # env = Environment(render=True)["coinrun"]
     agent = Agent()
-    obs = clean(env.reset())
-    while True:
-        act, obs_old = agent.choose(obs)  # env.action_space.sample()
-        obs, rew, done, info = env.step(act)
-        obs = agent.remember(obs_old, act, clean(obs), rew)
-        agent.learn()
-        env.render()
-        if done:
-            break
-    env.close()
+    env = Environment(render=True).bigfish  # env = Environment(render=True)["coinrun"]
+    for i in range(10000):
+        obs = clean(env.reset())
+        while True:
+            act, obs_old = agent.choose(obs)  # env.action_space.sample()
+            obs, rew, done, info = env.step(act)
+            obs = agent.remember(obs_old, act, clean(obs), rew)
+            agent.learn()
+            env.render()
+            if done:
+                break
+        env.close()
     print(agent.memory.sample(5))
