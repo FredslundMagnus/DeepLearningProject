@@ -48,14 +48,14 @@ class Environment:
     def __getattribute__(self, name: str):
         evn_name = object.__getattribute__(self, name)
         if object.__getattribute__(self, 'render'):
-            return gym.make(evn_name, render_mode="human")
+            return gym.make(evn_name, render_mode="human", distribution_mode="easy")
         else:
             return gym.make(evn_name)
 
     def __getitem__(self, name):
         evn_name = object.__getattribute__(self, name)
         if object.__getattribute__(self, 'render'):
-            return gym.make(evn_name, render_mode="human")
+            return gym.make(evn_name, render_mode="human", distribution_mode="easy")
         else:
             return gym.make(evn_name)
 
@@ -66,4 +66,4 @@ if __name__ == "__main__":
     """
     from procgen.interactive import make_interactive, ENV_NAMES
     print(ENV_NAMES)
-    make_interactive("human", record_dir=None, env_name=input(), distribution_mode="hard", start_level=0, num_levels=0).run()
+    make_interactive("human", record_dir=None, env_name=input(), distribution_mode="easy", start_level=0, num_levels=0).run()
