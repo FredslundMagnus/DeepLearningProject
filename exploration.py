@@ -8,4 +8,4 @@ class Exploration():
         self.K = 100
 
     def softmax(self, vals):
-        return int(choice(15, 1, p=softmax(vals / self.K, dim=0).detach().numpy()))
+        return int(choice(15, 1, p=softmax(vals / self.K, dim=0).detach().cpu().numpy()))

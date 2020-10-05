@@ -12,7 +12,7 @@ if isServer:
     def main():
         env = Environment(render=False).coinrun  # env = Environment(render=True)["coinrun"]
         agent = Agent()
-        for i in range(10):
+        for i in range(1):
             obs = clean(env.reset())
             while True:
                 act, obs_old = agent.choose(obs)  # env.action_space.sample()
