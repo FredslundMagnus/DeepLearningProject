@@ -3,6 +3,7 @@ from Utils.server import isServer, params, serverRun
 from agent import Agent
 from helpers import clean, hidden_size, device
 import torch
+# import glfw
 
 
 if isServer:
@@ -39,6 +40,7 @@ else:
             obs, rew, done, info = env.step(act)
             obs = agent.remember(obs_old, act, clean(obs), rew, h0, c0, hn, cn, int(not done))
             agent.learn()
+            # glfw.terminate()
             env.render()
             total_rew += rew
             if done:
