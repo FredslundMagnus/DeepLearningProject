@@ -11,18 +11,19 @@ from memory import ReplayBuffer
 from exploration import Exploration
 import torch
 from helpers import device, hidden_size
+import torch.nn as nn
 
 
 class Agent:
     def __init__(self) -> None:
         self.network = NetWork()
-        self.network.to(device)
+        self.network.to(device).cuda()
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=3e-4, weight_decay=1e-5)
-        self.memory = ReplayBuffer(1000)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
+        self.memory = ReplayBuffer(10000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.softmax
+        self.explore = self.exploration.epsilonGreedy
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
@@ -48,38 +49,51 @@ class NetWork(Module):
     def __init__(self):
         super(NetWork, self).__init__()
 
-        self.conv1_1_1 = Conv2d(in_channels=3, out_channels=10, kernel_size=1)
-        self.conv1_3_1 = Conv2d(in_channels=10, out_channels=10, kernel_size=3)
-        self.conv1_1_2 = Conv2d(in_channels=10, out_channels=20, kernel_size=1)
-        self.conv1_3_2 = Conv2d(in_channels=20, out_channels=20, kernel_size=3)
-        self.pool1 = MaxPool2d(2, 2, padding=0)
-        self.conv2_1 = Conv2d(in_channels=20, out_channels=30, kernel_size=1)
-        self.conv2_3 = Conv2d(in_channels=30, out_channels=30, kernel_size=3)
-        self.pool2 = MaxPool2d(2, 2, padding=0)
-        self.conv3_1 = Conv2d(in_channels=30, out_channels=40, kernel_size=1)
-        self.conv3_3 = Conv2d(in_channels=40, out_channels=40, kernel_size=3)
-        self.pool3 = MaxPool2d(2, 2, padding=0)
-        self.size_after_conv = 1440
+        self.conv1 = nn.Sequential(
+            Conv2d(in_channels=3, out_channels=10, kernel_size=1),
+            nn.LeakyReLU(),
+            Conv2d(in_channels=10, out_channels=20, kernel_size=3),
+            nn.MaxPool2d(2, 2, padding=0),
+            nn.LeakyReLU(),
+        )
+
+        self.conv2 = nn.Sequential(
+            Conv2d(in_channels=20, out_channels=15, kernel_size=1),
+            nn.LeakyReLU(),
+            Conv2d(in_channels=15, out_channels=25, kernel_size=3),
+            nn.MaxPool2d(2, 2, padding=0),
+            nn.LeakyReLU(),
+        )
+
+        self.conv3 = nn.Sequential(
+            Conv2d(in_channels=25, out_channels=20, kernel_size=1),
+            nn.LeakyReLU(),
+            Conv2d(in_channels=20, out_channels=20, kernel_size=3),
+            nn.MaxPool2d(2, 2, padding=0),
+            nn.LeakyReLU(),
+        )
+
+        self.size_after_conv = 720
         self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
-        self.fc1 = Linear(hidden_size, 120)
-        self.fc2 = Linear(120, 60)
-        self.fc3 = Linear(60, 15)
+
+        self.linear = nn.Sequential(
+            Linear(hidden_size, 40),
+            nn.LeakyReLU(),
+            Linear(40, 30),
+            nn.LeakyReLU(),
+            Linear(30, 15)
+        )
 
     def forward(self, x):
-        x = leaky_relu(self.conv1_1_1(x))
-        x = leaky_relu(self.conv1_3_1(x))
-        x = leaky_relu(self.conv1_1_2(x))
-        x = self.pool1(leaky_relu(self.conv1_3_2(x)))
-        x = leaky_relu(self.conv2_1(x))
-        x = self.pool2(leaky_relu(self.conv2_3(x)))
-        x = leaky_relu(self.conv3_1(x))
-        x = self.pool3(leaky_relu(self.conv3_3(x)))
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+
         x = x.view(1, -1, self.size_after_conv)
         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         x = x.view(-1, hidden_size)
-        x = leaky_relu(self.fc1(x))
-        x = leaky_relu(self.fc2(x))
-        x = self.fc3(x)
+
+        x = self.linear(x)
         return x
 
 

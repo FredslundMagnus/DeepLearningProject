@@ -17,7 +17,7 @@ if isServer:
         for i in range(1):
             obs = clean(env.reset())
             while True:
-                act, obs_old = agent.choose(obs)  # env.action_space.sample()
+                act, obs_old = agent.choose(obs.to(device))  # env.action_space.sample()
                 obs, rew, done, info = env.step(act)
                 obs = agent.remember(obs_old, act, clean(obs), rew)
                 agent.learn()
@@ -36,14 +36,15 @@ else:
         print(torch.cuda.memory_allocated())
         while True:
 
-            act, obs_old, h0, c0, hn, cn = agent.choose(obs, hn, cn)  # env.action_space.sample()
+            act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)  # env.action_space.sample()
             obs, rew, done, info = env.step(act)
-            obs = agent.remember(obs_old, act, clean(obs), rew, h0, c0, hn, cn, int(not done))
+            obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
             agent.learn()
             # glfw.terminate()
             env.render()
             total_rew += rew
             if done:
                 print(f"\n{i}. Total reward: {total_rew}")
+                print(len(agent.memory))
                 break
         env.close()
