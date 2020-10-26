@@ -6,7 +6,7 @@ from numpy.random import choice
 
 class Exploration():
     def __init__(self) -> None:
-        self.K = 1
+        self.K = 0.2
         self.epsilon = 0.05
 
     def softmax(self, vals):
