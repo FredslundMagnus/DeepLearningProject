@@ -29,7 +29,7 @@ class Agent:
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
     def learn(self):
-        gamma = 0.98
+        gamma = 0.95
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample(20)
         self.network.hn, self.network.cn = hn, sn
         v_s_next, input_indexes = torch.max(self.network(obs_next), 1)

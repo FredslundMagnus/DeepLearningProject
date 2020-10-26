@@ -3,7 +3,6 @@ from Utils.server import isServer, params, serverRun
 from agent import Agent
 from helpers import clean, hidden_size, device
 import torch
-# import glfw
 
 
 if isServer:
@@ -33,18 +32,17 @@ else:
         hn = torch.zeros(2, 1, hidden_size).to(device)
         cn = torch.zeros(2, 1, hidden_size).to(device)
         total_rew = 0
-        print(torch.cuda.memory_allocated())
+        # print(torch.cuda.memory_allocated())
         while True:
 
             act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)  # env.action_space.sample()
             obs, rew, done, info = env.step(act)
             obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
             agent.learn()
-            # glfw.terminate()
             env.render()
             total_rew += rew
             if done:
-                print(f"\n{i}. Total reward: {total_rew}")
-                print(len(agent.memory))
+                print(f"\n{i}. Total reward: {int(total_rew)}")
+                # print(len(agent.memory))
                 break
         env.close()
