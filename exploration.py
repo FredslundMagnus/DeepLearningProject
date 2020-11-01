@@ -11,6 +11,7 @@ class Exploration():
 
     def softmax(self, vals):
         print(str(float(vals.max()))[:3], end=", ")
+        print(softmax(vals / self.K, dim=0).detach().cpu().numpy())
         return int(choice(15, 1, p=softmax(vals / self.K, dim=0).detach().cpu().numpy()))
 
     def greedy(self, vals):

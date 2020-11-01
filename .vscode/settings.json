@@ -6,5 +6,8 @@
     "--ignore",
     "E402"
   ],
-  "python.analysis.extraPaths": ["Utils"]
+  "python.analysis.extraPaths": [
+    "Utils"
+  ],
+  "python.pythonPath": "C:\\Users\\Kobo\\Anaconda3\\python.exe"
 }

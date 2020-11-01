@@ -35,7 +35,7 @@ class Agent:
         v_s_next, input_indexes = torch.max(self.network(obs_next), 1)
         self.network.hn, self.network.cn = h0, c0
         v_s = torch.gather(self.network(obs), 1, action).squeeze(1)
-        td = (reward + gamma * v_s_next * done).detach()
+        td = (reward + gamma * v_s_next * done.type(torch.float)).detach()
         loss = self.criterion(v_s, td)
         loss.backward()
         self.optimizer.step()
