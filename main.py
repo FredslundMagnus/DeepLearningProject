@@ -11,30 +11,39 @@ if isServer:
 
     # the server runs the main function (can be changed)
     def main():
-        env = Environment(render=False).coinrun  # env = Environment(render=True)["coinrun"]
         agent = Agent()
-        for i in range(1):
+        env = Environment(render=False).bigfish  # env = Environment(render=True)["coinrun"]
+        for i in range(20):
             obs = clean(env.reset())
+            hn = torch.zeros(2, 1, hidden_size, device=device)
+            cn = torch.zeros(2, 1, hidden_size, device=device)
+            total_rew = 0
+            # print(torch.cuda.memory_allocated())
             while True:
-                act, obs_old = agent.choose(obs.to(device))  # env.action_space.sample()
+                # hn, cn = hn.detach(), cn.detach()
+                act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)  # env.action_space.sample()
                 obs, rew, done, info = env.step(act)
-                obs = agent.remember(obs_old, act, clean(obs), rew)
+                obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
                 agent.learn()
                 env.render()
+                total_rew += rew
                 if done:
+                    print(f"\n{i}. Total reward: {int(total_rew)}")
+                    # print(len(agent.memory))
                     break
+            env.close()
     serverRun()
 else:
     agent = Agent()
     env = Environment(render=True).bigfish  # env = Environment(render=True)["coinrun"]
     for i in range(10000):
         obs = clean(env.reset())
-        hn = torch.zeros(2, 1, hidden_size).to(device)
-        cn = torch.zeros(2, 1, hidden_size).to(device)
+        hn = torch.zeros(2, 1, hidden_size, device=device)
+        cn = torch.zeros(2, 1, hidden_size, device=device)
         total_rew = 0
         # print(torch.cuda.memory_allocated())
         while True:
-
+            # hn, cn = hn.detach(), cn.detach()
             act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)  # env.action_space.sample()
             obs, rew, done, info = env.step(act)
             obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
