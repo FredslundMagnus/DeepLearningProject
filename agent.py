@@ -34,10 +34,11 @@ class Agent:
         gamma = 0.98
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample(20)
         self.network.hn, self.network.cn = hn, sn
-        if double == False:
-            v_s_next, input_indexes = torch.max(self.target_network(obs_next), 1)
+
+        if double:
+            v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).reshape(-1, 1)).squeeze(1)
         else:
-            v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1)).squeeze(1)
+            v_s_next, input_indexes = torch.max(self.target_network(obs_next), 1)
 
         self.network.hn, self.network.cn = h0, c0
         v_s = torch.gather(self.network(obs), 1, action).squeeze(1)

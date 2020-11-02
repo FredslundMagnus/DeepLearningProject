@@ -8,6 +8,5 @@
   ],
   "python.analysis.extraPaths": [
     "Utils"
-  ],
-  "python.pythonPath": "C:\\Users\\Kobo\\Anaconda3\\python.exe"
+  ]
 }
