@@ -17,7 +17,7 @@ def createFolders(name):
         file.write(f"mkdir ../outputs/{name}/{folder}\n")
 
 
-def genExperiments(name, n=10, **params):
+def genExperiments(name, n=1, **params):
     createFolders(name)
     check(params)
     for i in range(n):

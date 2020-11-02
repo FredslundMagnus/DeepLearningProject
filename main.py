@@ -59,7 +59,7 @@ else:
             obs, rew, done, info = env.step(act)
             obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
             if start_learning > update_every:
-                agent.learn(double=False)
+                agent.learn(double=True)
             if start_learning % update_every == 0:
                 agent.update_target_network()
 
