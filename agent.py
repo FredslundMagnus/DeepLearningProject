@@ -36,14 +36,14 @@ class Agent:
         self.network.hn, self.network.cn = hn, sn
 
         if double:
-            v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).reshape(-1, 1)).squeeze(1)
+            v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)
         else:
             v_s_next, input_indexes = torch.max(self.target_network(obs_next), 1)
 
         self.network.hn, self.network.cn = h0, c0
-        v_s = torch.gather(self.network(obs), 1, action).squeeze(1)
+        v_s = torch.gather(self.network(obs), 1, action)
         #v_s, _ = torch.max(self.network(obs), 1)
-        td = (reward + gamma * v_s_next * done.type(torch.float)).detach()
+        td = (reward + gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
         loss = self.criterion(v_s, td)
         loss.backward()
         self.optimizer.step()
