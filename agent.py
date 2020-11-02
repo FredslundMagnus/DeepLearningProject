@@ -17,7 +17,7 @@ class Agent:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-5, weight_decay=1e-5)
         self.memory = ReplayBuffer(100000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
@@ -61,11 +61,11 @@ class NetWork(Module):
         super(NetWork, self).__init__()
 
         self.conv1 = Sequential(
-            Conv2d(in_channels=3, out_channels=16, kernel_size=5, stride=2),
+            Conv2d(in_channels=3, out_channels=5, kernel_size=5, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=16, out_channels=20, kernel_size=5, stride=2),
+            Conv2d(in_channels=5, out_channels=5, kernel_size=5, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=20, out_channels=20, kernel_size=4, stride=2),
+            Conv2d(in_channels=5, out_channels=5, kernel_size=4, stride=2),
             LeakyReLU(),
         )
 
@@ -89,7 +89,7 @@ class NetWork(Module):
         # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
 
         self.linear = Sequential(
-            Linear(500, 30),
+            Linear(125, 30),
             # Linear(hidden_size, 40),
             LeakyReLU(),
             Linear(30, 15),
@@ -103,7 +103,7 @@ class NetWork(Module):
         # x = x.view(1, -1, self.size_after_conv)
         # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         # x = x.view(-1, hidden_size)
-        x = x.view(-1, 500)
+        x = x.view(-1, 125)
         x = self.linear(x)
         return x
 
