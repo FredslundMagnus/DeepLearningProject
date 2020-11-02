@@ -13,7 +13,7 @@ if isServer:
     # the server runs the main function (can be changed)
     def main():
         agent = Agent()
-        env = Environment(render=True).bigfish  # env = Environment(render=True)["coinrun"]
+        env = Environment(render=False).bigfish  # env = Environment(render=True)["coinrun"]
         start_learning = 0
         update_every = 5000
         for i in range(1000):
