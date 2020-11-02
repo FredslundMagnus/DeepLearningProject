@@ -3,7 +3,7 @@
 """
 
 
-from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential
+from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential, ReLU
 from torch.optim import Adam
 from memory import ReplayBuffer
 from exploration import Exploration
@@ -17,11 +17,11 @@ class Agent:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-5, weight_decay=1e-5)
         self.memory = ReplayBuffer(100000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.softmax
+        self.explore = self.exploration.greedy
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
 
@@ -60,13 +60,14 @@ class NetWork(Module):
     def __init__(self):
         super(NetWork, self).__init__()
 
+        self.color = Sequential(Conv2d(in_channels=3, out_channels=2, kernel_size=1), ReLU())
+
         self.conv1 = Sequential(
-            Conv2d(in_channels=3, out_channels=8, kernel_size=1),
-            Conv2d(in_channels=8, out_channels=16, kernel_size=5, stride=2),
+            Conv2d(in_channels=2, out_channels=5, kernel_size=5, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=16, out_channels=20, kernel_size=5, stride=2),
+            Conv2d(in_channels=5, out_channels=5, kernel_size=5, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=20, out_channels=20, kernel_size=4, stride=2),
+            Conv2d(in_channels=5, out_channels=5, kernel_size=4, stride=2),
             LeakyReLU(),
         )
 
@@ -90,13 +91,14 @@ class NetWork(Module):
         # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
 
         self.linear = Sequential(
-            Linear(500, 30),
+            Linear(125, 30),
             # Linear(hidden_size, 40),
             LeakyReLU(),
             Linear(30, 15),
         )
 
     def forward(self, x):
+        x = self.color(x)
         x = self.conv1(x)
         #x = self.conv2(x)
         #x = self.conv3(x)
@@ -104,7 +106,7 @@ class NetWork(Module):
         # x = x.view(1, -1, self.size_after_conv)
         # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         # x = x.view(-1, hidden_size)
-        x = x.view(-1, 500)
+        x = x.view(-1, 125)
         x = self.linear(x)
         return x
 
