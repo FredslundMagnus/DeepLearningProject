@@ -16,7 +16,7 @@ if isServer:
         env = Environment(render=False).bigfish  # env = Environment(render=True)["coinrun"]
         start_learning = 0
         update_every = 5000
-        for i in range(1000):
+        for i in range(50):
             obs = clean(env.reset())
             hn = torch.zeros(2, 1, hidden_size, device=device)
             cn = torch.zeros(2, 1, hidden_size, device=device)
