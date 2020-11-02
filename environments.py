@@ -25,6 +25,13 @@ action_space : Discrete(15) = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}
 
 
 class Environment:
+    settings = {'distribution_mode': "easy",
+                'use_backgrounds': False,
+                'use_monochrome_assets': True,
+                'restrict_themes': True,
+                'use_generated_assets': False,
+                'paint_vel_info': False}
+
     def __init__(self, render=False) -> None:
         self.render = render
         self.interactive = True
@@ -48,16 +55,16 @@ class Environment:
     def __getattribute__(self, name: str):
         evn_name = object.__getattribute__(self, name)
         if object.__getattribute__(self, 'render'):
-            return gym.make(evn_name, render_mode="human", distribution_mode="easy")
+            return gym.make(evn_name, render_mode="human", **Environment.settings)
         else:
-            return gym.make(evn_name)
+            return gym.make(evn_name, **Environment.settings)
 
     def __getitem__(self, name):
         evn_name = object.__getattribute__(self, name)
         if object.__getattribute__(self, 'render'):
-            return gym.make(evn_name, render_mode="human", distribution_mode="easy")
+            return gym.make(evn_name, render_mode="human", **Environment.settings)
         else:
-            return gym.make(evn_name)
+            return gym.make(evn_name, **Environment.settings)
 
 
 if __name__ == "__main__":
