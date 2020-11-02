@@ -1,14 +1,12 @@
 from environments import Environment
-from Utils.server import isServer, params, serverRun
+from Utils.server import isServer, params, serverRun, saveAgent
 from agent import Agent
 from helpers import clean, hidden_size, device
 import torch
-import copy
 
 if isServer:
     name, lossf, discount, lambd, lr, dropout = params
     print(name, lossf, discount, lambd, lr, dropout)
-    print(device)
 
     # the server runs the main function (can be changed)
     def main():
@@ -16,7 +14,7 @@ if isServer:
         env = Environment(render=False).bigfish  # env = Environment(render=True)["coinrun"]
         start_learning = 0
         update_every = 5000
-        for i in range(1000):
+        for i in range(100):
             obs = clean(env.reset())
             hn = torch.zeros(2, 1, hidden_size, device=device)
             cn = torch.zeros(2, 1, hidden_size, device=device)
@@ -40,6 +38,7 @@ if isServer:
                     # print(len(agent.memory))
                     break
             env.close()
+        saveAgent(agent, name)
     serverRun()
 else:
     agent = Agent()
