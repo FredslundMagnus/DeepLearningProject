@@ -22,4 +22,4 @@ def serverRun():
 
 
 def saveAgent(agent, name: str):
-    pickle.dump(agent, open(f"outputs/{'_'.join(name.split('_')[:-1])}/Agents/{name}.obj", "wb"))
+    pickle.dump(agent, open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.obj", "wb"))
