@@ -90,10 +90,10 @@ class NetWork(Module):
         # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
 
         self.linear = Sequential(
-            Linear(500, 100),
+            Linear(500, 30),
             # Linear(hidden_size, 40),
             LeakyReLU(),
-            Linear(100, 15),
+            Linear(30, 15),
         )
 
     def forward(self, x):
