@@ -5,7 +5,7 @@ import numpy as np
 
 class ReplayBuffer:
     def __init__(self, size: int) -> None:
-        self.size, self.position, self.memory, self.rewads, self.dones = size, 0, [None for _ in range(size)], [None for _ in range(size)], [None for _ in range(size)]
+        self.reset(size)
 
     def remember(self):
         size, memory, rewads, dones = self.size, self.memory, self.rewads, self.dones
@@ -39,3 +39,6 @@ class ReplayBuffer:
     def __repr__(self):
         _k = self.position % self.size
         return str(self.memory[_k:len(self)] + self.memory[:_k])
+
+    def reset(self, size: int):
+        self.size, self.position, self.memory, self.rewads, self.dones, self.distribution = size, 0, [None for _ in range(size)], [None for _ in range(size)], [None for _ in range(size)], None
