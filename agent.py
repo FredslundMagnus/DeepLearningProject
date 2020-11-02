@@ -9,6 +9,7 @@ from memory import ReplayBuffer
 from exploration import Exploration
 import torch
 from helpers import device, hidden_size, count_parameters
+import copy
 
 
 class Agent:
@@ -17,11 +18,12 @@ class Agent:
         self.network.to(device).cuda()
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-5, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(10000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
         self.explore = self.exploration.softmax
+        self.target_network = copy.deepcopy(self.network)
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
@@ -29,18 +31,22 @@ class Agent:
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
     def learn(self):
-        gamma = 0.95
+        gamma = 0.98
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample(20)
         self.network.hn, self.network.cn = hn, sn
-        v_s_next, input_indexes = torch.max(self.network(obs_next), 1)
+        v_s_next, input_indexes = torch.max(self.target_network(obs_next), 1)
         self.network.hn, self.network.cn = h0, c0
         v_s = torch.gather(self.network(obs), 1, action).squeeze(1)
-        td = (reward + gamma * v_s_next * done.type(torch.float)).detach()
+        #v_s, _ = torch.max(self.network(obs), 1)
+        td = ((reward + gamma * v_s_next) * done.type(torch.float)).detach()
         loss = self.criterion(v_s, td)
         loss.backward()
         self.optimizer.step()
         self.optimizer.zero_grad()
         torch.cuda.empty_cache()
+
+    def update_target_network(self):
+        self.target_network = copy.deepcopy(self.network)
 
 
 class NetWork(Module):
@@ -48,17 +54,19 @@ class NetWork(Module):
         super(NetWork, self).__init__()
 
         self.conv1 = Sequential(
-            Conv2d(in_channels=3, out_channels=10, kernel_size=1),
+            Conv2d(in_channels=3, out_channels=8, kernel_size=1),
+            Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=10, out_channels=20, kernel_size=3),
-            MaxPool2d(2, 2, padding=0),
+            Conv2d(in_channels=16, out_channels=20, kernel_size=4, stride=2),
+            LeakyReLU(),
+            Conv2d(in_channels=20, out_channels=20, kernel_size=3),
             LeakyReLU(),
         )
 
         self.conv2 = Sequential(
-            Conv2d(in_channels=20, out_channels=15, kernel_size=1),
+            Conv2d(in_channels=15, out_channels=20, kernel_size=3),
             LeakyReLU(),
-            Conv2d(in_channels=15, out_channels=25, kernel_size=3),
+            Conv2d(in_channels=20, out_channels=25, kernel_size=3),
             MaxPool2d(2, 2, padding=0),
             LeakyReLU(),
         )
@@ -66,7 +74,7 @@ class NetWork(Module):
         self.conv3 = Sequential(
             Conv2d(in_channels=25, out_channels=20, kernel_size=1),
             LeakyReLU(),
-            Conv2d(in_channels=20, out_channels=20, kernel_size=3),
+            Conv2d(in_channels=20, out_channels=15, kernel_size=3),
             # MaxPool2d(2, 2, padding=0),
             LeakyReLU(),
         )
@@ -75,23 +83,23 @@ class NetWork(Module):
         # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
 
         self.linear = Sequential(
-            Linear(720 * 4, 100),
+            Linear(2880, 100),
             # Linear(hidden_size, 40),
             LeakyReLU(),
-            Linear(100, 30),
+            Linear(100, 80),
             LeakyReLU(),
-            Linear(30, 15),
+            Linear(80, 15),
         )
 
     def forward(self, x):
         x = self.conv1(x)
-        x = self.conv2(x)
-        x = self.conv3(x)
+        #x = self.conv2(x)
+        #x = self.conv3(x)
 
         # x = x.view(1, -1, self.size_after_conv)
         # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         # x = x.view(-1, hidden_size)
-        x = x.view(-1, 720 * 4)
+        x = x.view(-1, 2880)
         x = self.linear(x)
         return x
 
