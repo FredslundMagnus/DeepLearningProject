@@ -1,5 +1,7 @@
 #!/bin/sh
 #BSUB -q hpc
+#BSUB -q gpuv100
+#BSUB -gpu "num=1:mode=exclusive_process"
 #BSUB -n 1
 #BSUB -R "rusage[mem=1G]"
 #BSUB -R "span[hosts=1]"
