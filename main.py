@@ -43,7 +43,7 @@ if isServer:
     serverRun()
 else:
     agent = Agent()
-    env = Environment(render=True).bigfish  # env = Environment(render=True)["coinrun"]
+    env = Environment(render=True).chaser  # env = Environment(render=True)["coinrun"]
     start_learning = 0
     update_every = 5000
     for i in range(20000):
@@ -66,7 +66,7 @@ else:
             env.render()
             total_rew += rew
             if done:
-                print(f"\n{i}. Total reward: {int(total_rew)}")
+                print(f"\n{i}. Total reward: {total_rew}")
                 # print(len(agent.memory))
                 break
         env.close()
