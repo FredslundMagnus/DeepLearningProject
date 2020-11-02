@@ -18,7 +18,7 @@ class Agent:
         self.network.to(device).cuda()
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-3, weight_decay=1e-5)
         self.memory = ReplayBuffer(10000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
@@ -30,11 +30,15 @@ class Agent:
         vals = self.network(pixels).reshape(15)
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
-    def learn(self):
+    def learn(self, double=False):
         gamma = 0.98
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample(20)
         self.network.hn, self.network.cn = hn, sn
-        v_s_next, input_indexes = torch.max(self.target_network(obs_next), 1)
+        if double == False:
+            v_s_next, input_indexes = torch.max(self.target_network(obs_next), 1)
+        else:
+            v_s_next, input_indexes = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1)).squeeze(1)
+
         self.network.hn, self.network.cn = h0, c0
         v_s = torch.gather(self.network(obs), 1, action).squeeze(1)
         #v_s, _ = torch.max(self.network(obs), 1)
