@@ -23,7 +23,8 @@ class Agent:
         self.remember = self.memory.remember()
         self.exploration = Exploration()
         self.explore = self.exploration.softmax
-        self.target_network = copy.deepcopy(self.network)
+        self.target_network = NetWork()
+        self.placeholder_network = NetWork()
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
@@ -51,7 +52,8 @@ class Agent:
         torch.cuda.empty_cache()
 
     def update_target_network(self):
-        self.target_network = copy.deepcopy(self.network)
+        self.target_network = copy.deepcopy(self.placeholder_network)
+        self.placeholder_network = copy.deepcopy(self.network)
 
 
 class NetWork(Module):
