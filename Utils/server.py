@@ -1,7 +1,7 @@
 
 from Utils.debug import checkServer, getvals, profilingStats, showParams
 import pickle
-
+from agent import Agent
 isServer = checkServer()
 
 defaults = {
@@ -21,5 +21,8 @@ def serverRun():
     profilingStats()
 
 
-def saveAgent(agent, name: str):
-    pickle.dump(agent, open(f"outputs/{'_'.join(name.split('_')[:-1])}/Agents/{name}.obj", "wb"))
+def saveAgent(agent: Agent, name: str):
+    agent.memory.reset(0)
+    agent.memory = None
+    agent.remember = None
+    pickle.dump(agent, open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.obj", "wb"))
