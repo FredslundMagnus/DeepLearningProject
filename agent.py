@@ -62,11 +62,11 @@ class NetWork(Module):
 
         self.conv1 = Sequential(
             Conv2d(in_channels=3, out_channels=8, kernel_size=1),
-            Conv2d(in_channels=8, out_channels=16, kernel_size=8, stride=4),
+            Conv2d(in_channels=8, out_channels=16, kernel_size=5, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=2),
+            Conv2d(in_channels=16, out_channels=20, kernel_size=5, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=32, out_channels=32, kernel_size=3),
+            Conv2d(in_channels=20, out_channels=20, kernel_size=4, stride=2),
             LeakyReLU(),
         )
 
@@ -90,7 +90,7 @@ class NetWork(Module):
         # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
 
         self.linear = Sequential(
-            Linear(512, 100),
+            Linear(500, 100),
             # Linear(hidden_size, 40),
             LeakyReLU(),
             Linear(100, 15),
@@ -104,7 +104,7 @@ class NetWork(Module):
         # x = x.view(1, -1, self.size_after_conv)
         # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         # x = x.view(-1, hidden_size)
-        x = x.view(-1, 512)
+        x = x.view(-1, 500)
         x = self.linear(x)
         return x
 
