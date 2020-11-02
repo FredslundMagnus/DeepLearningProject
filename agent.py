@@ -21,10 +21,9 @@ class Agent:
         self.memory = ReplayBuffer(10000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.softmax
+        self.explore = self.exploration.epsilonGreedy
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
-
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
@@ -33,7 +32,7 @@ class Agent:
 
     def learn(self, double=False):
         gamma = 0.96
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample(20)
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
         self.network.hn, self.network.cn = hn, sn
 
         if double:
@@ -54,6 +53,7 @@ class Agent:
     def update_target_network(self):
         self.target_network = copy.deepcopy(self.placeholder_network)
         self.placeholder_network = copy.deepcopy(self.network)
+        self.memory.update_distribution()
 
 
 class NetWork(Module):
