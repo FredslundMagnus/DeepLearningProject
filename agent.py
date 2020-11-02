@@ -21,7 +21,7 @@ class Agent:
         self.memory = ReplayBuffer(100000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.epsilonGreedy
+        self.explore = self.exploration.softmax
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
 

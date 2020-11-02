@@ -25,9 +25,9 @@ class ReplayBuffer:
     def sample_distribution(self, batch_size: int):
         return stack([self.memory[i] for i in list(np.random.choice(len(self.distribution), batch_size, p=self.distribution))])
 
-    def update_distribution(self, a=1, b=1, sigma=0.5):
+    def update_distribution(self, a=1, b=3, sigma=0.8):
         l = len(self)
-        k = 5
+        k = 20
         temp = np.array(self.rewads[:l] + [0] * k) * a + b - np.array(self.dones[:l] + [1] * k) * b
         temp_of_temp = temp.copy()
         for i in range(1, k):
