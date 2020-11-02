@@ -43,7 +43,7 @@ class Agent:
         self.network.hn, self.network.cn = h0, c0
         v_s = torch.gather(self.network(obs), 1, action).squeeze(1)
         #v_s, _ = torch.max(self.network(obs), 1)
-        td = ((reward + gamma * v_s_next) * done.type(torch.float)).detach()
+        td = (reward + gamma * v_s_next * done.type(torch.float)).detach()
         loss = self.criterion(v_s, td)
         loss.backward()
         self.optimizer.step()
