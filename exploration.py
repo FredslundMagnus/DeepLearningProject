@@ -10,13 +10,13 @@ class Exploration():
         self.epsilon = 0.05
 
     def softmax(self, vals):
-        print(str(float(vals.max()))[:3], end=", ")
-        #print(vals)
+        print(str(float(vals.max()))[:4], end=", ")
+        # print(vals)
         return int(choice(15, 1, p=softmax(vals / self.K, dim=0).detach().cpu().numpy()))
 
     def greedy(self, vals):
         return vals.detach().cpu().numpy().argmax()
 
     def epsilonGreedy(self, vals):
-        print(str(float(vals.max()))[:3], end=", ")
+        print(str(float(vals.max()))[:4], end=", ")
         return int(choice(15, 1)) if random() < self.epsilon else vals.detach().cpu().numpy().argmax()
