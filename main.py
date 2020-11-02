@@ -1,5 +1,5 @@
 from environments import Environment
-from Utils.server import isServer, params, serverRun
+from Utils.server import isServer, params, serverRun, saveAgent
 from agent import Agent
 from helpers import clean, hidden_size, device
 import torch
@@ -8,7 +8,6 @@ import copy
 if isServer:
     name, lossf, discount, lambd, lr, dropout = params
     print(name, lossf, discount, lambd, lr, dropout)
-    print(device)
 
     # the server runs the main function (can be changed)
     def main():
@@ -40,6 +39,7 @@ if isServer:
                     # print(len(agent.memory))
                     break
             env.close()
+        saveAgent(agent, name)
     serverRun()
 else:
     agent = Agent()

@@ -3,6 +3,7 @@ import os
 import time
 import sys
 import cProfile
+import pickle
 
 
 def print_title(self):
@@ -106,3 +107,7 @@ def showParams():
 
     print(f'    Minutes used :              {timer.minutes} minutes.')
     print(f'    Hours used :                {timer.hours} hours.\n')
+
+
+def saveAgent(agent, name: str):
+    pickle.dump(agent, open(f"outputs/{'_'.join(name.split('_')[:-1])}/agents/{name}.obj", "wb"))
