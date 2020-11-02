@@ -1,5 +1,6 @@
 
 from Utils.debug import checkServer, getvals, profilingStats, showParams
+import pickle
 
 isServer = checkServer()
 
@@ -18,3 +19,7 @@ params = getvals(defaults) if isServer else None
 def serverRun():
     showParams()
     profilingStats()
+
+
+def saveAgent(agent, name: str):
+    pickle.dump(agent, open(f"outputs/{'_'.join(name.split('_')[:-1])}/Agents/{name}.obj", "wb"))

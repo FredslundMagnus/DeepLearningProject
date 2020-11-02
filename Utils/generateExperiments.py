@@ -3,7 +3,7 @@ from server import defaults
 file = open('Utils/experiments.sh', 'w')
 file.write('#!/bin/sh\n')
 
-features, folders = set(defaults.keys()), ['', 'Markdown']
+features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents']
 
 
 def check(params):
