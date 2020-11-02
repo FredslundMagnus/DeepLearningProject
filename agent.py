@@ -3,7 +3,7 @@
 """
 
 
-from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential
+from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential, ReLU
 from torch.optim import Adam
 from memory import ReplayBuffer
 from exploration import Exploration
@@ -60,8 +60,10 @@ class NetWork(Module):
     def __init__(self):
         super(NetWork, self).__init__()
 
+        self.color = Sequential(Conv2d(in_channels=3, out_channels=2, kernel_size=1), ReLU())
+
         self.conv1 = Sequential(
-            Conv2d(in_channels=3, out_channels=5, kernel_size=5, stride=2),
+            Conv2d(in_channels=2, out_channels=5, kernel_size=5, stride=2),
             LeakyReLU(),
             Conv2d(in_channels=5, out_channels=5, kernel_size=5, stride=2),
             LeakyReLU(),
@@ -96,6 +98,7 @@ class NetWork(Module):
         )
 
     def forward(self, x):
+        x = self.color(x)
         x = self.conv1(x)
         #x = self.conv2(x)
         #x = self.conv3(x)

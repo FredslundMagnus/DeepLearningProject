@@ -26,9 +26,10 @@ def move_figure(f, x, y):
 
 
 def displayer(state, agent: Agent):
-    parametres(agent, x=1000, y=0)
-    imageBig(state, x=400, y=485)
-    filter5(state, agent, x=1000, y=485)
+    parametres(agent, x=1200, y=0)
+    imageBig(state, x=600, y=485)
+    filter5(state, agent, x=1200, y=485)
+    filterColor(state, agent, x=600, y=0)
     plt.pause(8)
     plt.close('all')
 
@@ -60,7 +61,23 @@ def imageBig(state, x: int = 1000, y: int = 0):
 
 def filter5(state, agent: Agent, x: int = 1000, y: int = 0):
     # plt.figure()
-    filters = agent.network.conv1(state.to(device)).detach().cpu().numpy().squeeze(0)
+    filters = agent.network.conv1(agent.network.color(state.to(device))).detach().cpu().numpy().squeeze(0)
+    n = filters.shape[0]
+    v = math.ceil(math.sqrt(n))
+    fig, axs = plt.subplots(v, v)
+    move_figure(fig, x, y)
+    for i in range(n):
+        im = axs[i // v, i % v].imshow(filters[i], cmap='gray')
+
+    fig.subplots_adjust(right=0.8)
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    fig.colorbar(im, cax=cbar_ax)
+    plt.show(block=False)
+
+
+def filterColor(state, agent: Agent, x: int = 1000, y: int = 0):
+    # plt.figure()
+    filters = agent.network.color(state.to(device)).detach().cpu().numpy().squeeze(0)
     n = filters.shape[0]
     v = math.ceil(math.sqrt(n))
     fig, axs = plt.subplots(v, v)
