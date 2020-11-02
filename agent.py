@@ -17,7 +17,7 @@ class Agent:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-3, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(100000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
