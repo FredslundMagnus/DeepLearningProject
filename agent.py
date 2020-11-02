@@ -14,8 +14,7 @@ import copy
 
 class Agent:
     def __init__(self) -> None:
-        self.network = NetWork()
-        self.network.to(device).cuda()
+        self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
         self.optimizer = Adam(self.network.parameters(), lr=1e-3, weight_decay=1e-5)
@@ -23,8 +22,9 @@ class Agent:
         self.remember = self.memory.remember()
         self.exploration = Exploration()
         self.explore = self.exploration.softmax
-        self.target_network = NetWork()
-        self.placeholder_network = NetWork()
+        self.target_network = NetWork().to(device)
+        self.placeholder_network = NetWork().to(device)
+
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
