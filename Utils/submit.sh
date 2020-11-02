@@ -3,7 +3,7 @@
 #BSUB -q gpuv100
 #BSUB -gpu "num=1:mode=exclusive_process"
 #BSUB -n 1
-#BSUB -R "rusage[mem=10G]"
+#BSUB -R "rusage[mem=20G]"
 #BSUB -R "span[hosts=1]"
 #BSUB -W 10
 # end of BSUB options
