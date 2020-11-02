@@ -38,8 +38,9 @@ def parametres(agent: Agent, x: int = 1000, y: int = 0):
     fig = plt.figure()
     move_figure(fig, x, y)
     model = agent.network
-    ps = [0]
+    ps = []
     for p in model.parameters():
+        # print(p.shape, max(list(p.reshape(-1).detach().cpu().numpy())))
         ps += list(p.reshape(-1).detach().cpu().numpy())
     n = len(ps)
     h = math.ceil(math.sqrt(n // 10))
