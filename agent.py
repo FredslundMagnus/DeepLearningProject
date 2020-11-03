@@ -60,14 +60,13 @@ class NetWork(Module):
     def __init__(self):
         super(NetWork, self).__init__()
 
-        self.color = Sequential(Conv2d(in_channels=3, out_channels=2, kernel_size=1), ReLU())
+        self.color = Sequential(MaxPool2d(2, 2, padding=0),
+            Conv2d(in_channels=3, out_channels=6, kernel_size=1), ReLU())
 
         self.conv1 = Sequential(
-            Conv2d(in_channels=2, out_channels=5, kernel_size=5, stride=2),
+            Conv2d(in_channels=6, out_channels=10, kernel_size=5, stride=3),
             ReLU(),
-            Conv2d(in_channels=5, out_channels=5, kernel_size=5, stride=2),
-            ReLU(),
-            Conv2d(in_channels=5, out_channels=5, kernel_size=4, stride=2),
+            Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=2),
             ReLU(),
         )
 
@@ -91,9 +90,9 @@ class NetWork(Module):
         # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
 
         self.linear = Sequential(
-            Linear(125, 30),
+            Linear(256, 30),
             # Linear(hidden_size, 40),
-            LeakyReLU(),
+            ReLU(),
             Linear(30, 15),
         )
 
@@ -106,7 +105,7 @@ class NetWork(Module):
         # x = x.view(1, -1, self.size_after_conv)
         # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         # x = x.view(-1, hidden_size)
-        x = x.view(-1, 125)
+        x = x.view(-1, 256)
         x = self.linear(x)
         return x
 
