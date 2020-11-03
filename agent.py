@@ -31,10 +31,9 @@ class Agent:
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
     def learn(self, double=False):
-        gamma = 0.96
+        gamma = 0.97
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
         self.network.hn, self.network.cn = hn, sn
-
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)
         else:
@@ -45,6 +44,7 @@ class Agent:
         #v_s, _ = torch.max(self.network(obs), 1)
         td = (reward + gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
         loss = self.criterion(v_s, td)
+
         loss.backward()
         self.optimizer.step()
         self.optimizer.zero_grad()
@@ -60,14 +60,15 @@ class NetWork(Module):
     def __init__(self):
         super(NetWork, self).__init__()
 
-        self.color = Sequential(MaxPool2d(2, 2, padding=0),
-            Conv2d(in_channels=3, out_channels=6, kernel_size=1), ReLU())
+        self.color = Sequential(MaxPool2d(4, 4, padding=0))
 
         self.conv1 = Sequential(
-            Conv2d(in_channels=6, out_channels=10, kernel_size=5, stride=3),
+            Conv2d(in_channels=3, out_channels=8, kernel_size=4, stride=1),
             ReLU(),
-            Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=2),
+            Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=1),
+            MaxPool2d(2, 2, padding=0),
             ReLU(),
+            Conv2d(in_channels=16, out_channels=16, kernel_size=2, stride=1),
         )
 
         # self.conv2 = Sequential(
