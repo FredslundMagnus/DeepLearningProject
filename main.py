@@ -43,7 +43,7 @@ if isServer:
     serverRun()
 else:
     agent = Agent()
-    env = Environment(render=True).bigfish  # env = Environment(render=True)["coinrun"]
+    env = Environment(render=True).fruitbot  # env = Environment(render=True)["coinrun"]
     start_learning = 0
     update_every = 2000
     for i in range(20000):

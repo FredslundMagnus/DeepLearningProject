@@ -21,7 +21,7 @@ class Agent:
         self.memory = ReplayBuffer(100000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.epsilonGreedy
+        self.explore = self.exploration.softmax
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
 
@@ -64,11 +64,11 @@ class NetWork(Module):
 
         self.conv1 = Sequential(
             Conv2d(in_channels=2, out_channels=5, kernel_size=5, stride=2),
-            LeakyReLU(),
+            ReLU(),
             Conv2d(in_channels=5, out_channels=5, kernel_size=5, stride=2),
-            LeakyReLU(),
+            ReLU(),
             Conv2d(in_channels=5, out_channels=5, kernel_size=4, stride=2),
-            LeakyReLU(),
+            ReLU(),
         )
 
         # self.conv2 = Sequential(
