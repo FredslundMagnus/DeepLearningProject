@@ -14,7 +14,7 @@ class Exploration():
 
     @property
     def epsilon(self):
-        return max(0.05, 1 - self.counter / 200000)
+        return max(0.05, 1 - self.counter / 50000)
 
     def softmax(self, vals):
         self.counter += 1
