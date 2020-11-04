@@ -18,7 +18,7 @@ class Agent:
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
         self.optimizer = Adam(self.network.parameters(), lr=1e-5, weight_decay=1e-5)
-        self.memory = ReplayBuffer(100000)
+        self.memory = ReplayBuffer(60000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
         self.explore = self.exploration.softmax
@@ -68,7 +68,7 @@ class NetWork(Module):
             Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=1),
             MaxPool2d(2, 2, padding=0),
             ReLU(),
-            Conv2d(in_channels=16, out_channels=16, kernel_size=2, stride=1),
+            Conv2d(in_channels=16, out_channels=16, kernel_size=3, stride=1),
         )
 
         # self.conv2 = Sequential(
@@ -91,10 +91,10 @@ class NetWork(Module):
         # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
 
         self.linear = Sequential(
-            Linear(256, 30),
+            Linear(144, 25),
             # Linear(hidden_size, 40),
             ReLU(),
-            Linear(30, 15),
+            Linear(25, 15),
         )
 
     def forward(self, x):
