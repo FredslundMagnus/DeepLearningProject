@@ -6,16 +6,15 @@ from multiprocessing import Pool
 import os
 from helpers import clean
 import time
-from Utils.debug import enablePrint, disablePrint
+from Utils.debug import disablePrint
 device = torch.device('cpu')
 hidden_size = 100
 
 
 def f(i):
     disablePrint()
-    agent = Agent()
+    agent = Agent(memory=i)
     env = Environment(render=False).fruitbot
-    n = 0
     while i > 0:
         obs = clean(env.reset())
         hn = torch.zeros(2, 1, hidden_size, device=device)
@@ -23,24 +22,27 @@ def f(i):
         while i > 0:
             i -= 1
             # hn, cn = hn.detach(), cn.detach()
-            act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)
-            obs, rew, done, info = env.step(act)
-            obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
+            act, obs_old, h0, c0, hn, cn = agent.choose(obs, hn, cn)
+            obs, rew, done, _ = env.step(act)
+            obs = agent.remember(obs_old.detach(), act, clean(obs).detach(), rew, h0.detach(), c0.detach(), hn.detach(), cn.detach(), int(not done))
             env.render()
             if done:
-                n += 1
                 break
         env.close()
-    enablePrint()
-    return (os.getpid(), n, i)
+    return os.getpid()
 
 
 CPU = multiprocessing.cpu_count()
 if __name__ == "__main__":
-    print('Start', CPU)
+    print('Start with number of CPUs:', CPU)
     t0 = time.time()
+    frames = 10000
     with Pool(processes=CPU) as pool:
-        print(pool.map(f, [10000] * CPU))
+        res = pool.apply_async(f, [10])
+        print(res.get(timeout=40))
+        used_cpus = pool.map(f, [frames] * CPU * 2)
+        print('Used CPUs:', used_cpus)
     total = time.time() - t0
-    print('Done', os.getpid())
+    print('Done')
     print('Time', total)
+    print('Frames pr. sekond:', frames * CPU / total)
