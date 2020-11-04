@@ -41,7 +41,7 @@ if __name__ == "__main__":
     frames = 10000
     with Pool(processes=CPU) as pool:
         used_cpus = pool.map(f, [frames] * CPU)
-        print('Used CPUs:', len(set(used_cpus)))
+        print('Used CPUs:', used_cpus)
     total = time.time() - t0
     print('Done')
     print('Time', total)
