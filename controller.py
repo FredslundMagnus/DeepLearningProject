@@ -15,22 +15,24 @@ def f(i):
     disablePrint()
     agent = Agent()
     env = Environment(render=False).fruitbot
+    n = 0
     while i > 0:
         obs = clean(env.reset())
         hn = torch.zeros(2, 1, hidden_size, device=device)
         cn = torch.zeros(2, 1, hidden_size, device=device)
-        while True:
+        while i > 0:
+            i -= 1
             # hn, cn = hn.detach(), cn.detach()
             act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)
             obs, rew, done, info = env.step(act)
             obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
             env.render()
             if done:
+                n += 1
                 break
         env.close()
-        i -= 1
     enablePrint()
-    return os.getpid()
+    return (os.getpid(), n, i)
 
 
 CPU = multiprocessing.cpu_count()
