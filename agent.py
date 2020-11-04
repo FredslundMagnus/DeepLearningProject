@@ -18,7 +18,7 @@ class Agent:
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
         self.optimizer = Adam(self.network.parameters(), lr=1e-5, weight_decay=1e-5)
-        self.memory = ReplayBuffer(60000)
+        self.memory = ReplayBuffer(100000)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
         self.explore = self.exploration.softmax
@@ -106,7 +106,7 @@ class NetWork(Module):
         # x = x.view(1, -1, self.size_after_conv)
         # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         # x = x.view(-1, hidden_size)
-        x = x.view(-1, 256)
+        x = x.view(-1, 144)
         x = self.linear(x)
         return x
 
