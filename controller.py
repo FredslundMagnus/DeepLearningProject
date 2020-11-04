@@ -32,15 +32,19 @@ def f(i):
                 break
         env.close()
     enablePrint()
-    return (os.getpid(), n, i)
+    return os.getpid(), n, i
 
 
 CPU = multiprocessing.cpu_count()
 if __name__ == "__main__":
-    print('Start', CPU)
+    print('Start with number of CPUs:', CPU)
     t0 = time.time()
     with Pool(processes=CPU) as pool:
-        print(pool.map(f, [10000] * CPU))
+        li = pool.map(f, [10000] * CPU)
+        print('Used CPUs:', len({e[0] for e in li}))
+        n = sum(e[1] for e in li)
+        print('Played Games:', n)
     total = time.time() - t0
     print('Done', os.getpid())
     print('Time', total)
+    print('Games pr. sekond:', n / total)
