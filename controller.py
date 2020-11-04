@@ -7,6 +7,7 @@ from multiprocessing import Pool
 import os
 from helpers import clean
 import time
+from Utils.debug import enablePrint, disablePrint
 device = torch.device('cpu')
 hidden_size = 100
 
@@ -18,6 +19,7 @@ class Controllor:
 
 
 def f(x):
+    disablePrint()
     agent = Agent()
     env = Environment(render=False).fruitbot  # env = Environment(render=True)["coinrun"]
     start_learning = 0
@@ -47,11 +49,13 @@ def f(x):
                 # print(len(agent.memory))
                 break
         env.close()
+    enablePrint()
     return os.getpid()
 
 
 CPU = multiprocessing.cpu_count()
 if __name__ == "__main__":
+    print('Start')
     t0 = time.time()
     with Pool(processes=CPU) as pool:
         print(pool.map(f, range(CPU)))
