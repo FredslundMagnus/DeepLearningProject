@@ -26,12 +26,11 @@ def move_figure(f, x, y):
 
 
 def displayer(state, agent: Agent):
+    plt.close('all')
     parametres(agent, x=1200, y=0)
     imageBig(state, x=600, y=485)
     filter5(state, agent, x=1200, y=485)
     filterColor(state, agent, x=600, y=0)
-    plt.pause(8)
-    plt.close('all')
 
 
 def parametres(agent: Agent, x: int = 1000, y: int = 0):
