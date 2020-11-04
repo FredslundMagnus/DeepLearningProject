@@ -13,7 +13,7 @@ hidden_size = 100
 
 def f(i):
     disablePrint()
-    agent = Agent()
+    agent = Agent(memory=i)
     env = Environment(render=False).fruitbot
     n = 0
     while i > 0:
@@ -40,7 +40,9 @@ if __name__ == "__main__":
     t0 = time.time()
     frames = 10000
     with Pool(processes=CPU) as pool:
-        used_cpus = pool.map(f, [frames] * CPU)
+        res = pool.apply_async(f, [10])
+        print(res.get(timeout=40))
+        used_cpus = pool.map(f, [frames] * CPU * 2)
         print('Used CPUs:', used_cpus)
     total = time.time() - t0
     print('Done')
