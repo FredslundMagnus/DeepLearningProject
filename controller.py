@@ -15,7 +15,6 @@ def f(i):
     disablePrint()
     agent = Agent(memory=i)
     env = Environment(render=False).fruitbot
-    n = 0
     while i > 0:
         obs = clean(env.reset())
         hn = torch.zeros(2, 1, hidden_size, device=device)
@@ -28,7 +27,6 @@ def f(i):
             obs = agent.remember(obs_old.detach(), act, clean(obs).detach(), rew, h0.detach(), c0.detach(), hn.detach(), cn.detach(), int(not done))
             env.render()
             if done:
-                n += 1
                 break
         env.close()
     return os.getpid()
