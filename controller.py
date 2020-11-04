@@ -6,7 +6,7 @@ from multiprocessing import Pool
 import os
 from helpers import clean
 import time
-from Utils.debug import enablePrint, disablePrint
+from Utils.debug import disablePrint
 device = torch.device('cpu')
 hidden_size = 100
 
@@ -31,8 +31,7 @@ def f(i):
                 n += 1
                 break
         env.close()
-    enablePrint()
-    return os.getpid(), n, i
+    return os.getpid()
 
 
 CPU = multiprocessing.cpu_count()
@@ -41,12 +40,9 @@ if __name__ == "__main__":
     t0 = time.time()
     frames = 10000
     with Pool(processes=CPU) as pool:
-        li = pool.map(f, [frames] * CPU)
-        print('Used CPUs:', len({e[0] for e in li}))
-        n = sum(e[1] for e in li)
-        print('Played Games:', n)
+        used_cpus = pool.map(f, [frames] * CPU)
+        print('Used CPUs:', len(set(used_cpus)))
     total = time.time() - t0
     print('Done')
     print('Time', total)
-    print('Games pr. sekond:', n / total)
     print('Frames pr. sekond:', frames * CPU / total)
