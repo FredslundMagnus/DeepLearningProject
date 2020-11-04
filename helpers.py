@@ -1,6 +1,7 @@
 from torch import as_tensor as tensor, cat as concatenation, device as devicer, cuda, float32
 
-device = devicer('cuda' if cuda.is_available() else 'cpu')
+# device = devicer('cuda' if cuda.is_available() else 'cpu')
+device = devicer('cpu')
 hidden_size = 50
 
 
