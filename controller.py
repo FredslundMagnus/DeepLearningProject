@@ -23,9 +23,9 @@ def f(i):
         while i > 0:
             i -= 1
             # hn, cn = hn.detach(), cn.detach()
-            act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)
-            obs, rew, done, info = env.step(act)
-            obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
+            act, obs_old, h0, c0, hn, cn = agent.choose(obs, hn, cn)
+            obs, rew, done, _ = env.step(act)
+            obs = agent.remember(obs_old.detach(), act, clean(obs).detach(), rew, h0.detach(), c0.detach(), hn.detach(), cn.detach(), int(not done))
             env.render()
             if done:
                 n += 1
@@ -39,12 +39,14 @@ CPU = multiprocessing.cpu_count()
 if __name__ == "__main__":
     print('Start with number of CPUs:', CPU)
     t0 = time.time()
+    frames = 10000
     with Pool(processes=CPU) as pool:
-        li = pool.map(f, [10000] * CPU)
+        li = pool.map(f, [frames] * CPU)
         print('Used CPUs:', len({e[0] for e in li}))
         n = sum(e[1] for e in li)
         print('Played Games:', n)
     total = time.time() - t0
-    print('Done', os.getpid())
+    print('Done')
     print('Time', total)
     print('Games pr. sekond:', n / total)
+    print('Frames pr. sekond:', frames * CPU / total)
