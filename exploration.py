@@ -10,11 +10,11 @@ class Exploration():
 
     @property
     def K(self):
-        return 10000 / self.counter
+        return max(0.2, 100000 / self.counter)
 
     @property
     def epsilon(self):
-        return max(0.05, 1 - self.counter / 50000)
+        return max(0.05, 1 - self.counter / 500000)
 
     def softmax(self, vals):
         self.counter += 1
