@@ -82,7 +82,7 @@ class NetWork(Module):
     def forward(self, x):
         x = self.color(x)
         x = self.conv1(x)
-        x = x.view(-1, 288)
+        x = x.reshape(-1, 288)
         x = self.linear(x)
         return x
 
