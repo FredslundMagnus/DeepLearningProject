@@ -9,7 +9,8 @@ defaults = {
     'discount': 0.99,
     'environment': 'fruitbot',
     'frames': 1000000,
-    'memory': 100000
+    'memory': 100000,
+    'update_every': 3000,
 }
 
 params = getvals(defaults) if isServer else None

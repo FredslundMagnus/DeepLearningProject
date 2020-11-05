@@ -6,39 +6,32 @@ import torch
 from display_input import displayer
 
 if isServer:
-    name, discount, environment, frames, memory = params
+    name, discount, environment, frames, memory, update_every = params
     print(*params)
 
     # the server runs the main function (can be changed)
     def main():
-        agent = Agent()
-        env = Environment(render=False)[environment]  # env = Environment(render=True)["coinrun"]
-        start_learning = 0
-        update_every = 3000
+        agent = Agent(memory=memory)
+        env = Environment(render=False)[environment]
         f = 0
         while f < frames:
             obs = clean(env.reset())
             hn = torch.zeros(2, 1, hidden_size, device=device)
             cn = torch.zeros(2, 1, hidden_size, device=device)
             total_rew = 0
-            # print(torch.cuda.memory_allocated())
             while f < frames:
-                start_learning += 1
                 f += 1
                 # hn, cn = hn.detach(), cn.detach()
                 act, obs_old, h0, c0, hn, cn = agent.choose(obs.to(device), hn, cn)  # env.action_space.sample()
                 obs, rew, done, info = env.step(act)
                 obs = agent.remember(obs_old.detach().cpu(), act, clean(obs).detach().cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done))
-                if start_learning > update_every:
+                if f > update_every:
                     agent.learn(double=True)
-                if start_learning % update_every == 0:
+                if f % update_every == 0:
                     agent.update_target_network()
-
                 env.render()
                 total_rew += rew
                 if done:
-                    print(f"\n{i}. Total reward: {int(total_rew)}")
-                    # print(len(agent.memory))
                     break
             env.close()
         saveAgent(agent, name)
