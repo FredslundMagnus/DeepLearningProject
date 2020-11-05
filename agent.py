@@ -10,6 +10,7 @@ from exploration import Exploration
 import torch
 from helpers import device, hidden_size, count_parameters
 import copy
+from torch import cat as concatenation
 
 
 class Agent:
@@ -29,6 +30,11 @@ class Agent:
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
         vals = self.network(pixels).reshape(15)
+        return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
+
+    def chooseMulti(self, pixels, hn, cn):
+        self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
+        vals = self.network(concatenation(pixels, 0).to(device))
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
     def learn(self, double=False):
