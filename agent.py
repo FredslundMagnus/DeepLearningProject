@@ -41,7 +41,6 @@ class Agent:
 
         self.network.hn, self.network.cn = h0, c0
         v_s = torch.gather(self.network(obs), 1, action)
-        #v_s, _ = torch.max(self.network(obs), 1)
         td = (reward + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
         loss = self.criterion(v_s, td)
 
@@ -58,6 +57,8 @@ class Agent:
 
 class NetWork(Module):
     def __init__(self):
+        self.size_after_conv = 50
+
         super(NetWork, self).__init__()
 
         self.color = Sequential(MaxPool2d(2, 2, padding=0))
@@ -72,17 +73,21 @@ class NetWork(Module):
             LeakyReLU(),
             Conv2d(in_channels=32, out_channels=32, kernel_size=2, stride=1),
             LeakyReLU(),
-        )
-        self.linear = Sequential(
-            Linear(288, 64),
+            Conv2d(in_channels=32, out_channels=self.size_after_conv, kernel_size=3, stride=1),
             LeakyReLU(),
-            Linear(64, 15),
         )
+        self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
+        self.linear = Sequential(LeakyReLU(),
+            Linear(hidden_size, 15),
+        )
+
 
     def forward(self, x):
         x = self.color(x)
         x = self.conv1(x)
-        x = x.reshape(-1, 288)
+        x = x.view(1, -1, self.size_after_conv)
+        x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
+        x = x.view(-1, hidden_size)
         x = self.linear(x)
         return x
 
