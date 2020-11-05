@@ -5,6 +5,8 @@ file.write('#!/bin/sh\n')
 
 features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents']
 
+environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
+
 
 def check(params):
     for name in params:
@@ -24,6 +26,7 @@ def genExperiments(name, n=1, **params):
         file.write(f'bsub -o "../outputs/{name}/Markdown/{name}_{i}.md" -J "{name}_{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
 
 
-genExperiments('test_2', lossf='MME', discount=0.120, lambd=0.3, lr=0.0001, dropout=0)
+for environment in ['bigfish', 'chaser', 'fruitbot']:
+    genExperiments(f'{environment}_test', environment=environment, frames=100000)
 
 file.close()

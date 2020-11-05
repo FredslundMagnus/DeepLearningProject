@@ -6,11 +6,11 @@ isServer = checkServer()
 
 defaults = {
     'name': "Agent",
-    'lossf': 'MME',
-    'discount': 0.9,
-    'lambd': 0.9,
-    'lr': 0.001,
-    'dropout': 0,
+    'discount': 0.99,
+    'environment': 'fruitbot',
+    'frames': 1000000,
+    'memory': 100000,
+    'update_every': 3000,
 }
 
 params = getvals(defaults) if isServer else None
