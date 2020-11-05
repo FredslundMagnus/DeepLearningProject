@@ -11,6 +11,7 @@ import torch
 from helpers import device, hidden_size, count_parameters
 import copy
 from torch import cat as concatenation
+import pickle
 
 
 class Agent:
@@ -56,8 +57,8 @@ class Agent:
         torch.cuda.empty_cache()
 
     def update_target_network(self):
-        self.target_network = copy.deepcopy(self.placeholder_network)
-        self.placeholder_network = copy.deepcopy(self.network)
+        self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
+        self.placeholder_network = pickle.loads(pickle.dumps(self.network))
         self.memory.update_distribution()
 
 
@@ -84,9 +85,8 @@ class NetWork(Module):
         )
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
         self.linear = Sequential(LeakyReLU(),
-            Linear(hidden_size, 15),
-        )
-
+                                 Linear(hidden_size, 15),
+                                 )
 
     def forward(self, x):
         x = self.color(x)
