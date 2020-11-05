@@ -16,15 +16,21 @@ def updateMemory(agent):
     fileName = fileNames[0]
     if getsize(fileName) == 0:
         return
-    with open(fileName, 'rb') as file:
-        memory = pickle.load(file)
-        remove(fileName)
-    for mem in memory:
-        agent.remember(*mem)
+    try:
+        with open(fileName, 'rb') as file:
+            memory = pickle.load(file)
+            remove(fileName)
+        for mem in memory:
+            agent.remember(*mem)
+    except Exception as e:
+        print(e)
+        return
 
 
 agent = Agent(memory=30000)
-while time.time() - start < 200:
+i = 0
+while time.time() - start < 300:
     updateMemory(agent)
-    print(1)
+    print(i)
     time.sleep(1)
+    i += 1
