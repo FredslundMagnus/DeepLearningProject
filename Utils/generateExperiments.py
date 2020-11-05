@@ -27,6 +27,6 @@ def genExperiments(name, n=1, **params):
 
 
 for environment in ['bigfish', 'chaser', 'fruitbot']:
-    genExperiments(f'{environment}_test', environment=environment, frames=100000)
+    genExperiments(f'{environment}_test', environment=environment)
 
 file.close()
