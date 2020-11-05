@@ -60,53 +60,29 @@ class NetWork(Module):
     def __init__(self):
         super(NetWork, self).__init__()
 
-        self.color = Sequential(MaxPool2d(4, 4, padding=0))
+        self.color = Sequential(MaxPool2d(2, 2, padding=0))
 
         self.conv1 = Sequential(
-            Conv2d(in_channels=3, out_channels=8, kernel_size=4, stride=1),
-            ReLU(),
-            Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=1),
+            Conv2d(in_channels=3, out_channels=10, kernel_size=4, stride=2),
+            LeakyReLU(),
+            Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=1),
             MaxPool2d(2, 2, padding=0),
-            ReLU(),
-            Conv2d(in_channels=16, out_channels=16, kernel_size=3, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=32, out_channels=32, kernel_size=2, stride=1),
+            LeakyReLU(),
         )
-
-        # self.conv2 = Sequential(
-        #     Conv2d(in_channels=15, out_channels=20, kernel_size=3),
-        #     LeakyReLU(),
-        #     Conv2d(in_channels=20, out_channels=25, kernel_size=3),
-        #     MaxPool2d(2, 2, padding=0),
-        #     LeakyReLU(),
-        # )
-
-        # self.conv3 = Sequential(
-        #     Conv2d(in_channels=25, out_channels=20, kernel_size=1),
-        #     LeakyReLU(),
-        #     Conv2d(in_channels=20, out_channels=15, kernel_size=3),
-        #     # MaxPool2d(2, 2, padding=0),
-        #     LeakyReLU(),
-        # )
-
-        # self.size_after_conv = 720
-        # self.lstm = LSTM(self.size_after_conv, hidden_size, 2)
-
         self.linear = Sequential(
-            Linear(144, 25),
-            # Linear(hidden_size, 40),
-            ReLU(),
-            Linear(25, 15),
+            Linear(288, 30),
+            LeakyReLU(),
+            Linear(30, 15),
         )
 
     def forward(self, x):
         x = self.color(x)
         x = self.conv1(x)
-        #x = self.conv2(x)
-        #x = self.conv3(x)
-
-        # x = x.view(1, -1, self.size_after_conv)
-        # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
-        # x = x.view(-1, hidden_size)
-        x = x.view(-1, 144)
+        x = x.view(-1, 288)
         x = self.linear(x)
         return x
 

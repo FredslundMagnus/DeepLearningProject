@@ -62,8 +62,8 @@ else:
                 agent.learn(double=True)
             if start_learning % update_every == 0:
                 agent.update_target_network()
+            if start_learning % (10*update_every) == 0:
                 displayer(obs, agent)
-                # saveAgent(agent, "trained", server=False)
             env.render()
             total_rew += rew
             if done:
