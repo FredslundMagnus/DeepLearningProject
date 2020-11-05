@@ -9,7 +9,7 @@ from Utils.debug import disablePrint, enablePrint
 agent = Agent()
 env = Environment(render=False).fruitbot  # env = Environment(render=True)["coinrun"]
 n = 20000
-k = 10
+k = 20
 disablePrint()
 t0 = time.time()
 for i in range(n):
