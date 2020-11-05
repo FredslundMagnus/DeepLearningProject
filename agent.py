@@ -13,7 +13,7 @@ import copy
 
 
 class Agent:
-    def __init__(self, memory=50000, gamma=0.99) -> None:
+    def __init__(self, memory=50000, gamma=0.995) -> None:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
