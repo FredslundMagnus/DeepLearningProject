@@ -13,7 +13,7 @@ import copy
 
 
 class Agent:
-    def __init__(self, memory=50000) -> None:
+    def __init__(self, memory=50000, gamma=0.99) -> None:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
@@ -24,6 +24,7 @@ class Agent:
         self.explore = self.exploration.softmax
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
+        self.gamma = gamma
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
@@ -31,8 +32,7 @@ class Agent:
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
     def learn(self, double=False):
-        gamma = 0.995
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample(20)
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
         self.network.hn, self.network.cn = hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)
@@ -42,7 +42,7 @@ class Agent:
         self.network.hn, self.network.cn = h0, c0
         v_s = torch.gather(self.network(obs), 1, action)
         #v_s, _ = torch.max(self.network(obs), 1)
-        td = (reward + gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+        td = (reward + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
         loss = self.criterion(v_s, td)
 
         loss.backward()
@@ -82,7 +82,7 @@ class NetWork(Module):
     def forward(self, x):
         x = self.color(x)
         x = self.conv1(x)
-        x = x.view(-1, 288)
+        x = x.reshape(-1, 288)
         x = self.linear(x)
         return x
 

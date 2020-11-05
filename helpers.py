@@ -6,7 +6,7 @@ hidden_size = 50
 
 
 def clean(obs):
-    return tensor(obs.transpose(2, 0, 1).reshape(-1, 3, 64, 64), dtype=float32, device=device)
+    return tensor(obs.transpose(2, 0, 1).reshape(-1, 3, 64, 64) / 128 - 1, dtype=float32, device=device)
 
 
 def stack(sample):

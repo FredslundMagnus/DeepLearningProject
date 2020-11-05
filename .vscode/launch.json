@@ -22,17 +22,7 @@
       "program": "${workspaceFolder}\\main.py",
       "console": "integratedTerminal",
       "args": [
-        "testing_name",
-        "-lossf",
-        "MME",
-        "-discount",
-        "0.7",
-        "-lambd",
-        "0.5",
-        "-lr",
-        "0.0001",
-        "-dropout",
-        "0"
+        "testing_name"
       ]
     },
     {

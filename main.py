@@ -1,9 +1,10 @@
 from environments import Environment
-from Utils.server import isServer, params, serverRun, saveAgent
+from Utils.server import isServer, params, serverRun, saveAgent, saveMean
 from agent import Agent
 from helpers import clean, hidden_size, device
 import torch
 from display_input import displayer
+from runningList import RunningList
 
 if isServer:
     name, discount, environment, frames, memory, update_every = params
@@ -14,6 +15,8 @@ if isServer:
         agent = Agent(memory=memory)
         env = Environment(render=False)[environment]
         f = 0
+        li = RunningList(500)
+        mean = []
         while f < frames:
             obs = clean(env.reset())
             hn = torch.zeros(2, 1, hidden_size, device=device)
@@ -32,9 +35,12 @@ if isServer:
                 env.render()
                 total_rew += rew
                 if done:
+                    li.append(total_rew)
+                    mean.append(li.mean())
                     break
             env.close()
         saveAgent(agent, name)
+        saveMean(mean, name)
     serverRun()
 else:
     agent = Agent()

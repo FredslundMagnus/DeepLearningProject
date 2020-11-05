@@ -3,7 +3,7 @@ from server import defaults
 file = open('Utils/experiments.sh', 'w')
 file.write('#!/bin/sh\n')
 
-features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents']
+features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents', "Means"]
 
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
 
@@ -27,6 +27,6 @@ def genExperiments(name, n=1, **params):
 
 
 for environment in ['bigfish', 'chaser', 'fruitbot']:
-    genExperiments(f'{environment}_test', environment=environment, frames=100000)
+    genExperiments(f'{environment}_normalised', environment=environment)
 
 file.close()
