@@ -19,8 +19,8 @@ if isServer:
         mean = []
         while f < frames:
             obs = clean(env.reset())
-            hn = torch.zeros(2, 1, hidden_size, device=device)
-            cn = torch.zeros(2, 1, hidden_size, device=device)
+            hn = torch.zeros(1, 1, hidden_size, device=device)
+            cn = torch.zeros(1, 1, hidden_size, device=device)
             total_rew = 0
             while f < frames:
                 f += 1
@@ -49,8 +49,8 @@ else:
     update_every = 5000
     for i in range(20000):
         obs = clean(env.reset())
-        hn = torch.zeros(2, 1, hidden_size, device=device)
-        cn = torch.zeros(2, 1, hidden_size, device=device)
+        hn = torch.zeros(1, 1, hidden_size, device=device)
+        cn = torch.zeros(1, 1, hidden_size, device=device)
         total_rew = 0
         # print(torch.cuda.memory_allocated())
         while True:

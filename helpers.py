@@ -2,7 +2,7 @@ from torch import as_tensor as tensor, cat as concatenation, device as devicer, 
 
 device = devicer('cuda' if cuda.is_available() else 'cpu')
 # device = devicer('cpu')
-hidden_size = 50
+hidden_size = 20
 
 
 def clean(obs):
