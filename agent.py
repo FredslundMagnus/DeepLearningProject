@@ -12,6 +12,7 @@ from helpers import device, hidden_size, count_parameters
 import copy
 from torch import cat as concatenation
 import pickle
+from Utils.debug import enablePrint
 
 
 class Agent:
@@ -36,7 +37,7 @@ class Agent:
     def chooseMulti(self, pixels, hn, cn):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
         vals = self.network(concatenation(pixels, 0).to(device))
-        return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
+        return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, self.network.hn, self.network.cn
 
     def learn(self, double=False):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
