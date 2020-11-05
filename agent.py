@@ -31,8 +31,8 @@ class Agent:
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
     def learn(self, double=False):
-        gamma = 0.99
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
+        gamma = 0.995
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample(20)
         self.network.hn, self.network.cn = hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)

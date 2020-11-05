@@ -40,7 +40,7 @@ else:
     agent = Agent()
     env = Environment(render=True).fruitbot  # env = Environment(render=True)["coinrun"]
     start_learning = 0
-    update_every = 3000
+    update_every = 5000
     for i in range(20000):
         obs = clean(env.reset())
         hn = torch.zeros(2, 1, hidden_size, device=device)
