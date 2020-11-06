@@ -6,6 +6,7 @@ import time
 from Utils.debug import disablePrint, enablePrint
 from display_input import displayer
 from runningList import RunningList
+import matplotlib.pyplot as plt
 
 # agent = Agent()
 # env = Environment(render=False).fruitbot
