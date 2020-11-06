@@ -67,7 +67,7 @@ def filter5(state, agent: Agent, x: int = 1000, y: int = 0):
     fig, axs = plt.subplots(v, v)
     move_figure(fig, x, y)
     for i in range(n):
-        im = axs[i // v, i % v].imshow(filters[i], cmap='gray')
+        im = axs[i // v, i % v].imshow(filters[i], cmap='gray', vmin=float(filters.min()), vmax=float(filters.max()))
 
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
@@ -83,7 +83,7 @@ def filterColor(state, agent: Agent, x: int = 1000, y: int = 0):
     fig, axs = plt.subplots(v, v)
     move_figure(fig, x, y)
     for i in range(n):
-        im = axs[i // v, i % v].imshow(filters[i], cmap='gray')
+        im = axs[i // v, i % v].imshow(filters[i], cmap='gray', vmin=float(filters.min()), vmax=float(filters.max()))
 
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
