@@ -29,6 +29,9 @@ class Agent:
         self.placeholder_network = NetWork().to(device)
         self.gamma = gamma
 
+    def rememberMulti(self, *args):
+        [self.remember(obs_old.cpu(), act, obs.cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done)) for obs_old, act, obs, rew, h0, c0, hn, cn, done in zip(*args)]
+
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
         vals = self.network(pixels).reshape(15)
@@ -37,7 +40,7 @@ class Agent:
     def chooseMulti(self, pixels, hn, cn):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
         vals = self.network(concatenation(pixels, 0).to(device))
-        return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, self.network.hn, self.network.cn
+        return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self, double=False):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
@@ -88,6 +91,7 @@ class NetWork(Module):
         self.linear = Sequential(LeakyReLU(),
                                  Linear(hidden_size, 15),
                                  )
+
     def forward(self, x):
         self.lstm.flatten_parameters()
         x = self.color(x)
