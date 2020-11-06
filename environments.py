@@ -1,4 +1,7 @@
 import gym
+from typing import List
+from helpers import device, hidden_size, clean, clean
+import torch
 
 """
 https://github.com/openai/procgen#environment-options
@@ -32,39 +35,56 @@ class Environment:
                 'use_generated_assets': False,
                 'paint_vel_info': False}
 
-    def __init__(self, render=False) -> None:
+    def __init__(self, render: bool = False) -> None:
         self.render = render
-        self.interactive = True
-        self.bigfish = 'procgen:procgen-bigfish-v0'
-        self.bossfight = 'procgen:procgen-bossfight-v0'
-        self.caveflyer = 'procgen:procgen-caveflyer-v0'
-        self.chaser = 'procgen:procgen-chaser-v0'
-        self.climber = 'procgen:procgen-climber-v0'
-        self.coinrun = 'procgen:procgen-coinrun-v0'
-        self.dodgeball = 'procgen:procgen-dodgeball-v0'
-        self.fruitbot = 'procgen:procgen-fruitbot-v0'
-        self.heist = 'procgen:procgen-heist-v0'
-        self.jumper = 'procgen:procgen-jumper-v0'
-        self.leaper = 'procgen:procgen-leaper-v0'
-        self.maze = 'procgen:procgen-maze-v0'
-        self.miner = 'procgen:procgen-miner-v0'
-        self.ninja = 'procgen:procgen-ninja-v0'
-        self.plunder = 'procgen:procgen-plunder-v0'
-        self.starpilot = 'procgen:procgen-starpilot-v0'
+        self.bigfish: Environment = None
+        self.bossfight: Environment = None
+        self.caveflyer: Environment = None
+        self.chaser: Environment = None
+        self.climber: Environment = None
+        self.coinrun: Environment = None
+        self.dodgeball: Environment = None
+        self.fruitbot: Environment = None
+        self.heist: Environment = None
+        self.jumper: Environment = None
+        self.leaper: Environment = None
+        self.maze: Environment = None
+        self.miner: Environment = None
+        self.ninja: Environment = None
+        self.plunder: Environment = None
+        self.starpilot: Environment = None
 
     def __getattribute__(self, name: str):
-        evn_name = object.__getattribute__(self, name)
-        if object.__getattribute__(self, 'render'):
-            return gym.make(evn_name, render_mode="human", **Environment.settings)
-        else:
-            return gym.make(evn_name, **Environment.settings)
+        return Environment.create(name, object.__getattribute__(self, 'render'))
 
-    def __getitem__(self, name):
-        evn_name = object.__getattribute__(self, name)
-        if object.__getattribute__(self, 'render'):
-            return gym.make(evn_name, render_mode="human", **Environment.settings)
-        else:
-            return gym.make(evn_name, **Environment.settings)
+    def __getitem__(self, name: str):
+        return Environment.create(name, object.__getattribute__(self, 'render'))
+
+    @staticmethod
+    def create(name: str, render: bool):
+        return gym.make(f'procgen:procgen-{name}-v0', render_mode="human", **Environment.settings) if render else gym.make(f'procgen:procgen-{name}-v0', **Environment.settings)
+
+
+class Environments:
+    def __init__(self, envs: List[str], render: bool = False) -> None:
+        self.envs = [Environment.create(name, render and not bool(i)) for i, name in enumerate(envs)]
+        self.obs, self.hn, self.cn = tuple(zip(*[self.reset(env, True, None, None, None) for env in self.envs]))
+
+    def step(self, actions: List[int], hns, cns):
+        obses, rews, dones, infos = tuple(zip(*[env.step(act) for env, act in zip(self.envs, actions)]))
+        obses = [clean(obs) for obs in obses]
+        self.obs, self.hn, self.cn = tuple(zip(*[Environments.reset(env, done, obs, hn, cn) for env, done, obs, hn, cn in zip(self.envs, dones, obses, hns, cns)]))
+        return obses, rews, dones, infos
+
+    @staticmethod
+    def reset(env, done, obs, hn, cn):
+        if done:
+            env.close()
+            return clean(env.reset()), torch.zeros(1, 1, hidden_size, device=device), torch.zeros(1, 1, hidden_size, device=device)
+        return obs, hn.detach(), cn.detach()
+
+    def start(self):
+        return self.obs, self.hn, self.cn
 
 
 if __name__ == "__main__":

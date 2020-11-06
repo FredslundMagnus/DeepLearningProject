@@ -19,8 +19,8 @@ if isServer:
         mean = []
         while f < frames:
             obs = clean(env.reset())
-            hn = torch.zeros(2, 1, hidden_size, device=device)
-            cn = torch.zeros(2, 1, hidden_size, device=device)
+            hn = torch.zeros(1, 1, hidden_size, device=device)
+            cn = torch.zeros(1, 1, hidden_size, device=device)
             total_rew = 0
             while f < frames:
                 f += 1
@@ -46,11 +46,12 @@ else:
     agent = Agent()
     env = Environment(render=True).fruitbot  # env = Environment(render=True)["coinrun"]
     start_learning = 0
-    update_every = 3000
+    update_every = 500
+    all_return = []
     for i in range(20000):
         obs = clean(env.reset())
-        hn = torch.zeros(2, 1, hidden_size, device=device)
-        cn = torch.zeros(2, 1, hidden_size, device=device)
+        hn = torch.zeros(1, 1, hidden_size, device=device)
+        cn = torch.zeros(1, 1, hidden_size, device=device)
         total_rew = 0
         # print(torch.cuda.memory_allocated())
         while True:
@@ -63,11 +64,12 @@ else:
                 agent.learn(double=True)
             if start_learning % update_every == 0:
                 agent.update_target_network()
-            if start_learning % (10 * update_every) == 0:
-                displayer(obs, agent)
+            # if start_learning % (10 * update_every) == 0:
+                # displayer(obs, agent, all_return)
             env.render()
             total_rew += rew
             if done:
+                all_return.append(total_rew)
                 print(f"\n{i}. Total reward: {total_rew}")
                 # print(len(agent.memory))
                 break
