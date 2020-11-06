@@ -25,13 +25,26 @@ def move_figure(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-def displayer(state, agent: Agent):
+def displayer(state, agent: Agent, returns):
     plt.close('all')
-    parametres(agent, x=1200, y=0)
-    imageBig(state, x=600, y=485)
-    filter5(state, agent, x=1200, y=485)
-    filterColor(state, agent, x=600, y=0)
+    returnplot(returns, x=100, y=500)
+    parametres(agent, x=1300, y=0)
+    imageBig(state, x=700, y=500)
+    filter5(state, agent, x=1300, y=500)
+    filterColor(state, agent, x=700, y=0)
 
+
+def returnplot(returns, x: int = 1000, y: int = 500):
+    runnings = [0]*len(returns)
+    for i in range(len(runnings)):
+        if i < 200:
+            runnings[i] = sum(returns[:i])/(i+1) 
+        else:
+            runnings[i] = sum(returns[(i-200):i])/200
+    fig = plt.figure()
+    move_figure(fig, x, y)
+    plt.plot(runnings)
+    plt.show(block=False)
 
 def parametres(agent: Agent, x: int = 1000, y: int = 0):
     global temp
