@@ -53,11 +53,11 @@ import matplotlib.pyplot as plt
 
 
 agent = Agent()
-env = Environments(render=True, envs=['chaser' for _ in range(20)])
+env = Environments(render=True, envs=['fruitbot' for _ in range(20)])
 li = RunningList(500)
 mean = []
 all_return = []
-update_every = 100
+update_every = 250
 disablePrint()
 frames = 1000000
 dones, total_rew = 0, 0
@@ -69,7 +69,7 @@ for f in range(1, frames + 1):
     dones += sum(done) / len(done)
     agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
     if f > update_every:
-        for _ in range(3):
+        for _ in range(1):
             agent.learn(double=True)
     if f % update_every == 0:
         agent.update_target_network()

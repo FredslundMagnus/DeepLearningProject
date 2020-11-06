@@ -20,7 +20,7 @@ class Agent:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=5e-4, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-3, weight_decay=1e-5)
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
@@ -79,11 +79,11 @@ class NetWork(Module):
             Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=2),
             LeakyReLU(),
             MaxPool2d(2, 2, padding=0),
-            Conv2d(in_channels=16, out_channels=16, kernel_size=3, stride=1),
-            LeakyReLU(),
             Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
             LeakyReLU(),
         )
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
