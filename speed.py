@@ -55,17 +55,24 @@ agent = Agent()
 env = Environments(render=True, envs=['fruitbot' for _ in range(20)])
 li = RunningList(500)
 mean = []
-update_every = 50
+all_return = []
+update_every = 2000
 disablePrint()
-frames = 100000
+frames = 1000000
+dones, total_rew = 0, 0
 for f in range(1, frames + 1):
     obs, hn, cn = env.start()
     act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
     obs, rew, done, info = env.step(act, hn, cn)
+    total_rew += sum(rew)/len(rew)
+    dones += sum(done)/len(done)
     agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
     if f > update_every:
-        agent.learn(double=True)
+        for _ in range(12):
+            agent.learn(double=True)
     if f % update_every == 0:
         agent.update_target_network()
+        all_return.append(total_rew/dones)
+        dones, total_rew = 0, 0
     if f % (10 * update_every) == 0:
-        displayer(obs[0], agent)
+        displayer(obs[0], agent, all_return)

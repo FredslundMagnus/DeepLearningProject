@@ -43,7 +43,7 @@ class Agent:
         return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self, double=False):
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(200)
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)
@@ -79,11 +79,11 @@ class NetWork(Module):
             Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=2),
             LeakyReLU(),
             MaxPool2d(2, 2, padding=0),
+            Conv2d(in_channels=16, out_channels=16, kernel_size=3, stride=1),
+            LeakyReLU(),
             Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1),
-            LeakyReLU(),
-            Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
             LeakyReLU(),
         )
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
