@@ -72,9 +72,9 @@ class NetWork(Module):
         self.color = Sequential(MaxPool2d(2, 2, padding=0))
 
         self.conv1 = Sequential(
-            Conv2d(in_channels=3, out_channels=10, kernel_size=4, stride=2),
+            Conv2d(in_channels=3, out_channels=16, kernel_size=4, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=1),
+            Conv2d(in_channels=16, out_channels=16, kernel_size=4, stride=1),
             MaxPool2d(2, 2, padding=0),
             LeakyReLU(),
             Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1),
