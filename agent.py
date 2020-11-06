@@ -20,7 +20,7 @@ class Agent:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=5e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
@@ -43,7 +43,7 @@ class Agent:
         return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self, double=False):
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(200)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)
@@ -73,7 +73,7 @@ class NetWork(Module):
         super(NetWork, self).__init__()
 
         self.color = Sequential(Conv2d(in_channels=3, out_channels=10, kernel_size=6, stride=2),
-            LeakyReLU(),)
+                                LeakyReLU(),)
 
         self.conv1 = Sequential(
             Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=2),
@@ -88,8 +88,9 @@ class NetWork(Module):
         )
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
         self.linear = Sequential(LeakyReLU(),
-            Linear(hidden_size, 15),
-            )
+                                 Linear(hidden_size, 15),
+                                 )
+
     def forward(self, x):
         self.lstm.flatten_parameters()
         x = self.color(x)
