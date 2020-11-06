@@ -41,7 +41,7 @@ class Agent:
 
     def learn(self, double=False):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(20)
-        self.network.hn, self.network.cn = hn, sn
+        self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)
         else:
@@ -88,8 +88,8 @@ class NetWork(Module):
         self.linear = Sequential(LeakyReLU(),
                                  Linear(hidden_size, 15),
                                  )
-
     def forward(self, x):
+        self.lstm.flatten_parameters()
         x = self.color(x)
         x = self.conv1(x)
         x = x.view(1, -1, self.size_after_conv)
