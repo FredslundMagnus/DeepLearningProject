@@ -52,7 +52,7 @@ from runningList import RunningList
 
 
 agent = Agent()
-env = Environments(render=False, envs=['fruitbot' for _ in range(20)])
+env = Environments(render=True, envs=['fruitbot' for _ in range(20)])
 li = RunningList(500)
 mean = []
 update_every = 50
