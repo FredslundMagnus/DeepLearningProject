@@ -6,6 +6,7 @@ import time
 from Utils.debug import disablePrint, enablePrint
 from display_input import displayer
 from runningList import RunningList
+import matplotlib.pyplot as plt
 
 # agent = Agent()
 # env = Environment(render=False).fruitbot
@@ -69,3 +70,27 @@ for f in range(1, frames + 1):
         agent.update_target_network()
     if f % (10 * update_every) == 0:
         displayer(obs[0], agent)
+
+
+# def f(n):
+#     enablePrint()
+#     print(n)
+#     disablePrint()
+#     agent = Agent()
+#     env = Environments(render=False, envs=['fruitbot' for _ in range(n)])
+#     frames = 400
+#     t0 = time.time()
+#     for _ in range(frames):
+#         obs, hn, cn = env.start()
+#         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
+#         obs, rew, done, info = env.step(act, hn, cn)
+#         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
+#     t1 = time.time()
+#     return (t1 - t0) / n
+
+
+# k = 40
+# plt.plot(list(range(1, k + 1)), [f(n) for n in range(1, k + 1)])
+# plt.plot(list(range(1, k + 1)), [f(n) for n in range(1, k + 1)])
+# plt.plot(list(range(1, k + 1)), [f(n) for n in range(1, k + 1)])
+# plt.show()
