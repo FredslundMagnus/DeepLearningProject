@@ -37,7 +37,7 @@ else:
     agent = Agent()
     env = Environments(render=True, envs=['chaser' for _ in range(20)])
     all_return, all_dones = [], []
-    update_every = 100
+    update_every = 250
     disablePrint()
     frames = 1000000
     dones, total_rew = 0, 0
