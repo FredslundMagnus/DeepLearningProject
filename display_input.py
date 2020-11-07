@@ -25,16 +25,17 @@ def move_figure(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-def displayer(state, agent: Agent, returns):
+def displayer(state, agent: Agent, returns, dones):
     plt.close('all')
     returnplot(returns, x=100, y=500)
+    returnplot(dones, x=100, y=0, ylabel="Game length (frames per game)")
     parametres(agent, x=1300, y=0)
     imageBig(state, x=700, y=500)
     filter5(state, agent, x=1300, y=500)
     filterColor(state, agent, x=700, y=0)
 
 
-def returnplot(returns, x: int = 1000, y: int = 500):
+def returnplot(returns, x: int = 1000, y: int = 500, xlabel="updates to networks", ylabel="return (return per game)"):
     runnings = [0]*len(returns)
     for i in range(len(runnings)):
         if i < 200:
@@ -44,6 +45,8 @@ def returnplot(returns, x: int = 1000, y: int = 500):
     fig = plt.figure()
     move_figure(fig, x, y)
     plt.plot(runnings)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     plt.show(block=False)
 
 def parametres(agent: Agent, x: int = 1000, y: int = 0):
