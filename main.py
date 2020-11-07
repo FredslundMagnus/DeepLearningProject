@@ -16,8 +16,8 @@ if isServer:
     def main():
         agent = Agent(memory=memory, discount=discount)
         env = Environments(render=False, envs=[environment for _ in range(20)])
-        dones, total_rew, f, all_return, t0 = 0, 0, 0, [], time()
-        while time() - t0 < 3600 * hours - 100:
+        dones, total_rew, f, all_return, tid = 0, 0, 0, [], time() + 3600 * hours - 100
+        while time() < tid:
             f += 1
             obs, hn, cn = env.start()
             act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
