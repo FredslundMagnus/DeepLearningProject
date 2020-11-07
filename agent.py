@@ -16,7 +16,7 @@ from Utils.debug import enablePrint
 
 
 class Agent:
-    def __init__(self, memory=50000, gamma=0.98) -> None:
+    def __init__(self, memory=50000, discount=0.98) -> None:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
@@ -27,7 +27,7 @@ class Agent:
         self.explore = self.exploration.epsilonGreedy
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
-        self.gamma = gamma
+        self.gamma = discount
 
     def rememberMulti(self, *args):
         [self.remember(obs_old.cpu(), act, obs.cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done)) for obs_old, act, obs, rew, h0, c0, hn, cn, done in zip(*args)]

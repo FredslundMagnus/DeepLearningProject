@@ -1,6 +1,8 @@
 import random
 from helpers import stack
 import numpy as np
+from numpy.random import default_rng
+rng = default_rng()
 
 
 class ReplayBuffer:
@@ -23,7 +25,14 @@ class ReplayBuffer:
         return stack(random.sample(self.memory[:l], min(batch_size, l)))
 
     def sample_distribution(self, batch_size: int):
-        return stack([self.memory[i] for i in list(np.random.choice(len(self.distribution), batch_size, p=self.distribution))])
+        m = len(self.distribution)
+        n = 2000
+        if m <= n * 2:
+            return stack([self.memory[i] for i in list(rng.choice(m, batch_size, p=self.distribution))])
+        else:
+            slut = random.randint(n, m)
+            distpart = self.distribution[slut - n:slut]
+            return stack([self.memory[i] for i in list(rng.choice(np.arange(slut - n, slut), batch_size, p=distpart / distpart.sum()))])
 
     def update_distribution(self, a=1, b=1, sigma=0.9, k=20):
         l = len(self)

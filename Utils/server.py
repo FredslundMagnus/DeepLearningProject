@@ -9,9 +9,9 @@ defaults = {
     'name': "Agent",
     'discount': 0.99,
     'environment': 'fruitbot',
-    'frames': 1000000,
+    'hours': 23,
     'memory': 200000,
-    'update_every': 3000,
+    'update_every': 100,
 }
 
 params = getvals(defaults) if isServer else None
