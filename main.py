@@ -48,15 +48,12 @@ else:
         total_rew += sum(rew) / len(rew)
         dones += sum(done) / len(done) + 10**(-10)
         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
-        enablePrint()
-        print(torch.cuda.max_memory_allocated())
-        disablePrint()
         if f > update_every:
             for _ in range(1):
                 agent.learn(double=True)
         if f % update_every == 0:
             agent.update_target_network()
-            all_dones.append(1/dones)
+            all_dones.append(1 / dones)
             all_return.append(total_rew / dones)
             dones, total_rew = 0, 0
         if f % (10 * update_every) == 0:
