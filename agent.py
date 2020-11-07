@@ -16,7 +16,7 @@ from Utils.debug import enablePrint
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.98) -> None:
+    def __init__(self, memory=50000, discount=0.95) -> None:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
@@ -34,7 +34,7 @@ class Agent:
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
-        vals = self.network(pixels).reshape(15)
+        vals = self.network(pixels).reshape(15) * (1 - self.gamma)
         return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
 
     def chooseMulti(self, pixels, hn, cn):
