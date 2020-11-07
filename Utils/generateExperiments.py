@@ -29,11 +29,15 @@ def genExperiments(name, n=1, **params):
 # for environment in ['bigfish', 'chaser', 'fruitbot']:
 #     genExperiments(f'{environment}_normalised', environment=environment)
 
-genExperiments('Discount_0.9_1', environment='fruitbot', discount=0.9, hours=20)
-genExperiments('Discount_0.95_1', environment='fruitbot', discount=0.95, hours=20)
-genExperiments('Discount_0.99_1', environment='fruitbot', discount=0.99, hours=20)
-genExperiments('Discount_0.995_1', environment='fruitbot', discount=0.995, hours=20)
-genExperiments('Discount_0.999_1', environment='fruitbot', discount=0.999, hours=20)
+# genExperiments('Discount_0.9_1', environment='fruitbot', discount=0.9, hours=20)
+# genExperiments('Discount_0.95_1', environment='fruitbot', discount=0.95, hours=20)
+# genExperiments('Discount_0.99_1', environment='fruitbot', discount=0.99, hours=20)
+# genExperiments('Discount_0.995_1', environment='fruitbot', discount=0.995, hours=20)
+# genExperiments('Discount_0.999_1', environment='fruitbot', discount=0.999, hours=20)
+
+
+genExperiments('Discount_0.995_dist', environment='fruitbot', discount=0.995, hours=15, use_distribution=1)
+genExperiments('Discount_0.995_samp', environment='fruitbot', discount=0.995, hours=15, use_distribution=0)
 
 
 file.close()

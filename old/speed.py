@@ -1,12 +1,8 @@
-from environments import Environment, Environments
+from environments import Environments
 from agent import Agent
-from helpers import clean, hidden_size, device
-import torch
-import time
-from Utils.debug import disablePrint, enablePrint
+from Utils.debug import disablePrint,
 from display_input import displayer
-from runningList import RunningList
-import matplotlib.pyplot as plt
+
 
 # agent = Agent()
 # env = Environment(render=False).fruitbot
@@ -54,9 +50,7 @@ import matplotlib.pyplot as plt
 
 agent = Agent()
 env = Environments(render=True, envs=['fruitbot' for _ in range(20)])
-li = RunningList(500)
-mean = []
-all_return, all_dones = [], []
+all_return = []
 update_every = 250
 disablePrint()
 frames = 1000000
