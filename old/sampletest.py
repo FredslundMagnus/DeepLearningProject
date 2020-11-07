@@ -8,7 +8,7 @@ rng = default_rng()
 
 n = 1000
 m = 200000
-k = 20
+k = 200
 distribution = np.ones(m) / m
 
 # t0 = time.time()
@@ -87,11 +87,27 @@ print('RND 2000', t1 - t0)
 # t1 = time.time()
 # print('m = 200000', t1 - t0)
 
-m = 4000
-distribution = np.ones(m) / m
+m = 2000
+distribution = list(np.ones(m) / m)
 rnd = np.random
 t0 = time.time()
 for i in range(n):
     rnd.choice(m, k, p=distribution)
 t1 = time.time()
 print('m = 200000', t1 - t0)
+
+
+m = 200000
+distribution = list(range(m))
+t0 = time.time()
+for i in range(n):
+    random.sample(distribution, k)
+t1 = time.time()
+print('m = 200000', t1 - t0)
+
+print(bool(0.0))
+print(bool(1.0))
+print(bool(0.1))
+print(bool(int(0.0)))
+print(bool(int(1.0)))
+print(bool(int(0.1)))

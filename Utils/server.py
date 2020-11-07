@@ -12,6 +12,7 @@ defaults = {
     'hours': 23,
     'memory': 200000,
     'update_every': 100,
+    'use_distribution': 1,
 }
 
 params = getvals(defaults) if isServer else None
