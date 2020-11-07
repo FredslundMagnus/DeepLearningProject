@@ -1,9 +1,8 @@
 from environments import Environments
 from Utils.server import isServer, params, serverRun, saveAgent, saveMean
 from agent import Agent
-import torch
 from display_input import displayer
-from Utils.debug import enablePrint, disablePrint
+from Utils.debug import disablePrint
 from time import time
 
 if isServer:
