@@ -56,7 +56,7 @@ class Agent:
         loss.backward()
         self.optimizer.step()
         self.optimizer.zero_grad()
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
 
     def update_target_network(self):
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
