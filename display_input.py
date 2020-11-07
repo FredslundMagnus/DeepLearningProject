@@ -35,16 +35,17 @@ def displayer(state, agent: Agent, returns):
 
 
 def returnplot(returns, x: int = 1000, y: int = 500):
-    runnings = [0]*len(returns)
+    runnings = [0] * len(returns)
     for i in range(len(runnings)):
         if i < 200:
-            runnings[i] = sum(returns[:i])/(i+1) 
+            runnings[i] = sum(returns[:i]) / (i + 1)
         else:
-            runnings[i] = sum(returns[(i-200):i])/200
+            runnings[i] = sum(returns[(i - 200):i]) / 200
     fig = plt.figure()
     move_figure(fig, x, y)
     plt.plot(runnings)
     plt.show(block=False)
+
 
 def parametres(agent: Agent, x: int = 1000, y: int = 0):
     global temp
@@ -67,8 +68,8 @@ def parametres(agent: Agent, x: int = 1000, y: int = 0):
 def imageBig(state, x: int = 1000, y: int = 0):
     fig = plt.figure()
     move_figure(fig, x, y)
-    the_state = np.array(state).reshape(3, 64, 64).transpose(1, 2, 0)+1
-    plt.imshow(the_state*128)
+    the_state = np.array(state).reshape(3, 64, 64).transpose(1, 2, 0) + 1
+    plt.imshow(the_state / 2)
     plt.show(block=False)
 
 
