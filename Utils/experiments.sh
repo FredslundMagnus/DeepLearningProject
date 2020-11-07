@@ -1,16 +1,26 @@
 #!/bin/sh
-mkdir ../outputs/bigfish_normalised/
-mkdir ../outputs/bigfish_normalised/Markdown
-mkdir ../outputs/bigfish_normalised/Agents
-mkdir ../outputs/bigfish_normalised/Means
-bsub -o "../outputs/bigfish_normalised/Markdown/bigfish_normalised_0.md" -J "bigfish_normalised_0" -P "bigfish_normalised-0 -environment bigfish" < submit.sh
-mkdir ../outputs/chaser_normalised/
-mkdir ../outputs/chaser_normalised/Markdown
-mkdir ../outputs/chaser_normalised/Agents
-mkdir ../outputs/chaser_normalised/Means
-bsub -o "../outputs/chaser_normalised/Markdown/chaser_normalised_0.md" -J "chaser_normalised_0" -P "chaser_normalised-0 -environment chaser" < submit.sh
-mkdir ../outputs/fruitbot_normalised/
-mkdir ../outputs/fruitbot_normalised/Markdown
-mkdir ../outputs/fruitbot_normalised/Agents
-mkdir ../outputs/fruitbot_normalised/Means
-bsub -o "../outputs/fruitbot_normalised/Markdown/fruitbot_normalised_0.md" -J "fruitbot_normalised_0" -P "fruitbot_normalised-0 -environment fruitbot" < submit.sh
+mkdir ../outputs/Discount_0.9_1/
+mkdir ../outputs/Discount_0.9_1/Markdown
+mkdir ../outputs/Discount_0.9_1/Agents
+mkdir ../outputs/Discount_0.9_1/Means
+bsub -o "../outputs/Discount_0.9_1/Markdown/Discount_0.9_1_0.md" -J "Discount_0.9_1_0" -P "Discount_0.9_1-0 -environment fruitbot -discount 0.9 -hours 20" < submit.sh
+mkdir ../outputs/Discount_0.95_1/
+mkdir ../outputs/Discount_0.95_1/Markdown
+mkdir ../outputs/Discount_0.95_1/Agents
+mkdir ../outputs/Discount_0.95_1/Means
+bsub -o "../outputs/Discount_0.95_1/Markdown/Discount_0.95_1_0.md" -J "Discount_0.95_1_0" -P "Discount_0.95_1-0 -environment fruitbot -discount 0.95 -hours 20" < submit.sh
+mkdir ../outputs/Discount_0.99_1/
+mkdir ../outputs/Discount_0.99_1/Markdown
+mkdir ../outputs/Discount_0.99_1/Agents
+mkdir ../outputs/Discount_0.99_1/Means
+bsub -o "../outputs/Discount_0.99_1/Markdown/Discount_0.99_1_0.md" -J "Discount_0.99_1_0" -P "Discount_0.99_1-0 -environment fruitbot -discount 0.99 -hours 20" < submit.sh
+mkdir ../outputs/Discount_0.995_1/
+mkdir ../outputs/Discount_0.995_1/Markdown
+mkdir ../outputs/Discount_0.995_1/Agents
+mkdir ../outputs/Discount_0.995_1/Means
+bsub -o "../outputs/Discount_0.995_1/Markdown/Discount_0.995_1_0.md" -J "Discount_0.995_1_0" -P "Discount_0.995_1-0 -environment fruitbot -discount 0.995 -hours 20" < submit.sh
+mkdir ../outputs/Discount_0.999_1/
+mkdir ../outputs/Discount_0.999_1/Markdown
+mkdir ../outputs/Discount_0.999_1/Agents
+mkdir ../outputs/Discount_0.999_1/Means
+bsub -o "../outputs/Discount_0.999_1/Markdown/Discount_0.999_1_0.md" -J "Discount_0.999_1_0" -P "Discount_0.999_1-0 -environment fruitbot -discount 0.999 -hours 20" < submit.sh

@@ -26,7 +26,14 @@ def genExperiments(name, n=1, **params):
         file.write(f'bsub -o "../outputs/{name}/Markdown/{name}_{i}.md" -J "{name}_{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
 
 
-for environment in ['bigfish', 'chaser', 'fruitbot']:
-    genExperiments(f'{environment}_normalised', environment=environment)
+# for environment in ['bigfish', 'chaser', 'fruitbot']:
+#     genExperiments(f'{environment}_normalised', environment=environment)
+
+genExperiments('Discount_0.9_1', environment='fruitbot', discount=0.9, hours=20)
+genExperiments('Discount_0.95_1', environment='fruitbot', discount=0.95, hours=20)
+genExperiments('Discount_0.99_1', environment='fruitbot', discount=0.99, hours=20)
+genExperiments('Discount_0.995_1', environment='fruitbot', discount=0.995, hours=20)
+genExperiments('Discount_0.999_1', environment='fruitbot', discount=0.999, hours=20)
+
 
 file.close()
