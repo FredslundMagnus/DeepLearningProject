@@ -50,7 +50,7 @@ from display_input import displayer
 
 agent = Agent()
 env = Environments(render=True, envs=['fruitbot' for _ in range(20)])
-all_return = []
+all_return, all_dones = [], []
 update_every = 250
 disablePrint()
 frames = 1000000
