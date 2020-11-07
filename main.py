@@ -32,9 +32,9 @@ if isServer:
                 agent.update_target_network()
                 all_return.append(total_rew / dones)
                 dones, total_rew = 0, 0
-            saveAgent(agent, name)
-            saveMean(all_return, name)
-        serverRun()
+        saveAgent(agent, name)
+        saveMean(all_return, name)
+    serverRun()
 else:
     # agent = Agent()
     # env = Environment(render=True).fruitbot  # env = Environment(render=True)["coinrun"]
