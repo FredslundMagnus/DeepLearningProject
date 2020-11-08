@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.995, uncertainty=True) -> None:
+    def __init__(self, memory=50000, discount=0.999, uncertainty=False) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))
@@ -23,7 +23,7 @@ class Agent:
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.EpsilonSoftmaxUncertainty
+        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.greedy
         self.target_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.placeholder_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.gamma = discount
@@ -61,7 +61,9 @@ class Agent:
             true_uncertainty = uncertainty_weighting * abs(td - vs) + (1 - uncertainty_weighting) * estimate_uncertainty
             guess = torch.cat((vs, estimate_uncertainty), 1)
             label = torch.cat((td, true_uncertainty), 1)
-        loss = self.criterion(guess, label)
+            loss = self.criterion(guess, label)
+        else:
+            loss = self.criterion(vs, td)
         loss.backward()
         self.optimizer.step()
         self.optimizer.zero_grad()
