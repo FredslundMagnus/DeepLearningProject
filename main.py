@@ -50,11 +50,12 @@ else:
         total_rew += sum(rew) / len(rew)
         dones += sum(done) / len(done)
         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
-
-        if f > update_every and f % update_every == 0:
+        
+        if f % update_every == 0:
             agent.update_target_network()
+        if f > update_every:
             for _ in range(2):
-                agent.learn(double=True)
+                agent.learn(double=True)   
 
         if (f+1) % calculate_every == 0:
             k += 1

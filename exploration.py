@@ -23,6 +23,7 @@ class Exploration():
         return int(choice(15, 1, p=softmax(vals / self.K, dim=0).detach().cpu().numpy()))
 
     def greedy(self, vals, uncertainty=1):
+        self.counter += 1
         if self.counter % 1000 == 0:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return vals.detach().cpu().numpy().argmax()
