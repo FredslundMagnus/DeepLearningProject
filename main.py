@@ -1,9 +1,8 @@
 from environments import Environments
 from Utils.server import isServer, params, serverRun, saveAgent, saveMean
 from agent import Agent
-import torch
 from display_input import displayer
-from Utils.debug import enablePrint, disablePrint
+from Utils.debug import disablePrint
 from time import time
 
 if isServer:
@@ -35,8 +34,8 @@ if isServer:
     serverRun()
 else:
     agent = Agent()
-    env = Environments(render=True, envs=['chaser' for _ in range(20)])
-    all_return = []
+    env = Environments(render=True, envs=['bigfish' for _ in range(20)])
+    all_return, all_dones = [], []
     update_every = 100
     disablePrint()
     frames = 1000000
@@ -46,17 +45,15 @@ else:
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
         total_rew += sum(rew) / len(rew)
-        dones += sum(done) / len(done)
+        dones += sum(done) / len(done) + 10**(-10)
         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
-        enablePrint()
-        print(torch.cuda.max_memory_allocated())
-        disablePrint()
         if f > update_every:
-            for _ in range(3):
+            for _ in range(2):
                 agent.learn(double=True)
         if f % update_every == 0:
             agent.update_target_network()
+            all_dones.append(1 / dones)
             all_return.append(total_rew / dones)
             dones, total_rew = 0, 0
         if f % (10 * update_every) == 0:
-            displayer(obs[0].cpu(), agent, all_return)
+            displayer(obs[0].cpu(), agent, all_return, all_dones)

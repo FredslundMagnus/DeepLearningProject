@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.95) -> None:
+    def __init__(self, memory=50000, discount=0.995) -> None:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
@@ -22,7 +22,7 @@ class Agent:
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.epsilonGreedy
+        self.explore = self.exploration.softmax
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
         self.gamma = discount
@@ -56,7 +56,7 @@ class Agent:
         loss.backward()
         self.optimizer.step()
         self.optimizer.zero_grad()
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
 
     def update_target_network(self):
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
