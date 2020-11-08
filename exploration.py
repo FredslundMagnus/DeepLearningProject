@@ -9,27 +9,43 @@ class Exploration():
         self.counter = 1
 
     @property
+    def epsilon(self):
+        return max(0.05, 1 - self.counter / 1000000)
+
+    @property
     def K(self):
         return max(0.005, 5000 / self.counter)
 
     @property
-    def epsilon(self):
-        return max(0.05, 1 - self.counter / 1000000)
+    def epsilon2(self):
+        return max(0, 1 - self.counter / 1000000)
 
-    def softmax(self, vals, uncertainty=1):
+    def softmax(self, vals):
         self.counter += 1
         if self.counter % 1000 == 0:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
-        return int(choice(15, 1, p=softmax(vals / self.K, dim=0).detach().cpu().numpy()))
+        return int(choice(15, 1, p=softmax(vals / K, dim=0).detach().cpu().numpy()))
 
-    def greedy(self, vals, uncertainty=1):
+    def greedy(self, vals):
         self.counter += 1
         if self.counter % 1000 == 0:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return vals.detach().cpu().numpy().argmax()
 
-    def epsilonGreedy(self, vals, uncertainty=1):
+    def epsilonGreedy(self, vals):
         self.counter += 1
         if self.counter % 1000 == 0:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return int(choice(15, 1)) if random() < self.epsilon else vals.detach().cpu().numpy().argmax()
+
+    def EpsilonSoftmaxUncertainty(self, vals):
+        self.counter += 1
+        uncertainty = vals[-1]
+        vals = vals[:-1]
+        weight = 1 # High means more uncertain (0 is just a greedy policy)
+        K = uncertainty * weight
+        if self.counter % 1000 == 0:
+            print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
+        if random() < self.epsilon2:
+            return int(choice(15, 1))
+        return int(choice(15, 1, p=softmax(vals / K, dim=0).detach().cpu().numpy())) if K > 1e-5 else vals.detach().cpu().numpy().argmax()
