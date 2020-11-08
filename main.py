@@ -33,13 +33,16 @@ if isServer:
         saveMean(all_return, name)
     serverRun()
 else:
-    agent = Agent()
-    env = Environments(render=True, envs=['fruitbot' for _ in range(20)])
-    all_return, all_dones = [], []
+    total_agents = 20
     update_every = 100
-    disablePrint()
+    calculate_every, display_every = 200, 10000
+    #disablePrint()
     frames = 1000000
+    all_return, all_dones = [], []
     dones, total_rew, k = 0, 0, 0
+
+    agent = Agent()
+    env = Environments(render=True, envs=['fruitbot' for _ in range(total_agents)])
     for f in range(1, frames + 1):
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
@@ -48,16 +51,16 @@ else:
         dones += sum(done) / len(done)
         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
 
-        if f >= update_every:
-            if f % update_every == 0:
-                agent.update_target_network()
-                k += 1
-                if dones != 0:
-                    all_dones.append(k*update_every/dones)
-                    all_return.append(total_rew/dones)
-                    dones, total_rew, k = 0, 0, 0
+        if f > update_every and f % update_every == 0:
+            agent.update_target_network()
             for _ in range(2):
                 agent.learn(double=True)
 
-        if f % (20 * update_every) == 0:
-            displayer(obs[0].cpu(), agent, all_return, all_dones)
+        if (f+1) % calculate_every == 0:
+            k += 1
+            if dones != 0:
+                all_dones.append(k*calculate_every/dones)
+                all_return.append(total_rew/dones)
+                dones, total_rew, k = 0, 0, 0  
+        if f % display_every == 0:
+            displayer(obs[0].cpu(), agent, all_return, all_dones, names="seen frames in " + str(total_agents*calculate_every) + "'s")
