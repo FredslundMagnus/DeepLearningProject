@@ -22,7 +22,7 @@ class Agent:
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.softmax
+        self.explore = self.exploration.epsilonGreedy
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
         self.gamma = discount
@@ -66,6 +66,7 @@ class Agent:
 
 class NetWork(Module):
     def __init__(self):
+        self.uncertainty = False
         self.size_after_conv = 64
 
         super(NetWork, self).__init__()
@@ -84,9 +85,11 @@ class NetWork(Module):
             Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
             LeakyReLU(),
         )
+        
+
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
         self.linear = Sequential(LeakyReLU(),
-                                 Linear(hidden_size, 15),
+                                 Linear(hidden_size, 15 + self.uncertainty),
                                  )
 
     def forward(self, x):
@@ -98,6 +101,7 @@ class NetWork(Module):
         x = x.view(-1, hidden_size)
         x = self.linear(x)
         return x
+        return x[:15], x[15] if self.uncertainty == True else x, None
 
 
 if __name__ == "__main__":
