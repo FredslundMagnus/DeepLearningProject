@@ -6,7 +6,7 @@ from Utils.debug import disablePrint
 from time import time
 
 if isServer:
-    name, discount, environment, hours, memory, update_every, use_distribution = params
+    name, discount, environment, hours, memory, update_every, use_distribution, double = params
     print(*params)
 
     # the server runs the main function (can be changed)
@@ -24,7 +24,7 @@ if isServer:
             agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
             if f > update_every:
                 for _ in range(3):
-                    agent.learn(double=True, use_distribution=use_distribution)
+                    agent.learn(double=double, use_distribution=use_distribution)
             if f % update_every == 0:
                 agent.update_target_network()
                 all_return.append(total_rew / dones)
