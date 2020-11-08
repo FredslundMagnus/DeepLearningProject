@@ -22,19 +22,19 @@ class Exploration():
 
     def softmax(self, vals):
         self.counter += 1
-        if self.counter % 1000 == 0:
+        if self.counter % 1000 == 1:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return int(choice(15, 1, p=softmax(vals / K, dim=0).detach().cpu().numpy()))
 
     def greedy(self, vals):
         self.counter += 1
-        if self.counter % 1000 == 0:
+        if self.counter % 1000 == 1:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return vals.detach().cpu().numpy().argmax()
 
     def epsilonGreedy(self, vals):
         self.counter += 1
-        if self.counter % 1000 == 0:
+        if self.counter % 1000 == 1:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return int(choice(15, 1)) if random() < self.epsilon else vals.detach().cpu().numpy().argmax()
 
@@ -44,7 +44,7 @@ class Exploration():
         vals = vals[:-1]
         weight = 1 # High means more uncertain (0 is just a greedy policy)
         K = uncertainty * weight
-        if self.counter % 200 == 0:
+        if self.counter % 200 == 1:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         if random() < self.epsilon2:
             return int(choice(15, 1))
