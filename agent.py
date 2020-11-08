@@ -41,7 +41,7 @@ class Agent:
         return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self, double=False, use_distribution=True):
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(200) if bool(int(use_distribution)) else self.memory.sample(200)
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(200) if use_distribution else self.memory.sample(200)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next), 1).view(-1, 1)).squeeze(1)
