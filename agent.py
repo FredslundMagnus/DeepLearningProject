@@ -22,7 +22,7 @@ class Agent:
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.softmax
+        self.explore = self.exploration.greedy
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
         self.gamma = discount
@@ -32,8 +32,9 @@ class Agent:
 
     def choose(self, pixels, hn, cn):
         self.network.hn, self.network.cn = hn, cn
-        vals = self.network(pixels).reshape(15) * (1 - self.gamma)
-        return self.explore(vals), pixels, hn, cn, self.network.hn, self.network.cn
+
+        vals, uncertainty = self.network(pixels).reshape(15)
+        return self.explore(vals, uncertainty), pixels, hn, cn, self.network.hn, self.network.cn, uncertainty
 
     def chooseMulti(self, pixels, hn, cn):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
@@ -66,6 +67,7 @@ class Agent:
 
 class NetWork(Module):
     def __init__(self):
+        self.uncertainty = False
         self.size_after_conv = 64
 
         super(NetWork, self).__init__()
@@ -84,9 +86,11 @@ class NetWork(Module):
             Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
             LeakyReLU(),
         )
+        
+
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
         self.linear = Sequential(LeakyReLU(),
-                                 Linear(hidden_size, 15),
+                                 Linear(hidden_size, 15 + self.uncertainty),
                                  )
 
     def forward(self, x):
@@ -98,6 +102,7 @@ class NetWork(Module):
         x = x.view(-1, hidden_size)
         x = self.linear(x)
         return x
+        return x[:15], x[15] if self.uncertainty else x, 1
 
 
 if __name__ == "__main__":

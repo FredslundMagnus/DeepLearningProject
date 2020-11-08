@@ -25,23 +25,23 @@ def move_figure(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-def displayer(state, agent: Agent, returns, dones):
+def displayer(state, agent: Agent, returns, dones, names):
     plt.close('all')
-    returnplot(returns, x=100, y=500)
-    returnplot(dones, x=100, y=0, ylabel="Game length (frames per game)")
+    returnplot(returns, x=100, y=500, xlabel=names)
+    returnplot(dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)
     parametres(agent, x=1300, y=0)
     imageBig(state, x=700, y=500)
     filter5(state, agent, x=1300, y=500)
     filterColor(state, agent, x=700, y=0)
 
 
-def returnplot(returns, x: int = 1000, y: int = 500, xlabel="updates to networks", ylabel="return (return per game)"):
+def returnplot(returns, x: int = 1000, y: int = 500, xlabel="updates to networks", ylabel="Return (per game)"):
     runnings = [0]*len(returns)
-    for i in range(len(runnings)):
+    for i in range(1,len(runnings)+1):
         if i < 200:
-            runnings[i] = sum(returns[:i]) / (i + 1)
+            runnings[i-1] = sum(returns[:i]) / i
         else:
-            runnings[i] = sum(returns[(i - 200):i]) / 200
+            runnings[i-1] = sum(returns[(i - 200):i]) / 200
     fig = plt.figure()
     move_figure(fig, x, y)
     plt.plot(runnings)
