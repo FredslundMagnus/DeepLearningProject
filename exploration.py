@@ -45,7 +45,7 @@ class Exploration():
         weight = 1 # High means more uncertain (0 is just a greedy policy)
         K = uncertainty * weight
         if self.counter % 200 == 1:
-            print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
+            print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]}, {str(float(uncertainty))[:4]})", end=", ")
         if random() < self.epsilon2:
             return int(choice(15, 1))
         return int(choice(15, 1, p=softmax(vals / K, dim=0).detach().cpu().numpy())) if K > 1e-5 else vals.detach().cpu().numpy().argmax()

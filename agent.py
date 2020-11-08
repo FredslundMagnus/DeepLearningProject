@@ -44,7 +44,7 @@ class Agent:
 
     def learn(self, double=False, use_distribution=True):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(200) if use_distribution else self.memory.sample(200)
-        uncertainty_weighting = 1  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
+        uncertainty_weighting = 1/4  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:, :15], 1).view(-1, 1)).squeeze(1)
