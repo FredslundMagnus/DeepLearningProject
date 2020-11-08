@@ -39,7 +39,7 @@ else:
     update_every = 100
     disablePrint()
     frames = 1000000
-    dones, total_rew = 0, 0
+    dones, total_rew, k = 0, 0, 0
     for f in range(1, frames + 1):
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
@@ -47,13 +47,17 @@ else:
         total_rew += sum(rew) / len(rew)
         dones += sum(done) / len(done)
         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
-        if f > update_every:
+
+        if f >= update_every:
+            if f % update_every == 0:
+                agent.update_target_network()
+                k += 1
+                if dones != 0:
+                    all_dones.append(k*update_every/dones)
+                    all_return.append(total_rew/dones)
+                    dones, total_rew, k = 0, 0, 0
             for _ in range(2):
                 agent.learn(double=True)
-        if f % update_every == 0:
-            agent.update_target_network()
-            all_dones.append(update_every/(dones+10**(-10)))
-            all_return.append(total_rew/(dones+10**(-10)))
-            dones, total_rew = 0, 0
-        if f % (5 * update_every) == 0:
+
+        if f % (20 * update_every) == 0:
             displayer(obs[0].cpu(), agent, all_return, all_dones)
