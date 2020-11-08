@@ -7,12 +7,13 @@ isServer = checkServer()
 
 defaults = {
     'name': "Agent",
-    'discount': 0.99,
+    'discount': 0.999,
     'environment': 'fruitbot',
     'hours': 23,
     'memory': 200000,
     'update_every': 100,
     'use_distribution': 1,
+    'double': 1,
 }
 
 params = getvals(defaults) if isServer else None
