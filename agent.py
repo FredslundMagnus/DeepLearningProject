@@ -40,27 +40,27 @@ class Agent:
     def chooseMulti(self, pixels, hn, cn):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
         vals = self.network(concatenation(pixels, 0).to(device))
-        return [self.explore(val.reshape(15+self.uncertainty)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
+        return [self.explore(val.reshape(15 + self.uncertainty)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self, double=False, use_distribution=True):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(200) if use_distribution else self.memory.sample(200)
-        uncertainty_weighting = 1 # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
+        uncertainty_weighting = 1  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
-            v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:,:15], 1).view(-1, 1)).squeeze(1)
+            v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:, :15], 1).view(-1, 1)).squeeze(1)
         else:
-            v_s_next, input_indexes = torch.max(self.target_network(obs_next)[:,:15], 1)
+            v_s_next, input_indexes = torch.max(self.target_network(obs_next)[:, :15], 1)
 
         self.network.hn, self.network.cn = h0, c0
         output_this_state = self.network(obs)
         vs = torch.gather(output_this_state, 1, action)
         td = (reward + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
         if self.uncertainty:
-            estimate_uncertainty = output_this_state[:,15].view(-1, 1).clone()
+            estimate_uncertainty = output_this_state[:, 15].view(-1, 1).clone()
             estimate_uncertainty[estimate_uncertainty < 0] = 0
             true_uncertainty = uncertainty_weighting * abs(td - vs) + (1 - uncertainty_weighting) * estimate_uncertainty
             guess = torch.cat((vs, estimate_uncertainty), 1)
-            label = torch.cat((td, true_uncertainty), 1)
+            label = torch.cat((td, true_uncertainty.detach()), 1)
             loss = self.criterion(guess, label)
         else:
             loss = self.criterion(vs, td)
@@ -95,7 +95,6 @@ class NetWork(Module):
             Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
             LeakyReLU(),
         )
-        
 
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
         self.linear = Sequential(LeakyReLU(),
@@ -111,6 +110,7 @@ class NetWork(Module):
         x = x.view(-1, hidden_size)
         x = self.linear(x)
         return x
+
 
 if __name__ == "__main__":
     from torch import rand
