@@ -34,9 +34,9 @@ if isServer:
     serverRun()
 else:
     agent = Agent()
-    env = Environments(render=True, envs=['chaser' for _ in range(20)])
+    env = Environments(render=True, envs=['bigfish' for _ in range(20)])
     all_return, all_dones = [], []
-    update_every = 250
+    update_every = 100
     disablePrint()
     frames = 1000000
     dones, total_rew = 0, 0
@@ -48,7 +48,7 @@ else:
         dones += sum(done) / len(done) + 10**(-10)
         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
         if f > update_every:
-            for _ in range(1):
+            for _ in range(2):
                 agent.learn(double=True)
         if f % update_every == 0:
             agent.update_target_network()
