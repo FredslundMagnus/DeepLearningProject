@@ -12,8 +12,8 @@ def showcase(name, environment):
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
 
-        if i % 1000 == 0:
+        if i == 0:
             displayer(obs[0].cpu(), agent, all_return, [1, 1])
 
 
-showcase('Discount_0.9_1-0', 'fruitbot')
+showcase('Discount_0.999_1-0', 'fruitbot')
