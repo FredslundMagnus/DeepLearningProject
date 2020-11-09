@@ -13,7 +13,7 @@ if isServer:
     def main():
         agent = Agent(memory=memory, discount=discount)
         env = Environments(render=False, envs=[environment for _ in range(20)])
-        dones, total_rew, f, all_return, tid = 0, 0, 0, [], time() + 3600 * hours - 100
+        dones, total_rew, f, all_return, tid = 0, 0, 0, [], time() + 3600 * hours - 300
         while time() < tid:
             f += 1
             obs, hn, cn = env.start()
@@ -36,7 +36,7 @@ else:
     total_agents = 20
     update_every = 100
     calculate_every, display_every = 200, 10000
-    #disablePrint()
+    # disablePrint()
     frames = 1000000
     all_return, all_dones = [], []
     dones, total_rew, k = 0, 0, 0
@@ -50,18 +50,18 @@ else:
         total_rew += sum(rew) / len(rew)
         dones += sum(done) / len(done)
         agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
-        
+
         if f % update_every == 0:
             agent.update_target_network()
         if f > update_every:
             for _ in range(2):
-                agent.learn(double=True)   
+                agent.learn(double=True)
 
-        if (f+1) % calculate_every == 0:
+        if (f + 1) % calculate_every == 0:
             k += 1
             if dones != 0:
-                all_dones.append(k*calculate_every/dones)
-                all_return.append(total_rew/dones)
-                dones, total_rew, k = 0, 0, 0  
+                all_dones.append(k * calculate_every / dones)
+                all_return.append(total_rew / dones)
+                dones, total_rew, k = 0, 0, 0
         if f % display_every == 0:
-            displayer(obs[0].cpu(), agent, all_return, all_dones, names="seen frames in " + str(total_agents*calculate_every) + "'s")
+            displayer(obs[0].cpu(), agent, all_return, all_dones, names="seen frames in " + str(total_agents * calculate_every) + "'s")
