@@ -25,7 +25,7 @@ def move_figure(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-def displayer(state, agent: Agent, returns, dones, names):
+def displayer(state, agent: Agent, returns, dones, names="time"):
     plt.close('all')
     returnplot(returns, x=100, y=500, xlabel=names)
     returnplot(dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)

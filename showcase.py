@@ -16,4 +16,4 @@ def showcase(name, environment):
             displayer(obs[0].cpu(), agent, all_return, [1, 1])
 
 
-showcase('Discount_0.999_1-0', 'fruitbot')
+showcase('Discount_0.995_dist-0', 'fruitbot')
