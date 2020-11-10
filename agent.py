@@ -14,16 +14,16 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.999, uncertainty=True) -> None:
+    def __init__(self, memory=50000, discount=0.99, uncertainty=False) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-3, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=5e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.greedy
+        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.epsilonGreedy
         self.target_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.placeholder_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.gamma = discount
@@ -43,8 +43,8 @@ class Agent:
         return [self.explore(val.reshape(15 + self.uncertainty)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self, double=False, use_distribution=True):
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(200) if use_distribution else self.memory.sample(200)
-        uncertainty_weighting = 1/4  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if use_distribution else self.memory.sample(200)
+        uncertainty_weighting = 1  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:, :15], 1).view(-1, 1)).squeeze(1)
@@ -81,33 +81,31 @@ class NetWork(Module):
 
         super(NetWork, self).__init__()
 
-        self.color = Sequential(Conv2d(in_channels=3, out_channels=10, kernel_size=6, stride=2),
-                                LeakyReLU(),)
-
+        self.color = Sequential(Conv2d(in_channels=3, out_channels=32, kernel_size=6, stride=2),
+                    LeakyReLU(),
+                    Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
+                    MaxPool2d(2, 2, padding=0),
+                    LeakyReLU(),
+                    )
         self.conv1 = Sequential(
-            Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=2),
+            Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
-            MaxPool2d(2, 2, padding=0),
-            Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1),
-            LeakyReLU(),
-            Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1),
-            LeakyReLU(),
-            Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
+            Conv2d(in_channels=64, out_channels=128, kernel_size=4, stride=1),
             LeakyReLU(),
         )
 
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
         self.linear = Sequential(LeakyReLU(),
-                                 Linear(hidden_size, 15 + uncertainty),
+                                 Linear(128, 15 + uncertainty),
                                  )
 
     def forward(self, x):
         self.lstm.flatten_parameters()
         x = self.color(x)
         x = self.conv1(x)
-        x = x.view(1, -1, self.size_after_conv)
-        x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
-        x = x.view(-1, hidden_size)
+        #x = x.view(1, -1, self.size_after_conv)
+        #x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
+        x = x.view(-1, 128)
         x = self.linear(x)
         return x
 

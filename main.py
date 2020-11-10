@@ -34,15 +34,15 @@ if isServer:
     serverRun()
 else:
     total_agents = 20
-    update_every = 100
-    calculate_every, display_every = 200, 10000
+    update_every = 200
+    calculate_every, display_every = 50, 10000
     # disablePrint()
     frames = 1000000
     all_return, all_dones = [], []
     dones, total_rew, k = 0, 0, 0
 
     agent = Agent()
-    env = Environments(render=True, envs=['fruitbot' for _ in range(total_agents)])
+    env = Environments(render=True, envs=['bigfish' for _ in range(total_agents)])
     for f in range(1, frames + 1):
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
@@ -54,7 +54,7 @@ else:
         if f % update_every == 0:
             agent.update_target_network()
         if f > update_every:
-            for _ in range(2):
+            for _ in range(3):
                 agent.learn(double=True)
 
         if (f + 1) % calculate_every == 0:
