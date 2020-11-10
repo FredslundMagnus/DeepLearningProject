@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.99, uncertainty=False) -> None:
+    def __init__(self, memory=50000, discount=0.95, uncertainty=True) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))
@@ -44,7 +44,6 @@ class Agent:
 
     def learn(self, double=False, use_distribution=True):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if use_distribution else self.memory.sample(200)
-        uncertainty_weighting = 1  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:, :15], 1).view(-1, 1)).squeeze(1)
@@ -58,6 +57,7 @@ class Agent:
         if self.uncertainty:
             estimate_uncertainty = output_this_state[:, 15].view(-1, 1).clone()
             estimate_uncertainty[estimate_uncertainty < 0] = 0
+            uncertainty_weighting = 1  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
             true_uncertainty = uncertainty_weighting * abs(td - vs) + (1 - uncertainty_weighting) * estimate_uncertainty
             guess = torch.cat((vs, estimate_uncertainty), 1)
             label = torch.cat((td, true_uncertainty.detach()), 1)
