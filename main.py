@@ -54,7 +54,7 @@ else:
         if f % update_every == 0:
             agent.update_target_network()
         if f > update_every:
-            for _ in range(3):
+            for _ in range(1):
                 agent.learn(double=True)
 
         if (f + 1) % calculate_every == 0:

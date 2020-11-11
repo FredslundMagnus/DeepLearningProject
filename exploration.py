@@ -38,7 +38,7 @@ class Exploration():
         self.counter += 1
         uncertainty = vals[-1]
         vals = vals[:-1]
-        weight = 1/10 # High means more uncertain (0 is just a greedy policy)
+        weight = 1/5 # High means more uncertain (0 is just a greedy policy)
         K = uncertainty * weight
         if self.counter % 200 == 1:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]}, {str(float(uncertainty))[:4]})", end=", ")
