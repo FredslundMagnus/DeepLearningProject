@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.95, uncertainty=True, update_every=200, double=False, use_distribution=True) -> None:
+    def __init__(self, memory=50000, discount=0.95, uncertainty=True, update_every=200, double=False, use_distribution=True, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))

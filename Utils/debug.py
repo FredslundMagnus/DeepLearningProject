@@ -89,20 +89,20 @@ def getvals(defaults):
                 defaults[s] = float(args[i + 1])
             except:
                 defaults[s] = args[i + 1]
-    return tuple(defaults.values())
+    return defaults
 
 
 def checkServer():
     return bool(sys.argv[1:])
 
 
-def showParams():
+def showParams(params):
     disablePrint()
     timer = Timer()
     enablePrint()
-    # print(f"# Parameters for {params[0]}\n")
 
-    print(f"    Play for :                  {1} games.")
+    for key, value in params.items():
+        print(f'    {(key.capitalize().replace("_", " ") + " :").ljust(28)}{value}')
 
     print(f'    Minutes used :              {timer.minutes} minutes.')
     print(f'    Hours used :                {timer.hours} hours.\n')

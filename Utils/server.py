@@ -24,7 +24,7 @@ params = getvals(defaults) if isServer else None
 
 
 def serverRun():
-    showParams()
+    showParams(params)
     profilingStats()
 
 

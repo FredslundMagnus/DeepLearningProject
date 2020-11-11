@@ -7,14 +7,12 @@ from Utils.debug import disablePrint
 from time import time
 
 if isServer:
-    name, discount, environment, hours, memory, update_every, use_distribution, double, total_agents, calculate_every, uncertainty = params
-    print(*params)
-
     # the server runs the main function (can be changed)
     def main():
-        agent = Agent(memory=memory, discount=discount, uncertainty=uncertainty, update_every=update_every, double=double, use_distribution=use_distribution)
+        name, environment, hours, total_agents = params['name'], params['environment'], params['hours'], params['total_agents']
+        agent = Agent(**params)
         env = Environments(render=False, envs=[environment for _ in range(total_agents)])
-        collector = Collector(calculate_every=calculate_every, total_agents=total_agents)
+        collector = Collector(**params)
         tid = time() + 3600 * hours - 300
         while time() < tid:
             obs, hn, cn = env.start()

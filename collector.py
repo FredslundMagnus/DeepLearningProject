@@ -1,5 +1,5 @@
 class Collector:
-    def __init__(self, calculate_every: int = 50, total_agents: int = 20) -> None:
+    def __init__(self, calculate_every: int = 50, total_agents: int = 20, **kwargs) -> None:
         self.calculate_every, self.total_agents = calculate_every, total_agents
         self.all_return, self.all_dones = [], []
         self.dones, self.total_rew, self.k, self.f = 0, 0, 0, 0
