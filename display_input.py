@@ -1,3 +1,4 @@
+from collector import Collector
 import numpy as np
 import matplotlib.pyplot as plt
 from agent import Agent
@@ -25,7 +26,8 @@ def move_figure(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-def displayer(state, agent: Agent, returns, dones, names="time"):
+def displayer(state, agent: Agent, collector: Collector):
+    returns, dones, names = collector.all_return, collector.all_dones, f"seen frames in {collector.total_agents * collector.calculate_every}'s"
     plt.close('all')
     returnplot(returns, x=100, y=500, xlabel=names)
     returnplot(dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)
@@ -36,12 +38,12 @@ def displayer(state, agent: Agent, returns, dones, names="time"):
 
 
 def returnplot(returns, x: int = 1000, y: int = 500, xlabel="updates to networks", ylabel="Return (per game)"):
-    runnings = [0]*len(returns)
-    for i in range(1,len(runnings)+1):
+    runnings = [0] * len(returns)
+    for i in range(1, len(runnings) + 1):
         if i < 200:
-            runnings[i-1] = sum(returns[:i]) / i
+            runnings[i - 1] = sum(returns[:i]) / i
         else:
-            runnings[i-1] = sum(returns[(i - 200):i]) / 200
+            runnings[i - 1] = sum(returns[(i - 200):i]) / 200
     fig = plt.figure()
     move_figure(fig, x, y)
     plt.plot(runnings)

@@ -1,4 +1,5 @@
 
+from collector import Collector
 from Utils.debug import checkServer, getvals, profilingStats, showParams
 import pickle
 from agent import Agent
@@ -14,13 +15,16 @@ defaults = {
     'update_every': 100,
     'use_distribution': 1,
     'double': 1,
+    'total_agents': 20,
+    'calculate_every': 50,
+    'uncertainty': 0,
 }
 
 params = getvals(defaults) if isServer else None
 
 
 def serverRun():
-    showParams()
+    showParams(params)
     profilingStats()
 
 
@@ -34,8 +38,8 @@ def saveAgent(agent: Agent, name: str):
         pickle.dump(agent, open(f"trainlocally/{'-'.join(name.split('-')[:-1])}/{name}", "wb"))
 
 
-def saveMean(mean: List[float], name: str):
+def saveCollector(collector: Collector, name: str):
     if isServer:
-        pickle.dump(mean, open(f"outputs/{'-'.join(name.split('-')[:-1])}/Means/{name}.means", "wb"))
+        pickle.dump(collector, open(f"outputs/{'-'.join(name.split('-')[:-1])}/Collectors/{name}.collect", "wb"))
     else:
-        pickle.dump(mean, open(f"trainlocally/{'-'.join(name.split('-')[:-1])}/mean_{name}", "wb"))
+        pickle.dump(collector, open(f"trainlocally/{'-'.join(name.split('-')[:-1])}/collect_{name}", "wb"))

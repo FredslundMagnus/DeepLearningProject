@@ -3,7 +3,7 @@ from server import defaults
 file = open('Utils/experiments.sh', 'w')
 file.write('#!/bin/sh\n')
 
-features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents', "Means"]
+features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents', "Collectors"]
 
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
 
@@ -36,8 +36,8 @@ def genExperiments(name, n=1, **params):
 # genExperiments('Discount_0.999_1', environment='fruitbot', discount=0.999, hours=20)
 
 
-genExperiments('Discount_0.995_dist', environment='fruitbot', discount=0.995, hours=15, use_distribution=1)
-genExperiments('Discount_0.995_samp', environment='fruitbot', discount=0.995, hours=15, use_distribution=0)
-
+# genExperiments('Discount_0.995_dist', environment='fruitbot', discount=0.995, hours=15, use_distribution=1)
+# genExperiments('Discount_0.995_samp', environment='fruitbot', discount=0.995, hours=15, use_distribution=0)
+genExperiments('Test_1', environment='fruitbot', discount=0.995, hours=1, use_distribution=0)
 
 file.close()
