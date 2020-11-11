@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.95, uncertainty=True) -> None:
+    def __init__(self, memory=50000, discount=0.95, uncertainty=True, update_every=200, double=False, use_distribution=True) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))
@@ -26,7 +26,8 @@ class Agent:
         self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.epsilonGreedy
         self.target_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.placeholder_network = NetWork(uncertainty=self.uncertainty).to(device)
-        self.gamma = discount
+        self.gamma, self.f = discount, 0
+        self.update_every, self.double, self.use_distribution = update_every, double, use_distribution
 
     def rememberMulti(self, *args):
         [self.remember(obs_old.cpu(), act, obs.cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done)) for obs_old, act, obs, rew, h0, c0, hn, cn, done in zip(*args)]
@@ -42,10 +43,18 @@ class Agent:
         vals = self.network(concatenation(pixels, 0).to(device))
         return [self.explore(val.reshape(15 + self.uncertainty)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
-    def learn(self, double=False, use_distribution=True):
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if use_distribution else self.memory.sample(200)
+    def learn(self):
+        self.f += 1
+        if self.f % self.update_every == 0:
+            self.update_target_network()
+        if self.f > self.update_every:
+            for _ in range(3):
+                self.TD_learn()
+
+    def TD_learn(self):
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if self.use_distribution else self.memory.sample(200)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
-        if double:
+        if self.double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:, :15], 1).view(-1, 1)).squeeze(1)
         else:
             v_s_next, input_indexes = torch.max(self.target_network(obs_next)[:, :15], 1)
@@ -82,11 +91,11 @@ class NetWork(Module):
         super(NetWork, self).__init__()
 
         self.color = Sequential(Conv2d(in_channels=3, out_channels=32, kernel_size=6, stride=2),
-                    LeakyReLU(),
-                    Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
-                    MaxPool2d(2, 2, padding=0),
-                    LeakyReLU(),
-                    )
+                                LeakyReLU(),
+                                Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
+                                MaxPool2d(2, 2, padding=0),
+                                LeakyReLU(),
+                                )
         self.conv1 = Sequential(
             Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
@@ -103,8 +112,8 @@ class NetWork(Module):
         self.lstm.flatten_parameters()
         x = self.color(x)
         x = self.conv1(x)
-        #x = x.view(1, -1, self.size_after_conv)
-        #x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
+        # x = x.view(1, -1, self.size_after_conv)
+        # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         x = x.view(-1, 128)
         x = self.linear(x)
         return x
