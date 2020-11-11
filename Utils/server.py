@@ -16,6 +16,7 @@ defaults = {
     'use_distribution': 1,
     'double': 1,
     'total_agents': 20,
+    'calculate_every': 50,
 }
 
 params = getvals(defaults) if isServer else None
