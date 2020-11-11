@@ -10,7 +10,7 @@ class Exploration():
 
     @property
     def epsilon(self):
-        return max(0.05, 1 - self.counter / 1000000)
+        return max(0.00, 1 - self.counter / 1000000)
 
     @property
     def K(self):
