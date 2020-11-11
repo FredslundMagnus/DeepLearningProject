@@ -33,15 +33,10 @@ if isServer:
         saveCollector(collector, name)
     serverRun()
 else:
-    total_agents = 20
-    update_every = 200
-    calculate_every, display_every = 50, 10000
-    # disablePrint()
-    frames = 1000000
-
+    total_agents, update_every, display_every, frames = 20, 200, 10000, 1000000
     agent = Agent(discount=0.999, uncertainty=False)
     env = Environments(render=True, envs=['bigfish' for _ in range(total_agents)])
-    collector = Collector(calculate_every=calculate_every, total_agents=total_agents)
+    collector = Collector(calculate_every=50, total_agents=total_agents)
     for f in range(1, frames + 1):
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
