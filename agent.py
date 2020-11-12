@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=50000, discount=0.95, uncertainty=True, update_every=200, double=False, use_distribution=True, **kwargs) -> None:
+    def __init__(self, memory=10000, discount=0.999, uncertainty=False, update_every=200, double=True, use_distribution=True, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))
@@ -52,7 +52,7 @@ class Agent:
                 self.TD_learn()
 
     def TD_learn(self):
-        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if self.use_distribution else self.memory.sample(200)
+        obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if self.use_distribution else self.memory.sample(256)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if self.double:
             v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:, :15], 1).view(-1, 1)).squeeze(1)
