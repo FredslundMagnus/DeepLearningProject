@@ -23,7 +23,7 @@ class Agent:
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.epsilonGreedy
+        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.softmax
         self.target_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.placeholder_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.gamma, self.f = discount, 0

@@ -100,6 +100,7 @@ def showParams(params):
     disablePrint()
     timer = Timer()
     enablePrint()
+    print('')
 
     for key, value in params.items():
         print(f'    {(key.capitalize().replace("_", " ") + " :").ljust(28)}{value}')
