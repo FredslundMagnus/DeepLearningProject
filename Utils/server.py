@@ -10,7 +10,7 @@ defaults = {
     'name': "Agent",
     'discount': 0.999,
     'environment': 'fruitbot',
-    'hours': 23,
+    'hours': 24,
     'memory': 200000,
     'update_every': 100,
     'use_distribution': 1,

@@ -90,9 +90,11 @@ class NetWork(Module):
 
         super(NetWork, self).__init__()
 
-        self.color = Sequential(Conv2d(in_channels=3, out_channels=10, kernel_size=4, stride=2),
-                                LeakyReLU(),
-                                )
+        self.color = Sequential(
+            Conv2d(in_channels=3, out_channels=10, kernel_size=4, stride=2),
+            LeakyReLU(),
+        )
+
         self.conv1 = Sequential(
             Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=1),
             MaxPool2d(2, 2, padding=0),
@@ -102,13 +104,15 @@ class NetWork(Module):
             Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
-            LeakyReLU(),      
+            LeakyReLU(),
         )
 
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
-        self.linear = Sequential(LeakyReLU(),
-                                 Linear(hidden_size, 15 + uncertainty),
-                                 )
+
+        self.linear = Sequential(
+            LeakyReLU(),
+            Linear(hidden_size, 15 + uncertainty),
+        )
 
     def forward(self, x):
         self.lstm.flatten_parameters()
