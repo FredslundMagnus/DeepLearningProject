@@ -86,7 +86,7 @@ def getvals(defaults):
         s = s_[1:]
         if s in defaults:
             try:
-                defaults[s] = float(args[i + 1])
+                defaults[s] = int(args[i + 1]) if (int(args[i + 1]) - float(args[i + 1])) == 0 else float(args[i + 1])
             except:
                 defaults[s] = args[i + 1]
     return defaults
