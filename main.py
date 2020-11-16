@@ -3,9 +3,11 @@ from environments import Environments
 from Utils.server import isServer, params, serverRun, saveAgent, saveCollector
 from agent import Agent
 from display_input import displayer
+from Utils.debug import disablePrint
 from time import time
 
 if isServer:
+    # the server runs the main function (can be changed)
     def main():
         name, environment, hours, total_agents = params['name'], params['environment'], params['hours'], params['total_agents']
         agent = Agent(**params)
