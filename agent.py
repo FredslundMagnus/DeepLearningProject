@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=10000, discount=0.999, uncertainty=False, update_every=200, double=True, use_distribution=True, **kwargs) -> None:
+    def __init__(self, memory=10000, discount=0.99, uncertainty=False, update_every=200, double=True, use_distribution=True, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))
@@ -23,7 +23,7 @@ class Agent:
         self.memory = ReplayBuffer(memory)
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.softmax
+        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.epsilonGreedy
         self.target_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.placeholder_network = NetWork(uncertainty=self.uncertainty).to(device)
         self.gamma, self.f = discount, 0
@@ -48,7 +48,7 @@ class Agent:
         if self.f % self.update_every == 0:
             self.update_target_network()
         if self.f > self.update_every:
-            for _ in range(3):
+            for _ in range(1):
                 self.TD_learn()
 
     def TD_learn(self):
@@ -90,31 +90,33 @@ class NetWork(Module):
 
         super(NetWork, self).__init__()
 
-        self.color = Sequential(Conv2d(in_channels=3, out_channels=32, kernel_size=6, stride=2),
-                                LeakyReLU(),
-                                Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
-                                MaxPool2d(2, 2, padding=0),
+        self.color = Sequential(Conv2d(in_channels=3, out_channels=10, kernel_size=4, stride=2),
                                 LeakyReLU(),
                                 )
         self.conv1 = Sequential(
-            Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
+            Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=1),
+            MaxPool2d(2, 2, padding=0),
             LeakyReLU(),
-            Conv2d(in_channels=64, out_channels=128, kernel_size=4, stride=1),
+            Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=2),
             LeakyReLU(),
+            Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
+            LeakyReLU(),      
         )
 
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
         self.linear = Sequential(LeakyReLU(),
-                                 Linear(128, 15 + uncertainty),
+                                 Linear(hidden_size, 15 + uncertainty),
                                  )
 
     def forward(self, x):
         self.lstm.flatten_parameters()
         x = self.color(x)
         x = self.conv1(x)
-        # x = x.view(1, -1, self.size_after_conv)
-        # x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
-        x = x.view(-1, 128)
+        x = x.view(1, -1, self.size_after_conv)
+        x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
+        x = x.view(-1, hidden_size)
         x = self.linear(x)
         return x
 

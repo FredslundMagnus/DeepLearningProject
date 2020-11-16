@@ -25,8 +25,8 @@ if isServer:
         saveCollector(collector, name)
     serverRun()
 else:
-    total_agents, display_every = 20, 10000
-    agent = Agent(memory=100000, discount=0.999, uncertainty=False, update_every=100, double=True, use_distribution=True)
+    total_agents, display_every = 20, 5000
+    agent = Agent(memory=50000, discount=0.999, uncertainty=False, update_every=100, double=True, use_distribution=True)
     env = Environments(render=True, envs=['fruitbot' for _ in range(total_agents)])
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):
