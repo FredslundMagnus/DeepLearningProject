@@ -38,6 +38,9 @@ def genExperiments(name, n=1, **params):
 
 # genExperiments('Discount_0.995_dist', environment='fruitbot', discount=0.995, hours=15, use_distribution=1)
 # genExperiments('Discount_0.995_samp', environment='fruitbot', discount=0.995, hours=15, use_distribution=0)
-genExperiments('Test_1', environment='fruitbot', discount=0.995, hours=1, use_distribution=0)
+genExperiments('Dist', environment='fruitbot', use_distribution=1)
+genExperiments('NoDist', environment='fruitbot', use_distribution=0)
+genExperiments('Dist_LowMem', environment='fruitbot', use_distribution=1, memory=50000)
+genExperiments('NoDist_LowMem', environment='fruitbot', use_distribution=0, memory=50000)
 
 file.close()
