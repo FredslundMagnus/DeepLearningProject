@@ -40,10 +40,10 @@ def displayer(state, agent: Agent, collector: Collector):
 def returnplot(returns, x: int = 1000, y: int = 500, xlabel="updates to networks", ylabel="Return (per game)"):
     runnings = [0] * len(returns)
     for i in range(1, len(runnings) + 1):
-        if i < 200:
+        if i < 50:
             runnings[i - 1] = sum(returns[:i]) / i
         else:
-            runnings[i - 1] = sum(returns[(i - 200):i]) / 200
+            runnings[i - 1] = sum(returns[(i - 50):i]) / 50
     fig = plt.figure()
     move_figure(fig, x, y)
     plt.plot(runnings)
