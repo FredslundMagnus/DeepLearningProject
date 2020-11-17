@@ -16,7 +16,7 @@ defaults = {
     'use_distribution': 1,
     'double': 1,
     'total_agents': 20,
-    'calculate_every': 50,
+    'calculate_every': 500,
     'uncertainty': 0,
 }
 
