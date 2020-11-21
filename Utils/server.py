@@ -11,7 +11,7 @@ defaults = {
     'environment': 'fruitbot',
     'hours': 24,
     'memory': 500000,
-    'update_every': 100,
+    'update_every': 500,
     'use_distribution': 1,
     'double': 1,
     'total_agents': 20,

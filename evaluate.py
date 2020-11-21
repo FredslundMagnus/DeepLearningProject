@@ -57,9 +57,25 @@ rMax = {
     'starpilot': 64,
 }
 
-# evaluate('Dist', 'fruitbot')
-# evaluate('Dist_eps', 'fruitbot')
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
 
 for env in environments:
     evaluate(f'Base_{env}', env)
+
+
+
+# Base_bigfish-0 8.064516129032258
+# Base_bossfight-0 0.25
+# Base_caveflyer-0 1.0
+# Base_chaser-0 0.32498905181689125
+# Base_climber-0 0.0
+# Base_coinrun-0 4.2592592592592595
+# Base_dodgeball-0 0.9873417721518988
+# Base_fruitbot-0 22.793478260869566
+# Base_heist-0 0.4878048780487805
+# Base_jumper-0 6.666666666666667
+# Base_leaper-0 4.661654135338346
+# Base_maze-0 1.1111111111111112
+# Base_miner-0 0.15
+# Base_ninja-0 0.0
+# Base_plunder-0 1.8038585209003215
