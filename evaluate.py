@@ -19,6 +19,47 @@ def evaluate(name, environment, n=0):
     enablePrint()
     print(name, sum(rews) / sum(dones))
 
+rMin = {
+    'bigfish': 1, 
+    'bossfight': 0.5, 
+    'caveflyer': 3.5, 
+    'chaser': 0.5, 
+    'climber': 2, 
+    'coinrun': 5, 
+    'dodgeball': 1.5, 
+    'fruitbot': -1.5, 
+    'heist': 3.5, 
+    'jumper': 3, 
+    'leaper': 3, 
+    'maze': 5, 
+    'miner': 1.5, 
+    'ninja': 3.5, 
+    'plunder': 4.5, 
+    'starpilot': 2.5,
+}
 
-evaluate('Dist', 'fruitbot')
-evaluate('Dist_eps', 'fruitbot')
+rMax = {
+    'bigfish': 40, 
+    'bossfight': 13, 
+    'caveflyer': 12, 
+    'chaser': 13, 
+    'climber': 12.6, 
+    'coinrun': 10, 
+    'dodgeball': 19, 
+    'fruitbot': 32.4, 
+    'heist': 10, 
+    'jumper': 10, 
+    'leaper': 10, 
+    'maze': 10, 
+    'miner': 13, 
+    'ninja': 10, 
+    'plunder': 30, 
+    'starpilot': 64,
+}
+
+# evaluate('Dist', 'fruitbot')
+# evaluate('Dist_eps', 'fruitbot')
+environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
+
+for env in environments:
+    evaluate(f'Base_{env}', env)

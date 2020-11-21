@@ -44,6 +44,6 @@ def genExperiments(name, n=1, **params):
 # genExperiments('NoDist_LowMem_eps', environment='fruitbot', use_distribution=0, memory=50000)
 
 for env in environments:
-    genExperiments(f"Base_{env}", environment=env)
+    genExperiments(f"Base_v2_{env}", environment=env)
 
 file.close()

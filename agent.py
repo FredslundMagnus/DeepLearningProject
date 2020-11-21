@@ -14,12 +14,12 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=10000, discount=0.99, uncertainty=False, update_every=200, double=True, use_distribution=True, **kwargs) -> None:
+    def __init__(self, memory=10000, discount=0.995, uncertainty=False, update_every=200, double=True, use_distribution=True, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork(uncertainty=self.uncertainty).to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=5e-4, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(int(memory))
         self.remember = self.memory.remember()
         self.exploration = Exploration()
@@ -86,22 +86,24 @@ class Agent:
 
 class NetWork(Module):
     def __init__(self, uncertainty):
-        self.size_after_conv = 64
+        self.size_after_conv = 128
 
         super(NetWork, self).__init__()
 
         self.color = Sequential(
-            Conv2d(in_channels=3, out_channels=10, kernel_size=4, stride=2),
+            Conv2d(in_channels=3, out_channels=8, kernel_size=1, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=2),
             LeakyReLU(),
         )
 
         self.conv1 = Sequential(
-            Conv2d(in_channels=10, out_channels=16, kernel_size=4, stride=1),
+            Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=1),
             MaxPool2d(2, 2, padding=0),
             LeakyReLU(),
-            Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=2),
+            Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1),
+            Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
             LeakyReLU(),

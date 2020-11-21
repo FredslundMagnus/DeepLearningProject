@@ -2,16 +2,15 @@
 from collector import Collector
 from Utils.debug import checkServer, getvals, profilingStats, showParams
 import pickle
-from agent import Agent
 from typing import List
 isServer = checkServer()
 
 defaults = {
     'name': "Agent",
-    'discount': 0.999,
+    'discount': 0.995,
     'environment': 'fruitbot',
     'hours': 24,
-    'memory': 200000,
+    'memory': 500000,
     'update_every': 100,
     'use_distribution': 1,
     'double': 1,
@@ -28,7 +27,7 @@ def serverRun():
     profilingStats()
 
 
-def saveAgent(agent: Agent, name: str):
+def saveAgent(agent, name: str):
     agent.memory.reset(0)
     agent.memory = None
     agent.remember = None
