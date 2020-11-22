@@ -42,7 +42,7 @@ def genExperiments(name, n=1, **params):
 # genExperiments('NoDist_eps', environment='fruitbot', use_distribution=0)
 # genExperiments('Dist_LowMem_eps', environment='fruitbot', use_distribution=1, memory=50000)
 # genExperiments('NoDist_LowMem_eps', environment='fruitbot', use_distribution=0, memory=50000)
-
+environments = ['bossfight', 'chaser', 'starpilot', 'climber']
 for env in environments:
     genExperiments(f"Base_v2_{env}", environment=env)
 

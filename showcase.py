@@ -15,7 +15,7 @@ def showcase(name, environment, n=0):
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
 
-        if i == 30:
+        if i == 100:
             displayer(obs[0].cpu(), agent, collector)
             plt.waitforbuttonpress()
             
@@ -32,4 +32,4 @@ def showcase(name, environment, n=0):
 # Base_jumper-0 6.25
 
 env = 'jumper'
-showcase(f'Base_{env}', env)
+showcase(f'Base_v2_{env}', env)

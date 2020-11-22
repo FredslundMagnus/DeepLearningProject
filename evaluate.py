@@ -10,14 +10,15 @@ def evaluate(name, environment, n=0):
     agent.explore = agent.exploration.greedy
     env = Environments(render=False, envs=[environment for _ in range(20)])
     rews, dones = [], []
-    for i in range(2000):
+    for i in range(5000):
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
         rews.append(sum(rew))
         dones.append(sum(done))
     enablePrint()
-    print(name, sum(rews) / sum(dones))
+    score = sum(rews) / sum(dones)
+    print(name.ljust(20, ' '), int(100*(score-rMin[environment]) / (rMax[environment]-rMin[environment]))/100,"  ",score)
 
 rMin = {
     'bigfish': 1, 
@@ -58,9 +59,9 @@ rMax = {
 }
 
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
-
+environments = ['bigfish', 'fruitbot', 'jumper', 'leaper']
 for env in environments:
-    evaluate(f'Base_{env}', env)
+    evaluate(f'Base_v2_{env}', env)
 
 
 
