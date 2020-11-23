@@ -2,6 +2,7 @@
 from random import random
 from torch.nn.functional import softmax
 from numpy.random import choice
+from Utils.server import isServer
 
 
 class Exploration():
@@ -10,7 +11,8 @@ class Exploration():
 
     @property
     def epsilon(self):
-        return max(0.0, 1 - self.counter / 5000000)
+        K = 20000000 if isServer else 1000000
+        return max(0.05, 1 - self.counter / K)
 
     @property
     def K(self):

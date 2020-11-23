@@ -1,6 +1,7 @@
 import pickle
 from environments import Environments
 from display_input import displayer
+import matplotlib.pyplot as plt
 
 
 def showcase(name, environment, n=0):
@@ -14,8 +15,21 @@ def showcase(name, environment, n=0):
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
 
-        if i == 30:
+        if i == 100:
             displayer(obs[0].cpu(), agent, collector)
+            plt.waitforbuttonpress()
+            
 
+# Base_bigfish-0 5.264150943396227
+# Base_bossfight-0 0.0
+# Base_caveflyer-0 0.575
+# Base_chaser-0 0.30036529008996543
+# Base_climber-0 0.0
+# Base_coinrun-0 4.2592592592592595
+# Base_dodgeball-0 0.8201438848920863
+# Base_fruitbot-0 22.11111111111111
+# Base_heist-0 0.7317073170731707
+# Base_jumper-0 6.25
 
-showcase('Dist_eps', 'fruitbot')
+env = 'jumper'
+showcase(f'Base_v2_{env}', env)
