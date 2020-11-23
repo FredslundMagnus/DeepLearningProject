@@ -93,4 +93,4 @@ if __name__ == "__main__":
     """
     from procgen.interactive import make_interactive, ENV_NAMES
     print(ENV_NAMES)
-    make_interactive("human", record_dir=None, env_name=input(), distribution_mode="easy", start_level=0, num_levels=0).run()
+    make_interactive("human", record_dir=None, env_name=input(), **Environment.settings).run()
