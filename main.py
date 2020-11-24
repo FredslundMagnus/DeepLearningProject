@@ -6,9 +6,6 @@ from display_input import displayer
 from Utils.debug import disablePrint
 from time import time
 
-
-if 12321 ===!! asdasd:
-    print("wtf how")
 if isServer:
     # the server runs the main function (can be changed)
     def main():
@@ -29,7 +26,7 @@ if isServer:
     serverRun()
 else:
     total_agents, display_every = 20, 5000
-    agent = Agent(memory=50000, discount=0.995, uncertainty=False, update_every=100, double=True, use_distribution=True)
+    agent = Agent(memory=3000, discount=0.995, uncertainty=False, update_every=100, double=True, use_distribution=False, reward_normalization=True)
     env = Environments(render=True, envs=['fruitbot' for _ in range(total_agents)])
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):

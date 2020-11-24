@@ -1,5 +1,4 @@
 
-from collector import Collector
 from Utils.debug import checkServer, getvals, profilingStats, showParams
 import pickle
 from typing import List
@@ -16,7 +15,9 @@ defaults = {
     'double': 1,
     'total_agents': 20,
     'calculate_every': 500,
-    'uncertainty': 0,
+    'uncertainty': 1,
+    'reward_normalization': 1,
+
 }
 
 params = getvals(defaults) if isServer else None
@@ -37,7 +38,7 @@ def saveAgent(agent, name: str):
         pickle.dump(agent, open(f"trainlocally/{'-'.join(name.split('-')[:-1])}/{name}", "wb"))
 
 
-def saveCollector(collector: Collector, name: str):
+def saveCollector(collector, name: str):
     if isServer:
         pickle.dump(collector, open(f"outputs/{'-'.join(name.split('-')[:-1])}/Collectors/{name}.collect", "wb"))
     else:
