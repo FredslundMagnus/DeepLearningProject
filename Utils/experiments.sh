@@ -1,4 +1,6 @@
 #!/bin/sh
+
+
 mkdir ../outputs/Base_v2_bossfight/
 mkdir ../outputs/Base_v2_bossfight/Markdown
 mkdir ../outputs/Base_v2_bossfight/Agents
