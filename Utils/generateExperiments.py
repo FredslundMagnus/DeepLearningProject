@@ -1,3 +1,4 @@
+from os import sep
 from server import defaults
 
 file = open('Utils/experiments.sh', 'w')
@@ -7,6 +8,7 @@ features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents', "Collectors
 
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
 environments = ['bigfish', 'fruitbot', 'jumper', 'leaper']
+
 
 def check(params):
     for name in params:
@@ -42,7 +44,7 @@ def genExperiments(name, n=1, **params):
 # genExperiments('NoDist_eps', environment='fruitbot', use_distribution=0)
 # genExperiments('Dist_LowMem_eps', environment='fruitbot', use_distribution=1, memory=50000)
 # genExperiments('NoDist_LowMem_eps', environment='fruitbot', use_distribution=0, memory=50000)
-environments = ['bossfight', 'chaser', 'starpilot', 'climber']
+environments = ['caveflyer', 'coinrun', 'dodgeball', 'heist', 'maze', 'miner', 'ninja', 'plunder']
 for env in environments:
     genExperiments(f"Base_v2_{env}", environment=env)
 
