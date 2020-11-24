@@ -1,3 +1,4 @@
+from os import sep
 from server import defaults
 
 file = open('Utils/experiments.sh', 'w')
@@ -7,6 +8,7 @@ features, folders = set(defaults.keys()), ['', 'Markdown', 'Agents', "Collectors
 
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
 environments = ['bigfish', 'fruitbot', 'jumper', 'leaper']
+
 
 def check(params):
     for name in params:

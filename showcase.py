@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def showcase(name, environment, n=0):
     name = name + '-' + str(n)
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
-    agent.explore = agent.exploration.greedy
+    # agent.explore = agent.exploration.greedy
     env = Environments(render=True, envs=[environment])
     collector = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Collectors/{name}.collect", "rb"))
     for i in range(10000):
@@ -17,8 +17,7 @@ def showcase(name, environment, n=0):
 
         if i == 100:
             displayer(obs[0].cpu(), agent, collector)
-            plt.waitforbuttonpress()
-            
+
 
 # Base_bigfish-0 5.264150943396227
 # Base_bossfight-0 0.0
@@ -31,5 +30,5 @@ def showcase(name, environment, n=0):
 # Base_heist-0 0.7317073170731707
 # Base_jumper-0 6.25
 
-env = 'jumper'
+env = 'starpilot'
 showcase(f'Base_v2_{env}', env)
