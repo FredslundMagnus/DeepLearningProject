@@ -1,4 +1,3 @@
-[W TensorIterator.cpp:924] Warning: Mixed memory format inputs detected while calling the operator. The operator will output channels_last tensor even if some of the inputs are not in channels_last format. (function operator())
   File "main.py", line 10
     if 12321 ===!! asdasd:
                ^
@@ -6,15 +5,15 @@ SyntaxError: invalid syntax
 
 ------------------------------------------------------------
 Sender: LSF System <lsfadmin@n-62-11-14>
-Subject: Job 8416079: <Base_v2_starpilot_0> in cluster <dcc> Exited
+Subject: Job 8416080: <Base_v2_climber_0> in cluster <dcc> Exited
 
-Job <Base_v2_starpilot_0> was submitted from host <n-62-27-20> by user <s183914> in cluster <dcc> at Mon Nov 23 22:15:25 2020
-Job was executed on host(s) <n-62-11-14>, in queue <gpuv100>, as user <s183914> in cluster <dcc> at Mon Nov 23 23:51:47 2020
+Job <Base_v2_climber_0> was submitted from host <n-62-27-20> by user <s183914> in cluster <dcc> at Mon Nov 23 22:15:25 2020
+Job was executed on host(s) <n-62-11-14>, in queue <gpuv100>, as user <s183914> in cluster <dcc> at Mon Nov 23 23:51:52 2020
 </zhome/ea/9/137501> was used as the home directory.
 </zhome/ea/9/137501/Desktop/DeepAI/DeepLearningProject/Utils> was used as the working directory.
-Started at Mon Nov 23 23:51:47 2020
-Terminated at Mon Nov 23 23:51:49 2020
-Results reported at Mon Nov 23 23:51:49 2020
+Started at Mon Nov 23 23:51:52 2020
+Terminated at Mon Nov 23 23:51:54 2020
+Results reported at Mon Nov 23 23:51:54 2020
 
 Your job looked like:
 
@@ -50,8 +49,8 @@ Resource usage summary:
     Max Swap :                                   -
     Max Processes :                              -
     Max Threads :                                -
-    Run time :                                   1 sec.
-    Turnaround time :                            5784 sec.
+    Run time :                                   4 sec.
+    Turnaround time :                            5789 sec.
 
 The output (if any) is above this job summary.
 
