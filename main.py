@@ -7,8 +7,6 @@ from Utils.debug import disablePrint
 from time import time
 
 
-if 12321 ===!! asdasd:
-    print("wtf how")
 if isServer:
     # the server runs the main function (can be changed)
     def main():
