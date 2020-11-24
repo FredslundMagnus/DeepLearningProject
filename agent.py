@@ -19,8 +19,7 @@ class Agent:
         self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(list(self.network.color.parameters()) + list(self.network.conv1.parameters()) + list(self.network.lstm.parameters()) + list(self.network.linear.parameters()), lr=1e-4, weight_decay=1e-5)
-        self.optimizer2 = Adam(self.network.exploration_network.parameters(), lr=1e-4, weight_decay=1e-5)
+        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(int(memory))
         self.remember = self.memory.remember()
         self.exploration = Exploration()
@@ -68,18 +67,20 @@ class Agent:
         output_this_state = self.network(obs)
         vs = torch.gather(output_this_state[0], 1, action)
         td = ((reward-self.memory.reward_avg)/self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
-        loss = self.criterion(vs, td)
-        loss.backward(retain_graph=self.uncertainty)
-        self.optimizer.step()
-        self.optimizer.zero_grad()
 
         if self.uncertainty:
             estimate_uncertainties = torch.gather(output_this_state[1], 1, action)
             true_uncertainty = abs(td - vs.detach())
-            loss = self.criterion(estimate_uncertainties, true_uncertainty)
-            loss.backward()
-            self.optimizer2.step()
-            self.optimizer2.zero_grad()          
+            guess = torch.cat((vs, estimate_uncertainties), 1)
+            label = torch.cat((td, true_uncertainty), 1)
+            loss = self.criterion(guess, label)
+        else:
+            loss = self.criterion(vs, td)
+
+        loss.backward()
+        self.optimizer.step()
+        self.optimizer.zero_grad()
+
 
         # torch.cuda.empty_cache()
 
@@ -142,7 +143,8 @@ class NetWork(Module):
         x = x.view(1, -1, self.size_after_conv)
         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         x = x.view(-1, hidden_size)
-        y = self.exploration_network(x)
+        y = x.clone()
+        y = self.exploration_network(y.detach())
         x = self.linear(x)
         return x, y
 
