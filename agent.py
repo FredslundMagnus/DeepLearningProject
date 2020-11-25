@@ -86,7 +86,7 @@ class Agent:
 
     def convert_uncertainty_values(self, vals, uncertainties):
         if self.uncertainty:
-            return vals + uncertainties
+            return vals + uncertainties/2
         else:
             return vals
 
