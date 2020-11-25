@@ -16,7 +16,7 @@ defaults = {
     'total_agents': 20,
     'calculate_every': 500,
     'uncertainty': 1,
-    'reward_normalization': 1,
+    'reward_normalization': 0,
 
 }
 
