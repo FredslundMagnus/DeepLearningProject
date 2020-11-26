@@ -78,7 +78,7 @@ for f in range(0, 10000000):
     if save:
         with open(f"Encoders/encoder{f}.obj", "wb") as file:
             print(f"Creating encoder{f}.obj")
-            pickle.dump(NetWork().cpu(), file)
+            pickle.dump(network, file)
         save = False
     if f % 10 == 0:
         print(f, str(float(loss.detach()))[:10])
