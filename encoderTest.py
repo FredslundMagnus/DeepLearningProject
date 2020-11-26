@@ -7,14 +7,17 @@ from helpers import device, count_parameters
 from display_input import imageBig
 import matplotlib.pyplot as plt
 from pynput import keyboard
+import pickle
 
-showPrint = False
+showPrint, save = False, False
 
 
 def on_press(key):
-    global showPrint
+    global showPrint, save
     if keyboard.Key.f2 == key:
         showPrint = True
+    if keyboard.Key.f3 == key:
+        save = True
 
 
 keyboard.Listener(on_press=on_press).start()
@@ -34,11 +37,11 @@ class NetWork(Module):
         self.decoder = Sequential(
             ConvTranspose2d(in_channels=12, out_channels=16, kernel_size=4, stride=3),
             LeakyReLU(),
-            ConvTranspose2d(in_channels=16, out_channels=20, kernel_size=5, stride=2),
+            ConvTranspose2d(in_channels=16, out_channels=24, kernel_size=5, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=20, out_channels=8, kernel_size=2, stride=1),
+            Conv2d(in_channels=24, out_channels=12, kernel_size=2, stride=1),
             LeakyReLU(),
-            Conv2d(in_channels=8, out_channels=3, kernel_size=1, stride=1),
+            Conv2d(in_channels=12, out_channels=3, kernel_size=1, stride=1),
         )
 
     def forward(self, x):
@@ -72,5 +75,10 @@ for f in range(0, 10000000):
         imageBig(obs[0].cpu(), y=200, x=600)
         imageBig(guess[0].detach().cpu().clamp(-1, 1), y=200, x=1200)
         showPrint = False
+    if save:
+        with open(f"Encoders/encoder{f}.obj", "wb") as file:
+            print(f"Creating encoder{f}.obj")
+            pickle.dump(NetWork().cpu(), file)
+        save = False
     if f % 10 == 0:
         print(f, str(float(loss.detach()))[:10])
