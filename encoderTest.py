@@ -7,14 +7,17 @@ from helpers import device, count_parameters
 from display_input import imageBig
 import matplotlib.pyplot as plt
 from pynput import keyboard
+import pickle
 
-showPrint = False
+showPrint, save = False, False
 
 
 def on_press(key):
-    global showPrint
+    global showPrint, save
     if keyboard.Key.f2 == key:
         showPrint = True
+    if keyboard.Key.f3 == key:
+        save = True
 
 
 keyboard.Listener(on_press=on_press).start()
@@ -40,7 +43,7 @@ class NetWork(Module):
             LeakyReLU(),
             Conv2d(in_channels=16, out_channels=8, kernel_size=2, stride=1),
             LeakyReLU(),
-            Conv2d(in_channels=8, out_channels=3, kernel_size=1, stride=1),
+            Conv2d(in_channels=12, out_channels=3, kernel_size=1, stride=1),
         )
 
     def forward(self, x):
@@ -50,7 +53,7 @@ class NetWork(Module):
 
 
 total_agents, display_every = 20, 5000
-agent = Agent(memory=30000, discount=0.995, uncertainty=False, update_every=100, double=True, use_distribution=False, reward_normalization=True)
+agent = Agent(memory=50000, discount=0.995, uncertainty=False, update_every=100, double=True, use_distribution=False, reward_normalization=True)
 env = Environments(render=True, envs=['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot'])
 network = NetWork().to(device)
 print("Number of parameters in network:", count_parameters(network))
@@ -74,5 +77,10 @@ for f in range(0, 10000000):
         imageBig(obs[0].cpu(), y=200, x=600)
         imageBig(guess[0].detach().cpu().clamp(-1, 1), y=200, x=1200)
         showPrint = False
+    if save:
+        with open(f"Encoders/encoder{f}.obj", "wb") as file:
+            print(f"Creating encoder{f}.obj")
+            pickle.dump(network, file)
+        save = False
     if f % 10 == 0:
         print(f, str(float(loss.detach()))[:10])
