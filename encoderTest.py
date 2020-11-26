@@ -25,18 +25,20 @@ class NetWork(Module):
         super(NetWork, self).__init__()
 
         self.encoder = Sequential(
-            Conv2d(in_channels=3, out_channels=8, kernel_size=4, stride=2),
+            Conv2d(in_channels=3, out_channels=16, kernel_size=4, stride=2),
             LeakyReLU(),
-            Conv2d(in_channels=8, out_channels=12, kernel_size=4, stride=3),
+            Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=2),
+            LeakyReLU(),
+            Conv2d(in_channels=32, out_channels=10, kernel_size=3, stride=2),
             LeakyReLU(),
         )
 
         self.decoder = Sequential(
-            ConvTranspose2d(in_channels=12, out_channels=16, kernel_size=4, stride=3),
+            ConvTranspose2d(in_channels=10, out_channels=32, kernel_size=5, stride=3, padding=1),
             LeakyReLU(),
-            ConvTranspose2d(in_channels=16, out_channels=20, kernel_size=5, stride=2),
+            ConvTranspose2d(in_channels=32, out_channels=16, kernel_size=5, stride=3),
             LeakyReLU(),
-            Conv2d(in_channels=20, out_channels=8, kernel_size=2, stride=1),
+            Conv2d(in_channels=16, out_channels=8, kernel_size=2, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=8, out_channels=3, kernel_size=1, stride=1),
         )
