@@ -27,10 +27,10 @@ def genExperiments(name, n=1, **params):
     for i in range(n):
         file.write(f'bsub -o "../outputs/{name}/Markdown/{name}_{i}.md" -J "{name}_{i}" -P "{name}-{i} {" ".join(f"-{name} {value}" for name, value in params.items())}" < submit.sh\n')
 
-genExperiments('NoNormalizationNoUncertainty', environment='fruitbot', use_distribution=0, uncertainty=0, reward_normalization=0, memory=500000)
-genExperiments('YesNormalizationNoUncertainty', environment='fruitbot', use_distribution=0, uncertainty=0, reward_normalization=1, memory=500000)
-genExperiments('NoNormalizationYesUncertainty', environment='fruitbot', use_distribution=0, uncertainty=1, reward_normalization=0, memory=500000)
-genExperiments('YesNormalizationYesUncertainty', environment='fruitbot', use_distribution=0, uncertainty=1, reward_normalization=1, memory=500000)
+#genExperiments('NoNormalizationNoUncertainty', environment='fruitbot', use_distribution=0, uncertainty=0, reward_normalization=0, memory=500000)
+#genExperiments('YesNormalizationNoUncertainty', environment='fruitbot', use_distribution=0, uncertainty=0, reward_normalization=1, memory=500000)
+#genExperiments('NoNormalizationYesUncertainty', environment='fruitbot', use_distribution=0, uncertainty=1, reward_normalization=0, memory=500000)
+#genExperiments('YesNormalizationYesUncertainty', environment='fruitbot', use_distribution=0, uncertainty=1, reward_normalization=1, memory=500000)
 
 # for environment in ['bigfish', 'chaser', 'fruitbot']:
 #     genExperiments(f'{environment}_normalised', environment=environment)
@@ -48,10 +48,10 @@ genExperiments('YesNormalizationYesUncertainty', environment='fruitbot', use_dis
 # genExperiments('NoDist_eps', environment='fruitbot', use_distribution=0)
 # genExperiments('Dist_LowMem_eps', environment='fruitbot', use_distribution=1, memory=50000)
 # genExperiments('NoDist_LowMem_eps', environment='fruitbot', use_distribution=0, memory=50000)
-environments = ['bossfight', 'chaser', 'starpilot', 'climber']
+environments = ['bigfish', 'chaser', 'starpilot', 'dodgeball']
 
-
-#for env in environments:
-#    genExperiments(f"Base_v2_{env}", environment=env)
+for env in environments:
+    genExperiments(f"Uncertainty=0.5{env}", environment=env, uncertainty=1, reward_normalization=0, memory=500000)
+    genExperiments(f"NoUncertainty{env}", environment=env, uncertainty=0, reward_normalization=0, memory=500000)
 
 file.close()
