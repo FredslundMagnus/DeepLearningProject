@@ -9,7 +9,7 @@ from memory import ReplayBuffer
 from exploration import Exploration
 import torch
 from helpers import device, hidden_size, count_parameters
-from torch import cat as concatenation
+from torch import cat as concatenation, float32
 import pickle
 
 
@@ -182,26 +182,3 @@ class NetWork(Module):
         y = self.exploration_network(y.detach())
         x = self.linear(x)
         return x, y
-
-
-if __name__ == "__main__":
-    from torch import rand
-    from time import time
-    from helpers import stack
-    a = rand((1, 3, 64, 64))
-    agent = Agent()
-    for _ in range(1000):
-        agent.remember(a, 23, a, 0.0)
-
-    sample = agent.memory.sample(20)
-    start = time()
-    for i in range(10000):
-        stack(sample)
-    end = time()
-    print(end - start)
-    sample = agent.memory.sample(25)
-    start = time()
-    for i in range(10000):
-        stack(sample)
-    end = time()
-    print(end - start)
