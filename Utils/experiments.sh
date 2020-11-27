@@ -1,6 +1,6 @@
 #!/bin/sh
-mkdir ../outputs/greedybigfish/
-mkdir ../outputs/greedybigfish/Markdown
-mkdir ../outputs/greedybigfish/Agents
-mkdir ../outputs/greedybigfish/Collectors
-bsub -o "../outputs/greedybigfish/Markdown/greedybigfish_0.md" -J "greedybigfish_0" -P "greedybigfish-0 -environment bigfish -memory 500000" < submit.sh
+mkdir ../outputs/epsgreedybigfish/
+mkdir ../outputs/epsgreedybigfish/Markdown
+mkdir ../outputs/epsgreedybigfish/Agents
+mkdir ../outputs/epsgreedybigfish/Collectors
+bsub -o "../outputs/epsgreedybigfish/Markdown/epsgreedybigfish_0.md" -J "epsgreedybigfish_0" -P "epsgreedybigfish-0 -environment bigfish -memory 500000" < submit.sh
