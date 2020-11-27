@@ -14,13 +14,12 @@ import pickle
 
 
 class Agent:
-    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, hidden_size=40, **kwargs) -> None:
+    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, hidden_size=400, **kwargs) -> None:
         self.uncertainty = uncertainty
-        self.network = NetWork().to(device)
+        self.hidden_size = hidden_size
+        self.network = NetWork(self.hidden_size).to(device)
         self.createEncoder(encoder)
         self.network.hasEncoder = self.hasEncoder
-        self.network.hidden_size = self.hidden_size
-        self.hidden_size = hidden_size
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
         self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
@@ -36,12 +35,10 @@ class Agent:
         elif exploration == 'greedyintosoftmax':
             self.explore = self.exploration.greedyintosoftmax
 
-        self.target_network = NetWork().to(device)
+        self.target_network = NetWork(self.hidden_size).to(device)
         self.target_network.hasEncoder = self.hasEncoder
-        self.target_network.hidden_size = self.hidden_size
-        self.placeholder_network = NetWork().to(device)
+        self.placeholder_network = NetWork(self.hidden_size).to(device)
         self.placeholder_network.hasEncoder = self.hasEncoder
-        self.placeholder_network.hidden_size = self.hidden_size
         self.gamma, self.f = discount, 0
         self.update_every, self.double, self.use_distribution = update_every, double, use_distribution
         self.counter = 0
@@ -120,8 +117,9 @@ class Agent:
 
 
 class NetWork(Module):
-    def __init__(self):
+    def __init__(self, h):
         self.size_after_conv = 128
+        self.hidden_size = h
 
         super(NetWork, self).__init__()
 
@@ -151,16 +149,16 @@ class NetWork(Module):
             LeakyReLU(),
         )
 
-        self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
+        self.lstm = LSTM(self.size_after_conv, self.hidden_size, 1)
 
         self.linear = Sequential(
             LeakyReLU(),
-            Linear(hidden_size, 15),
+            Linear(self.hidden_size, 15),
         )
 
         self.exploration_network = Sequential(
             LeakyReLU(),
-            Linear(hidden_size, 20),
+            Linear(self.hidden_size, 20),
             LeakyReLU(),
             Linear(20, 20),
             LeakyReLU(),
@@ -176,7 +174,7 @@ class NetWork(Module):
             x = self.conv1(x)
         x = x.view(1, -1, self.size_after_conv)
         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
-        x = x.view(-1, hidden_size)
+        x = x.view(-1, self.hidden_size)
         y = x.clone()
         y = self.exploration_network(y.detach())
         x = self.linear(x)

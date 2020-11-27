@@ -25,66 +25,66 @@ def on_press(key):
 keyboard.Listener(on_press=on_press).start()
 
 
-class NetWork(Module):
-    def __init__(self):
-        self.size_after_conv = 128
+# class NetWork(Module):
+#     def __init__(self):
+#         self.size_after_conv = 128
 
-        super(NetWork, self).__init__()
+#         super(NetWork, self).__init__()
 
-        self.color = Sequential(
-            Conv2d(in_channels=3, out_channels=8, kernel_size=1, stride=1),
-            LeakyReLU(),
-            Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=2),
-            LeakyReLU(),
-        )
+#         self.color = Sequential(
+#             Conv2d(in_channels=3, out_channels=8, kernel_size=1, stride=1),
+#             LeakyReLU(),
+#             Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=2),
+#             LeakyReLU(),
+#         )
 
-        self.conv1 = Sequential(
-            Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=1),
-            MaxPool2d(2, 2, padding=0),
-            LeakyReLU(),
-            Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
-            LeakyReLU(),
-            Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
-            LeakyReLU(),
-            Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
-            LeakyReLU(),
-        )
+#         self.conv1 = Sequential(
+#             Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=1),
+#             MaxPool2d(2, 2, padding=0),
+#             LeakyReLU(),
+#             Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
+#             LeakyReLU(),
+#             Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
+#             LeakyReLU(),
+#             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
+#             LeakyReLU(),
+#         )
 
-        self.fromEncoder = Sequential(
-            Conv2d(in_channels=12, out_channels=32, kernel_size=4, stride=2),
-            LeakyReLU(),
-            Conv2d(in_channels=32, out_channels=self.size_after_conv, kernel_size=4, stride=1),
-            LeakyReLU(),
-        )
+#         self.fromEncoder = Sequential(
+#             Conv2d(in_channels=12, out_channels=32, kernel_size=4, stride=2),
+#             LeakyReLU(),
+#             Conv2d(in_channels=32, out_channels=self.size_after_conv, kernel_size=4, stride=1),
+#             LeakyReLU(),
+#         )
 
-        self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
+#         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
 
-        self.linear = Sequential(
-            LeakyReLU(),
-            Linear(hidden_size, 15),
-        )
+#         self.linear = Sequential(
+#             LeakyReLU(),
+#             Linear(hidden_size, 15),
+#         )
 
-        self.exploration_network = Sequential(
-            LeakyReLU(),
-            Linear(hidden_size, hidden_size),
-            LeakyReLU(),
-            Linear(hidden_size, 15),
-        )
+#         self.exploration_network = Sequential(
+#             LeakyReLU(),
+#             Linear(hidden_size, hidden_size),
+#             LeakyReLU(),
+#             Linear(hidden_size, 15),
+#         )
 
-    def forward(self, x):
-        self.lstm.flatten_parameters()
-        if self.hasEncoder:
-            x = self.fromEncoder(x)
-        else:
-            x = self.color(x)
-            x = self.conv1(x)
-        x = x.view(1, -1, self.size_after_conv)
-        x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
-        x = x.view(-1, hidden_size)
-        y = x.clone()
-        y = self.exploration_network(y.detach())
-        x = self.linear(x)
-        return x, y
+#  def forward(self, x):
+#       self.lstm.flatten_parameters()
+#        if self.hasEncoder:
+#             x = self.fromEncoder(x)
+#         else:
+#             x = self.color(x)
+#             x = self.conv1(x)
+#         x = x.view(1, -1, self.size_after_conv)
+#         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
+#         x = x.view(-1, hidden_size)
+#         y = x.clone()
+#         y = self.exploration_network(y.detach())
+#         x = self.linear(x)
+#         return x, y
 
 
 if isServer:

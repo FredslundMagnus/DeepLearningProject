@@ -6,7 +6,6 @@ from display_input import displayer
 from Utils.debug import disablePrint
 from time import time
 from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential, ReLU
-from helpers import hidden_size
 from pynput import keyboard
 from display_input import showFilters, returnplot
 import matplotlib.pyplot as plt

@@ -73,6 +73,10 @@ class Environments:
         except:
             agent.hasEncoder = False
             agent.network.hasEncoder = False
+        try:
+            self.hidden_size = agent.hidden_size
+        except:
+            self.hidden_size = hidden_size
         self.envs = [Environment.create(name, render and not bool(i)) for i, name in enumerate(envs)]
         self.obs, self.hn, self.cn = tuple(zip(*[self.reset(env, True, None, None, None) for env in self.envs]))
 
@@ -85,7 +89,7 @@ class Environments:
     def reset(self, env, done, obs, hn, cn):
         if done:
             env.close()
-            return clean(env.reset(), self.agent), torch.zeros(1, 1, hidden_size, device=device), torch.zeros(1, 1, hidden_size, device=device)
+            return clean(env.reset(), self.agent), torch.zeros(1, 1, self.hidden_size, device=device), torch.zeros(1, 1, self.hidden_size, device=device)
         return obs, hn.detach(), cn.detach()
 
     def start(self):
