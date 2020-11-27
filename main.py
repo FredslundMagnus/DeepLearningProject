@@ -6,10 +6,6 @@ from display_input import displayer
 from Utils.debug import disablePrint
 from time import time
 
-
-
-if adsad !"#! asdsad":
-    print(NOWAY)
 if isServer:
     # the server runs the main function (can be changed)
     def main():

@@ -16,7 +16,7 @@ class Exploration():
 
     @property
     def K(self):
-        return max(0.005, 5000 / self.counter)
+        return max(0.005, 100000 / self.counter)
 
     def softmax(self, vals):
         self.counter += 1
@@ -35,3 +35,12 @@ class Exploration():
         if self.counter % 1000 == 1:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return int(choice(15, 1)) if random() < self.epsilon else vals.detach().cpu().numpy().argmax()
+
+    def epsintosoftmax(self, vals):
+        self.counter += 1
+        if self.counter % 1000 == 1:
+            print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
+        if self.counter < 20000000:
+            return int(choice(15, 1)) if random() < self.epsilon else vals.detach().cpu().numpy().argmax()
+        else:
+            return int(choice(15, 1, p=softmax(vals*10, dim=0).detach().cpu().numpy()))

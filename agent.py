@@ -23,7 +23,7 @@ class Agent:
         self.memory = ReplayBuffer(int(memory))
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore =self.exploration.epsilonGreedy
+        self.explore =self.exploration.greedy
         self.target_network = NetWork().to(device)
         self.placeholder_network = NetWork().to(device)
         self.gamma, self.f = discount, 0
