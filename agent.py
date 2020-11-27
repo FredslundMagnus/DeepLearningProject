@@ -14,11 +14,13 @@ import pickle
 
 
 class Agent:
-    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, **kwargs) -> None:
+    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, hidden_size=40, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork().to(device)
         self.createEncoder(encoder)
         self.network.hasEncoder = self.hasEncoder
+        self.network.hidden_size = self.hidden_size
+        self.hidden_size = hidden_size
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
         self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
@@ -36,8 +38,10 @@ class Agent:
 
         self.target_network = NetWork().to(device)
         self.target_network.hasEncoder = self.hasEncoder
+        self.target_network.hidden_size = self.hidden_size
         self.placeholder_network = NetWork().to(device)
         self.placeholder_network.hasEncoder = self.hasEncoder
+        self.placeholder_network.hidden_size = self.hidden_size
         self.gamma, self.f = discount, 0
         self.update_every, self.double, self.use_distribution = update_every, double, use_distribution
         self.counter = 0

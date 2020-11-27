@@ -10,6 +10,18 @@ from helpers import hidden_size
 from pynput import keyboard
 from display_input import showFilters, returnplot
 import matplotlib.pyplot as plt
+showPrint, save = False, False
+
+
+def on_press(key):
+    global showPrint, save
+    if keyboard.Key.f2 == key:
+        showPrint = True
+    if keyboard.Key.f3 == key:
+        save = True
+
+
+keyboard.Listener(on_press=on_press).start()
 
 
 total_agents, display_every = 20, 5000
@@ -26,6 +38,7 @@ for f in range(1, 10000000):
 
     if showPrint:
         plt.close('all')
-        showFilters(obs[0], y=200, x=600)
-        returnplot(collector.all_return, x=1200, y=200)
+        displayer(obs[0].cpu(), agent, collector)
+        # showFilters(obs[0], y=200, x=600)
+        # returnplot(collector.all_return, x=1200, y=200)
         showPrint = False
