@@ -51,6 +51,6 @@ def genExperiments(name, n=1, **params):
 environments = ['bigfish']
 
 for env in environments:
-    genExperiments(f"softmax{env}", environment=env, memory=500000, exploration='softmax')
+    genExperiments(f"greedyintosoftmax{env}", environment=env, memory=500000, exploration='greedyintosoftmax')
 
 file.close()
