@@ -156,11 +156,11 @@ class NetWork(Module):
 
         self.exploration_network = Sequential(
             LeakyReLU(),
-            Linear(hidden_size, hidden_size/2),
+            Linear(hidden_size, 20),
             LeakyReLU(),
-            Linear(hidden_size/2, hidden_size/2),
+            Linear(20, 20),
             LeakyReLU(),
-            Linear(hidden_size/2, 15),
+            Linear(20, 15),
         )
 
     def forward(self, x):
