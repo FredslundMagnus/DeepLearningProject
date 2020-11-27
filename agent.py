@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, **kwargs) -> None:
+    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork().to(device)
         self.createEncoder(encoder)
