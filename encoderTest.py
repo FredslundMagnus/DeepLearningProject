@@ -52,7 +52,7 @@ class NetWork(Module):
 
 total_agents, display_every = 20, 5000
 agent = Agent(memory=50000, discount=0.995, uncertainty=False, update_every=100, double=True, use_distribution=False, reward_normalization=True)
-env = Environments(render=True, envs=['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot'])
+env = Environments(render=True, envs=['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot'], agent=agent)
 network = NetWork().to(device)
 print("Number of parameters in network:", count_parameters(network))
 print("Number of parameters in encoder:", count_parameters(network.encoder))

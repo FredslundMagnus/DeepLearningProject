@@ -8,7 +8,7 @@ def showcase(name, environment, n=0):
     name = name + '-' + str(n)
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
     # agent.explore = agent.exploration.greedy
-    env = Environments(render=True, envs=[environment])
+    env = Environments(render=True, envs=[environment], agent=agent)
     collector = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Collectors/{name}.collect", "rb"))
     for i in range(10000):
         obs, hn, cn = env.start()

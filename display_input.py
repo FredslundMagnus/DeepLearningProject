@@ -33,11 +33,11 @@ def displayer(state, agent: Agent, collector: Collector):
     returnplot(dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)
     parametres(agent, x=1300, y=0)
     imageBig(state, x=700, y=500)
-    filter5(state, agent, x=1300, y=500)
-    filterColor(state, agent, x=700, y=0)
+    showFilters(agent.network.conv1(agent.network.color(state.to(device))), x=1300, y=500)
+    showFilters(agent.network.color(state.to(device)), x=700, y=0)
 
 
-def returnplot(returns, x: int = 1000, y: int = 500, xlabel="updates to networks", ylabel="Return (per game)"):
+def returnplot(returns, x: int = 1000, y: int = 500, xlabel=None, ylabel="Return (per game)"):
     runnings = [0] * len(returns)
     for i in range(1, len(runnings) + 1):
         if i < 50:
@@ -78,28 +78,44 @@ def imageBig(state, x: int = 1000, y: int = 0):
     plt.show(block=False)
 
 
-def filter5(state, agent: Agent, x: int = 1000, y: int = 0):
-    # plt.figure()
-    filters = agent.network.conv1(agent.network.color(state.to(device))).detach().cpu().numpy().squeeze(0)
+# def filter5(state, agent: Agent, x: int = 1000, y: int = 0):
+#     # plt.figure()
+#     filters = agent.network.conv1(agent.network.color(state.to(device))).detach().cpu().numpy().squeeze(0)
+#     n = filters.shape[0]
+#     v = math.ceil(math.sqrt(n))
+#     fig, axs = plt.subplots(v, v)
+#     move_figure(fig, x, y)
+#     for i in range(n):
+#         im = axs[i // v, i % v].imshow(filters[i], cmap='gray', vmin=float(filters.min()), vmax=float(filters.max()))
+
+#     fig.subplots_adjust(right=0.8)
+#     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+#     fig.colorbar(im, cax=cbar_ax)
+#     plt.show(block=False)
+
+
+# def filterColor(state, agent: Agent, x: int = 1000, y: int = 0):
+#     # plt.figure()
+#     filters = agent.network.color(state.to(device)).detach().cpu().numpy().squeeze(0)
+#     n = filters.shape[0]
+#     v = math.ceil(math.sqrt(n))
+#     fig, axs = plt.subplots(v, v)
+#     move_figure(fig, x, y)
+#     for i in range(n):
+#         im = axs[i // v, i % v].imshow(filters[i], cmap='gray', vmin=float(filters.min()), vmax=float(filters.max()))
+
+#     fig.subplots_adjust(right=0.8)
+#     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+#     fig.colorbar(im, cax=cbar_ax)
+#     plt.show(block=False)
+
+
+def showFilters(filters, x: int = 1000, y: int = 0):
+    filters = filters.detach().cpu().numpy().squeeze(0)
     n = filters.shape[0]
     v = math.ceil(math.sqrt(n))
-    fig, axs = plt.subplots(v, v)
-    move_figure(fig, x, y)
-    for i in range(n):
-        im = axs[i // v, i % v].imshow(filters[i], cmap='gray', vmin=float(filters.min()), vmax=float(filters.max()))
-
-    fig.subplots_adjust(right=0.8)
-    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    fig.colorbar(im, cax=cbar_ax)
-    plt.show(block=False)
-
-
-def filterColor(state, agent: Agent, x: int = 1000, y: int = 0):
-    # plt.figure()
-    filters = agent.network.color(state.to(device)).detach().cpu().numpy().squeeze(0)
-    n = filters.shape[0]
-    v = math.ceil(math.sqrt(n))
-    fig, axs = plt.subplots(v, v)
+    h = math.ceil(n / v)
+    fig, axs = plt.subplots(h, v)
     move_figure(fig, x, y)
     for i in range(n):
         im = axs[i // v, i % v].imshow(filters[i], cmap='gray', vmin=float(filters.min()), vmax=float(filters.max()))
