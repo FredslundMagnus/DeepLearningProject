@@ -141,9 +141,11 @@ class NetWork(Module):
         )
 
         self.fromEncoder = Sequential(
-            Conv2d(in_channels=12, out_channels=32, kernel_size=4, stride=2),
+            Conv2d(in_channels=12, out_channels=32, kernel_size=4, stride=1),
             LeakyReLU(),
-            Conv2d(in_channels=32, out_channels=self.size_after_conv, kernel_size=4, stride=1),
+            Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=4, stride=1),
             LeakyReLU(),
         )
 
@@ -151,16 +153,17 @@ class NetWork(Module):
 
         self.linear = Sequential(
             LeakyReLU(),
+            Linear(hidden_size, hidden_size),
+            LeakyReLU(),
             Linear(hidden_size, 15),
         )
 
         self.exploration_network = Sequential(
+            Linear(hidden_size, hidden_size),
             LeakyReLU(),
-            Linear(hidden_size, 20),
+            Linear(hidden_size, hidden_size),
             LeakyReLU(),
-            Linear(20, 20),
-            LeakyReLU(),
-            Linear(20, 15),
+            Linear(hidden_size, 15),
         )
 
     def forward(self, x):
