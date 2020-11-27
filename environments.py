@@ -66,21 +66,26 @@ class Environment:
 
 
 class Environments:
-    def __init__(self, envs: List[str], render: bool = False) -> None:
+    def __init__(self, envs: List[str], render: bool = False, agent=None) -> None:
+        self.agent = agent
+        try:
+            agent.hasEncoder
+        except:
+            agent.hasEncoder = False
+            agent.network.hasEncoder = False
         self.envs = [Environment.create(name, render and not bool(i)) for i, name in enumerate(envs)]
         self.obs, self.hn, self.cn = tuple(zip(*[self.reset(env, True, None, None, None) for env in self.envs]))
 
     def step(self, actions: List[int], hns, cns):
         obses, rews, dones, infos = tuple(zip(*[env.step(act) for env, act in zip(self.envs, actions)]))
-        obses = [clean(obs) for obs in obses]
-        self.obs, self.hn, self.cn = tuple(zip(*[Environments.reset(env, done, obs, hn, cn) for env, done, obs, hn, cn in zip(self.envs, dones, obses, hns, cns)]))
+        obses = [clean(obs, self.agent) for obs in obses]
+        self.obs, self.hn, self.cn = tuple(zip(*[self.reset(env, done, obs, hn, cn) for env, done, obs, hn, cn in zip(self.envs, dones, obses, hns, cns)]))
         return obses, rews, dones, infos
 
-    @staticmethod
-    def reset(env, done, obs, hn, cn):
+    def reset(self, env, done, obs, hn, cn):
         if done:
             env.close()
-            return clean(env.reset()), torch.zeros(1, 1, hidden_size, device=device), torch.zeros(1, 1, hidden_size, device=device)
+            return clean(env.reset(), self.agent), torch.zeros(1, 1, hidden_size, device=device), torch.zeros(1, 1, hidden_size, device=device)
         return obs, hn.detach(), cn.detach()
 
     def start(self):

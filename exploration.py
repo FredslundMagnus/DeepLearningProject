@@ -11,7 +11,7 @@ class Exploration():
 
     @property
     def epsilon(self):
-        K = 20000000 if isServer else 1000000
+        K = 20000000 if isServer else 100000
         return max(0.05, 1 - self.counter / K)
 
     @property
@@ -26,7 +26,7 @@ class Exploration():
 
     def greedy(self, vals):
         self.counter += 1
-        #if self.counter % 1000 == 1:
+        # if self.counter % 1000 == 1:
         #    print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return vals.detach().cpu().numpy().argmax()
 
@@ -43,4 +43,4 @@ class Exploration():
         if self.counter < 20000000:
             return int(choice(15, 1)) if random() < self.epsilon else vals.detach().cpu().numpy().argmax()
         else:
-            return int(choice(15, 1, p=softmax(vals*10, dim=0).detach().cpu().numpy()))
+            return int(choice(15, 1, p=softmax(vals * 10, dim=0).detach().cpu().numpy()))

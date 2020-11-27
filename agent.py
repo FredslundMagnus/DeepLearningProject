@@ -17,6 +17,8 @@ class Agent:
     def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork().to(device)
+        self.createEncoder(encoder)
+        self.network.hasEncoder = self.hasEncoder
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
         self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
@@ -24,16 +26,18 @@ class Agent:
         self.remember = self.memory.remember()
         self.exploration = Exploration()
         if exploration == 'greedy':
-            self.explore =self.exploration.greedy
+            self.explore = self.exploration.greedy
         elif exploration == 'epsilonGreedy':
-            self.explore =self.exploration.epsilonGreedy
+            self.explore = self.exploration.epsilonGreedy
         elif exploration == 'softmax':
-            self.explore =self.exploration.softmax
+            self.explore = self.exploration.softmax
         elif exploration == 'greedyintosoftmax':
-            self.explore =self.exploration.greedyintosoftmax
-            
+            self.explore = self.exploration.greedyintosoftmax
+
         self.target_network = NetWork().to(device)
+        self.target_network.hasEncoder = self.hasEncoder
         self.placeholder_network = NetWork().to(device)
+        self.placeholder_network.hasEncoder = self.hasEncoder
         self.gamma, self.f = discount, 0
         self.update_every, self.double, self.use_distribution = update_every, double, use_distribution
         self.counter = 0
@@ -74,7 +78,7 @@ class Agent:
         self.network.hn, self.network.cn = h0, c0
         output_this_state = self.network(obs)
         vs = torch.gather(output_this_state[0], 1, action)
-        td = ((reward-self.memory.reward_avg)/self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+        td = ((reward - self.memory.reward_avg) / self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
 
         if self.uncertainty:
             estimate_uncertainties = torch.gather(output_this_state[1], 1, action)
@@ -89,12 +93,11 @@ class Agent:
         self.optimizer.step()
         self.optimizer.zero_grad()
 
-
         # torch.cuda.empty_cache()
 
     def convert_uncertainty_values(self, vals, uncertainties):
         if self.uncertainty:
-            return vals + uncertainties/2
+            return vals + uncertainties / 2
         else:
             return vals
 
@@ -102,6 +105,14 @@ class Agent:
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
         self.placeholder_network = pickle.loads(pickle.dumps(self.network))
         self.memory.update_distribution()
+
+    def createEncoder(self, encoder):
+        if encoder:
+            with open(f"Encoders/{encoder}.obj", "rb") as file:
+                self.encoder = pickle.load(file).encoder.to(device)
+                self.hasEncoder = True
+        else:
+            self.hasEncoder = False
 
 
 class NetWork(Module):
@@ -129,6 +140,13 @@ class NetWork(Module):
             LeakyReLU(),
         )
 
+        self.fromEncoder = Sequential(
+            Conv2d(in_channels=12, out_channels=32, kernel_size=4, stride=2),
+            LeakyReLU(),
+            Conv2d(in_channels=32, out_channels=self.size_after_conv, kernel_size=4, stride=1),
+            LeakyReLU(),
+        )
+
         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
 
         self.linear = Sequential(
@@ -145,11 +163,13 @@ class NetWork(Module):
             Linear(hidden_size/2, 15),
         )
 
-
     def forward(self, x):
         self.lstm.flatten_parameters()
-        x = self.color(x)
-        x = self.conv1(x)
+        if self.hasEncoder:
+            x = self.fromEncoder(x)
+        else:
+            x = self.color(x)
+            x = self.conv1(x)
         x = x.view(1, -1, self.size_after_conv)
         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         x = x.view(-1, hidden_size)
