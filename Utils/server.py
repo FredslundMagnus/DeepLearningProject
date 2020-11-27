@@ -7,7 +7,7 @@ isServer = checkServer()
 defaults = {
     'name': "Agent",
     'discount': 0.995,
-    'environment': 'fruitbot',
+    'environment': 'bigfish',
     'hours': 23,
     'memory': 500000,
     'update_every': 500,
@@ -15,8 +15,9 @@ defaults = {
     'double': 1,
     'total_agents': 20,
     'calculate_every': 500,
-    'uncertainty': 1,
+    'uncertainty': 0,
     'reward_normalization': 0,
+    'exploration': 'greedy',
 
 }
 

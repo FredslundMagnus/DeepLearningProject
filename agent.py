@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, **kwargs) -> None:
+    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.network = NetWork().to(device)
         self.createEncoder(encoder)
@@ -25,7 +25,15 @@ class Agent:
         self.memory = ReplayBuffer(int(memory))
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.epsilonGreedy
+        if exploration == 'greedy':
+            self.explore = self.exploration.greedy
+        elif exploration == 'epsilonGreedy':
+            self.explore = self.exploration.epsilonGreedy
+        elif exploration == 'softmax':
+            self.explore = self.exploration.softmax
+        elif exploration == 'greedyintosoftmax':
+            self.explore = self.exploration.greedyintosoftmax
+
         self.target_network = NetWork().to(device)
         self.target_network.hasEncoder = self.hasEncoder
         self.placeholder_network = NetWork().to(device)

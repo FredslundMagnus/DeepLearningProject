@@ -48,10 +48,9 @@ def genExperiments(name, n=1, **params):
 # genExperiments('NoDist_eps', environment='fruitbot', use_distribution=0)
 # genExperiments('Dist_LowMem_eps', environment='fruitbot', use_distribution=1, memory=50000)
 # genExperiments('NoDist_LowMem_eps', environment='fruitbot', use_distribution=0, memory=50000)
-environments = ['bigfish', 'chaser', 'starpilot', 'dodgeball']
+environments = ['bigfish']
 
 for env in environments:
-    genExperiments(f"Uncertainty=0.5{env}", environment=env, uncertainty=1, reward_normalization=0, memory=500000)
-    genExperiments(f"NoUncertainty{env}", environment=env, uncertainty=0, reward_normalization=0, memory=500000)
+    genExperiments(f"greedyintosoftmax{env}", environment=env, memory=500000, exploration='greedyintosoftmax')
 
 file.close()
