@@ -17,6 +17,7 @@ defaults = {
     'calculate_every': 500,
     'uncertainty': 0,
     'reward_normalization': 0,
+    'exploration': 'greedy',
 
 }
 

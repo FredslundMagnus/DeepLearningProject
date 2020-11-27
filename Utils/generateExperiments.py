@@ -51,6 +51,6 @@ def genExperiments(name, n=1, **params):
 environments = ['bigfish']
 
 for env in environments:
-    genExperiments(f"epsgreedy{env}", environment=env, memory=500000)
+    genExperiments(f"greedy{env}", environment=env, memory=500000, exploration='greedy')
 
 file.close()
