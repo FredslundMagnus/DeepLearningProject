@@ -8,6 +8,8 @@ rng = default_rng()
 class ReplayBuffer:
     def __init__(self, size: int) -> None:
         self.reset(size)
+        self.reward_avg = 0
+        self.reward_std = 1
 
     def remember(self):
         size, memory, rewads, dones = self.size, self.memory, self.rewads, self.dones
@@ -19,6 +21,12 @@ class ReplayBuffer:
             self.position += 1
             return args[2]
         return inner
+
+    def average_reward(self):
+        if any(x is None for x in self.rewads) or all(x == 0 for x in self.rewads):
+            return
+        self.reward_avg = sum(self.rewads)/self.size
+        self.reward_std = np.std(self.rewads)
 
     def sample(self, batch_size: int):
         l = len(self)

@@ -1,4 +1,22 @@
 [W TensorIterator.cpp:924] Warning: Mixed memory format inputs detected while calling the operator. The operator will output channels_last tensor even if some of the inputs are not in channels_last format. (function operator())
+<<<<<<< HEAD
+  File "main.py", line 10
+    if 12321 ===!! asdasd:
+               ^
+SyntaxError: invalid syntax
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@n-62-11-14>
+Subject: Job 8416079: <Base_v2_starpilot_0> in cluster <dcc> Exited
+
+Job <Base_v2_starpilot_0> was submitted from host <n-62-27-20> by user <s183914> in cluster <dcc> at Mon Nov 23 22:15:25 2020
+Job was executed on host(s) <n-62-11-14>, in queue <gpuv100>, as user <s183914> in cluster <dcc> at Mon Nov 23 23:51:47 2020
+</zhome/ea/9/137501> was used as the home directory.
+</zhome/ea/9/137501/Desktop/DeepAI/DeepLearningProject/Utils> was used as the working directory.
+Started at Mon Nov 23 23:51:47 2020
+Terminated at Mon Nov 23 23:51:49 2020
+Results reported at Mon Nov 23 23:51:49 2020
+=======
 
     Name :                      Base_v2_starpilot-0
     Discount :                  0.995
@@ -139,6 +157,7 @@ Job was executed on host(s) <n-62-20-3>, in queue <gpuv100>, as user <s183905> i
 Started at Mon Nov 23 09:04:32 2020
 Terminated at Tue Nov 24 09:00:26 2020
 Results reported at Tue Nov 24 09:00:26 2020
+>>>>>>> 749484116de69f635a2e216c49db91e1bbbac453
 
 Your job looked like:
 
@@ -162,6 +181,22 @@ python main.py $LSB_PROJECT_NAME
 
 ------------------------------------------------------------
 
+<<<<<<< HEAD
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   0.19 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     61440.00 MB
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   1 sec.
+    Turnaround time :                            5784 sec.
+=======
 Successfully completed.
 
 Resource usage summary:
@@ -176,6 +211,7 @@ Resource usage summary:
     Max Threads :                                9
     Run time :                                   86155 sec.
     Turnaround time :                            150254 sec.
+>>>>>>> 749484116de69f635a2e216c49db91e1bbbac453
 
 The output (if any) is above this job summary.
 

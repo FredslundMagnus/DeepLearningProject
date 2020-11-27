@@ -8,9 +8,10 @@ def evaluate(name, environment, n=0):
     name = name + '-' + str(n)
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
     agent.explore = agent.exploration.greedy
+    agent.uncertainty = False
     env = Environments(render=False, envs=[environment for _ in range(20)])
     rews, dones = [], []
-    for i in range(20000):
+    for i in range(10000):
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
@@ -60,10 +61,9 @@ rMax = {
 }
 
 # environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
-environments = ['bigfish', 'fruitbot', 'jumper', 'leaper', 'chaser', 'bossfight', 'starpilot']
+environments = ['chaser']
 for env in environments:
-    evaluate(f'Base_v2_{env}', env)
-
+    evaluate('Uncertainty=0.5chaser', env)
 # V1
 # n=20000
 # Base_bigfish-0        0.15    7.07592190889371
@@ -85,3 +85,10 @@ for env in environments:
 
 # V2
 # n=20000
+# Base_v2_bigfish-0    0.0    0.9819785276073619
+# Base_v2_fruitbot-0   0.79    25.30938123752495
+# Base_v2_jumper-0     0.78    8.515264660663298
+# Base_v2_leaper-0     0.56    6.9545071609098565
+# Base_v2_chaser-0     0.0    0.48920573588025446
+# Base_v2_bossfight-0  0.65    8.725255972696246
+# Base_v2_starpilot-0  0.49    32.96410767696909

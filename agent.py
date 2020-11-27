@@ -14,20 +14,30 @@ import pickle
 
 
 class Agent:
-    def __init__(self, memory=10000, discount=0.995, uncertainty=False, update_every=200, double=True, use_distribution=True, **kwargs) -> None:
+    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, **kwargs) -> None:
         self.uncertainty = uncertainty
-        self.network = NetWork(uncertainty=self.uncertainty).to(device)
+        self.network = NetWork().to(device)
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
         self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(int(memory))
         self.remember = self.memory.remember()
         self.exploration = Exploration()
-        self.explore = self.exploration.EpsilonSoftmaxUncertainty if uncertainty else self.exploration.epsilonGreedy
-        self.target_network = NetWork(uncertainty=self.uncertainty).to(device)
-        self.placeholder_network = NetWork(uncertainty=self.uncertainty).to(device)
+        if exploration == 'greedy':
+            self.explore =self.exploration.greedy
+        elif exploration == 'epsilonGreedy':
+            self.explore =self.exploration.epsilonGreedy
+        elif exploration == 'softmax':
+            self.explore =self.exploration.softmax
+        elif exploration == 'greedyintosoftmax':
+            self.explore =self.exploration.greedyintosoftmax
+            
+        self.target_network = NetWork().to(device)
+        self.placeholder_network = NetWork().to(device)
         self.gamma, self.f = discount, 0
         self.update_every, self.double, self.use_distribution = update_every, double, use_distribution
+        self.counter = 0
+        self.reward_normalization = reward_normalization
 
     def rememberMulti(self, *args):
         [self.remember(obs_old.cpu(), act, obs.cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done)) for obs_old, act, obs, rew, h0, c0, hn, cn, done in zip(*args)]
@@ -40,13 +50,16 @@ class Agent:
 
     def chooseMulti(self, pixels, hn, cn):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
-        vals = self.network(concatenation(pixels, 0).to(device))
-        return [self.explore(val.reshape(15 + self.uncertainty)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
+        vals, uncertainties = self.network(concatenation(pixels, 0).to(device))
+        vals = self.convert_uncertainty_values(vals, uncertainties)
+        return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self):
         self.f += 1
         if self.f % self.update_every == 0:
             self.update_target_network()
+            if self.reward_normalization:
+                self.memory.average_reward()
         if self.f > self.update_every:
             for _ in range(1):
                 self.TD_learn()
@@ -55,28 +68,35 @@ class Agent:
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if self.use_distribution else self.memory.sample(256)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
         if self.double:
-            v_s_next = torch.gather(self.target_network(obs_next), 1, torch.argmax(self.network(obs_next)[:, :15], 1).view(-1, 1)).squeeze(1)
+            v_s_next = torch.gather(self.target_network(obs_next)[0], 1, torch.argmax(self.network(obs_next)[0], 1).view(-1, 1)).squeeze(1)
         else:
-            v_s_next, input_indexes = torch.max(self.target_network(obs_next)[:, :15], 1)
-
+            v_s_next, input_indexes = torch.max(self.target_network(obs_next)[0], 1)
         self.network.hn, self.network.cn = h0, c0
         output_this_state = self.network(obs)
-        vs = torch.gather(output_this_state, 1, action)
-        td = (reward + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+        vs = torch.gather(output_this_state[0], 1, action)
+        td = ((reward-self.memory.reward_avg)/self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+
         if self.uncertainty:
-            estimate_uncertainty = output_this_state[:, 15].view(-1, 1).clone()
-            estimate_uncertainty[estimate_uncertainty < 0] = 0
-            uncertainty_weighting = 1  # has to be between 0 and 1. 0 means no training is done towards uncertainty prediction.
-            true_uncertainty = uncertainty_weighting * abs(td - vs) + (1 - uncertainty_weighting) * estimate_uncertainty
-            guess = torch.cat((vs, estimate_uncertainty), 1)
-            label = torch.cat((td, true_uncertainty.detach()), 1)
+            estimate_uncertainties = torch.gather(output_this_state[1], 1, action)
+            true_uncertainty = abs(td - vs.detach())
+            guess = torch.cat((vs, estimate_uncertainties), 1)
+            label = torch.cat((td, true_uncertainty), 1)
             loss = self.criterion(guess, label)
         else:
             loss = self.criterion(vs, td)
+
         loss.backward()
         self.optimizer.step()
         self.optimizer.zero_grad()
+
+
         # torch.cuda.empty_cache()
+
+    def convert_uncertainty_values(self, vals, uncertainties):
+        if self.uncertainty:
+            return vals + uncertainties/2
+        else:
+            return vals
 
     def update_target_network(self):
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
@@ -85,7 +105,7 @@ class Agent:
 
 
 class NetWork(Module):
-    def __init__(self, uncertainty):
+    def __init__(self):
         self.size_after_conv = 128
 
         super(NetWork, self).__init__()
@@ -113,8 +133,16 @@ class NetWork(Module):
 
         self.linear = Sequential(
             LeakyReLU(),
-            Linear(hidden_size, 15 + uncertainty),
+            Linear(hidden_size, 15),
         )
+
+        self.exploration_network = Sequential(
+            LeakyReLU(),
+            Linear(hidden_size, hidden_size),
+            LeakyReLU(),
+            Linear(hidden_size, 15),
+        )
+
 
     def forward(self, x):
         self.lstm.flatten_parameters()
@@ -123,8 +151,10 @@ class NetWork(Module):
         x = x.view(1, -1, self.size_after_conv)
         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
         x = x.view(-1, hidden_size)
+        y = x.clone()
+        y = self.exploration_network(y.detach())
         x = self.linear(x)
-        return x
+        return x, y
 
 
 if __name__ == "__main__":
