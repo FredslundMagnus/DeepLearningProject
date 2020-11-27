@@ -11,7 +11,7 @@ class Exploration():
 
     @property
     def epsilon(self):
-        K = 20000000 if isServer else 100000
+        K = 20000000 if isServer else 1000000
         return max(0.05, 1 - self.counter / K)
 
     @property

@@ -27,7 +27,7 @@ total_agents, display_every = 20, 5000
 agent = Agent(memory=40000, discount=0.995, uncertainty=False, update_every=100, double=True, use_distribution=False, reward_normalization=False)
 env = Environments(render=True, envs=['fruitbot' for _ in range(total_agents)], agent=agent)
 collector = Collector(calculate_every=500, total_agents=total_agents)
-for f in range(1, 10000000):
+for f in range(10000000):
     obs, hn, cn = env.start()
     act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
     obs, rew, done, info = env.step(act, hn, cn)
@@ -38,6 +38,5 @@ for f in range(1, 10000000):
     if showPrint:
         plt.close('all')
         displayer(obs[0].cpu(), agent, collector)
-        # showFilters(obs[0], y=200, x=600)
-        # returnplot(collector.all_return, x=1200, y=200)
+        plt.plot(h0[0].cpu().numpy().reshape(-1))
         showPrint = False
