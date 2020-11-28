@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, exploration='greedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, hidden_size=400, **kwargs) -> None:
+    def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, hidden_size=40, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.hidden_size = hidden_size
         self.network = NetWork(self.hidden_size).to(device)
@@ -96,11 +96,8 @@ class Agent:
 
         # torch.cuda.empty_cache()
 
-    def convert_uncertainty_values(self, vals, uncertainties):
-        if self.uncertainty:
-            return vals + uncertainties / 2
-        else:
-            return vals
+    def convert_uncertainty_values(self, vals, uncertainties, weight=0):
+        return vals + uncertainties * weight * self.uncertainty
 
     def update_target_network(self):
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
@@ -155,15 +152,13 @@ class NetWork(Module):
 
         self.linear = Sequential(
             LeakyReLU(),
-            Linear(self.hidden_size, self.hidden_size),
-            LeakyReLU(),
             Linear(self.hidden_size, 15),
         )
 
         self.exploration_network = Sequential(
             Linear(self.hidden_size, self.hidden_size),
             LeakyReLU(),
-            Linear(self.hidden_size, self.hidden_size),
+            Linear(self.hidden_size, self.hidden_size//2),
             LeakyReLU(),
             Linear(self.hidden_size, 15),
         )
@@ -176,7 +171,11 @@ class NetWork(Module):
             x = self.color(x)
             x = self.conv1(x)
         x = x.view(1, -1, self.size_after_conv)
+        if x.shape[1] == 20:
+            current_hid = self.hn.clone()
         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
+        if x.shape[1] == 20:
+            print(((torch.sum(abs(current_hid-self.hn),dim=2)[:,0][0].cpu().detach().numpy())*100000)//1000, end=" ")
         x = x.view(-1, self.hidden_size)
         y = x.clone()
         y = self.exploration_network(y.detach())
