@@ -3,7 +3,7 @@
 """
 
 
-from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential, ReLU
+from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential, ReLU, Sigmoid
 from torch.optim import Adam
 from memory import ReplayBuffer
 from exploration import Exploration
@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=True, encoder=None, hidden_size=40, **kwargs) -> None:
+    def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=False, encoder=None, hidden_size=40, state_difference=True, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.hidden_size = hidden_size
         self.network = NetWork(self.hidden_size).to(device)
@@ -43,8 +43,12 @@ class Agent:
         self.update_every, self.double, self.use_distribution = update_every, double, use_distribution
         self.counter = 0
         self.reward_normalization = reward_normalization
+        self.state_difference = state_difference
+        self.true_state_trace = None
 
     def rememberMulti(self, *args):
+        done = 1 - torch.tensor(list(args[8])).type(torch.float)
+        self.true_state_trace = (done.to(device) * (self.true_state_trace.transpose(0,2))).transpose(0,2)
         [self.remember(obs_old.cpu(), act, obs.cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done)) for obs_old, act, obs, rew, h0, c0, hn, cn, done in zip(*args)]
 
     def choose(self, pixels, hn, cn):
@@ -53,10 +57,16 @@ class Agent:
         vals.reshape(15)
         return self.explore(vals, uncertainty), pixels, hn, cn, self.network.hn, self.network.cn
 
-    def chooseMulti(self, pixels, hn, cn):
+    def chooseMulti(self, pixels, hn, cn, lambda_decay=0.99, avoid_trace=None):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
-        vals, uncertainties = self.network(concatenation(pixels, 0).to(device))
-        vals = self.convert_uncertainty_values(vals, uncertainties)
+        vals, uncertainties, _, true_state = self.network(concatenation(pixels, 0).to(device))
+        if self.state_difference:
+            if self.true_state_trace is None:
+                self.true_state_trace = true_state.detach()
+            else:
+                self.true_state_trace = self.true_state_trace * lambda_decay + true_state * (1 - lambda_decay)
+            avoid_trace = self.network.avoid_similar_state(self.true_state_trace)[0]
+        vals = self.convert_values(vals, uncertainties, avoid_trace)
         return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
 
     def learn(self):
@@ -72,32 +82,39 @@ class Agent:
     def TD_learn(self):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if self.use_distribution else self.memory.sample(256)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
+        vals_target, _, _, true_state_target = self.target_network(obs_next)
         if self.double:
-            v_s_next = torch.gather(self.target_network(obs_next)[0], 1, torch.argmax(self.network(obs_next)[0], 1).view(-1, 1)).squeeze(1)
+            v_s_next = torch.gather(vals_target, 1, torch.argmax(vals_target, 1).view(-1, 1)).squeeze(1)
         else:
-            v_s_next, input_indexes = torch.max(self.target_network(obs_next)[0], 1)
+            v_s_next, _ = torch.max(vals_target, 1)
         self.network.hn, self.network.cn = h0, c0
-        output_this_state = self.network(obs)
-        vs = torch.gather(output_this_state[0], 1, action)
-        td = ((reward - self.memory.reward_avg) / self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+        vals, uncertainties, state_differences, true_state = self.network(obs)
+        guess = torch.gather(vals, 1, action)
+        label = ((reward - self.memory.reward_avg) / self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
 
         if self.uncertainty:
-            estimate_uncertainties = torch.gather(output_this_state[1], 1, action)
-            true_uncertainty = abs(td - vs.detach())
-            guess = torch.cat((vs, estimate_uncertainties), 1)
-            label = torch.cat((td, true_uncertainty), 1)
-            loss = self.criterion(guess, label)
-        else:
-            loss = self.criterion(vs, td)
+            estimate_uncertainties = torch.gather(uncertainties, 1, action)
+            true_uncertainty = abs(label - guess.detach())
+            guess = torch.cat((guess, estimate_uncertainties), 1)
+            label = torch.cat((label, true_uncertainty), 1)
+        if self.state_difference:
+            estimate_state_difference = torch.gather(state_differences, 1, action) * done.type(torch.float)
+            true_state_difference = torch.sum(abs(true_state_target - true_state), dim=2) * done.type(torch.float)
+            guess = torch.cat((guess, estimate_state_difference), 1)
+            label = torch.cat((label, true_state_difference), 1)
 
+        loss = self.criterion(guess, label)
         loss.backward()
         self.optimizer.step()
         self.optimizer.zero_grad()
 
         # torch.cuda.empty_cache()
 
-    def convert_uncertainty_values(self, vals, uncertainties, weight=0):
-        return vals + uncertainties * weight * self.uncertainty
+    def convert_values(self, vals, uncertainties, state_differences, weight1=1, weight2=1):
+        if self.f % 100 == 0:
+            print(10000*vals[0].cpu().detach().numpy()//100)
+            print(10000*state_differences[0].cpu().detach().numpy()//100)
+        return vals + (weight1 * uncertainties * self.uncertainty) + (weight2 * state_differences * self.state_difference)
 
     def update_target_network(self):
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
@@ -117,6 +134,7 @@ class NetWork(Module):
     def __init__(self, h):
         self.size_after_conv = 128
         self.hidden_size = h
+        self.current_state = None
 
         super(NetWork, self).__init__()
 
@@ -136,7 +154,7 @@ class NetWork(Module):
             Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
-            LeakyReLU(),
+            Sigmoid(),
         )
 
         self.fromEncoder = Sequential(
@@ -145,7 +163,7 @@ class NetWork(Module):
             Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=4, stride=1),
-            LeakyReLU(),
+            Sigmoid(),
         )
 
         self.lstm = LSTM(self.size_after_conv, self.hidden_size, 1)
@@ -156,13 +174,21 @@ class NetWork(Module):
         )
 
         self.exploration_network = Sequential(
+            LeakyReLU(),
             Linear(self.hidden_size, self.hidden_size),
             LeakyReLU(),
             Linear(self.hidden_size, self.hidden_size//2),
             LeakyReLU(),
-            Linear(self.hidden_size, 15),
+            Linear(self.hidden_size//2, 15),
         )
 
+        self.state_difference_network = Sequential(
+            Linear(self.size_after_conv, self.size_after_conv),
+            LeakyReLU(),
+            Linear(self.size_after_conv, self.hidden_size),
+            LeakyReLU(),
+            Linear(self.hidden_size, 15),
+        )
     def forward(self, x):
         self.lstm.flatten_parameters()
         if self.hasEncoder:
@@ -171,13 +197,15 @@ class NetWork(Module):
             x = self.color(x)
             x = self.conv1(x)
         x = x.view(1, -1, self.size_after_conv)
-        if x.shape[1] == 20:
-            current_hid = self.hn.clone()
+
+        p = x.view(-1, 1, self.size_after_conv)
+        z = x.view(-1, self.size_after_conv)
+        z = self.state_difference_network(z.detach())
         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
-        if x.shape[1] == 20:
-            print(((torch.sum(abs(current_hid-self.hn),dim=2)[:,0][0].cpu().detach().numpy())*100000)//1000, end=" ")
         x = x.view(-1, self.hidden_size)
-        y = x.clone()
-        y = self.exploration_network(y.detach())
+        y = self.exploration_network(x.detach())
         x = self.linear(x)
-        return x, y
+        return x, y, z, p.detach()
+
+    def avoid_similar_state(self, x):
+        return self.state_difference_network(x)
