@@ -18,7 +18,7 @@ defaults = {
     'uncertainty': 0,
     'reward_normalization': 0,
     'exploration': 'greedy',
-
+    'hidden_size': 40,
 }
 
 params = getvals(defaults) if isServer else None

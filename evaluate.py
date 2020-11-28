@@ -9,7 +9,7 @@ def evaluate(name, environment, n=0):
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
     agent.explore = agent.exploration.greedy
     agent.uncertainty = False
-    env = Environments(render=False, envs=[environment for _ in range(20)])
+    env = Environments(render=False, envs=[environment for _ in range(20)], agent=agent)
     rews, dones = [], []
     for i in range(10000):
         obs, hn, cn = env.start()
