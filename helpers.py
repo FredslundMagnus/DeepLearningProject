@@ -5,8 +5,11 @@ device = devicer('cuda' if cuda.is_available() else 'cpu')
 hidden_size = 40
 
 
-def clean(obs):
-    return tensor(obs.transpose(2, 0, 1).reshape(-1, 3, 64, 64) / 128 - 1, dtype=float32, device=device)
+def clean(obs, agent):
+    if agent.hasEncoder:
+        return agent.encoder(tensor(obs.transpose(2, 0, 1).reshape(-1, 3, 64, 64) / 128 - 1, dtype=float32, device=device)).detach()
+    else:
+        return tensor(obs.transpose(2, 0, 1).reshape(-1, 3, 64, 64) / 128 - 1, dtype=float32, device=device)
 
 
 def stack(sample):
