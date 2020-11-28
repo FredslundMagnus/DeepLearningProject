@@ -1,31 +1,31 @@
 #!/bin/sh
-mkdir ../outputs/Uncertainty+Avoid_State(0,0)fruitbot/
-mkdir ../outputs/Uncertainty+Avoid_State(0,0)fruitbot/Markdown
-mkdir ../outputs/Uncertainty+Avoid_State(0,0)fruitbot/Agents
-mkdir ../outputs/Uncertainty+Avoid_State(0,0)fruitbot/Collectors
-bsub -o "../outputs/Uncertainty+Avoid_State(0,0)fruitbot/Markdown/Uncertainty+Avoid_State(0,0)fruitbot_0.md" -J "Uncertainty+Avoid_State(0,0)fruitbot_0" -P "Uncertainty+Avoid_State(0,0)fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 0 -state_difference_weight 0" < submit.sh
-mkdir ../outputs/Uncertainty+Avoid_State(0,-1)fruitbot/
-mkdir ../outputs/Uncertainty+Avoid_State(0,-1)fruitbot/Markdown
-mkdir ../outputs/Uncertainty+Avoid_State(0,-1)fruitbot/Agents
-mkdir ../outputs/Uncertainty+Avoid_State(0,-1)fruitbot/Collectors
-bsub -o "../outputs/Uncertainty+Avoid_State(0,-1)fruitbot/Markdown/Uncertainty+Avoid_State(0,-1)fruitbot_0.md" -J "Uncertainty+Avoid_State(0,-1)fruitbot_0" -P "Uncertainty+Avoid_State(0,-1)fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 0 -state_difference_weight -1" < submit.sh
-mkdir ../outputs/Uncertainty+Avoid_State(0,1)fruitbot/
-mkdir ../outputs/Uncertainty+Avoid_State(0,1)fruitbot/Markdown
-mkdir ../outputs/Uncertainty+Avoid_State(0,1)fruitbot/Agents
-mkdir ../outputs/Uncertainty+Avoid_State(0,1)fruitbot/Collectors
-bsub -o "../outputs/Uncertainty+Avoid_State(0,1)fruitbot/Markdown/Uncertainty+Avoid_State(0,1)fruitbot_0.md" -J "Uncertainty+Avoid_State(0,1)fruitbot_0" -P "Uncertainty+Avoid_State(0,1)fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 0 -state_difference_weight 1" < submit.sh
-mkdir ../outputs/Uncertainty+Avoid_State(-1,0)fruitbot/
-mkdir ../outputs/Uncertainty+Avoid_State(-1,0)fruitbot/Markdown
-mkdir ../outputs/Uncertainty+Avoid_State(-1,0)fruitbot/Agents
-mkdir ../outputs/Uncertainty+Avoid_State(-1,0)fruitbot/Collectors
-bsub -o "../outputs/Uncertainty+Avoid_State(-1,0)fruitbot/Markdown/Uncertainty+Avoid_State(-1,0)fruitbot_0.md" -J "Uncertainty+Avoid_State(-1,0)fruitbot_0" -P "Uncertainty+Avoid_State(-1,0)fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight -1 -state_difference_weight 0" < submit.sh
-mkdir ../outputs/Uncertainty+Avoid_State(1,0)fruitbot/
-mkdir ../outputs/Uncertainty+Avoid_State(1,0)fruitbot/Markdown
-mkdir ../outputs/Uncertainty+Avoid_State(1,0)fruitbot/Agents
-mkdir ../outputs/Uncertainty+Avoid_State(1,0)fruitbot/Collectors
-bsub -o "../outputs/Uncertainty+Avoid_State(1,0)fruitbot/Markdown/Uncertainty+Avoid_State(1,0)fruitbot_0.md" -J "Uncertainty+Avoid_State(1,0)fruitbot_0" -P "Uncertainty+Avoid_State(1,0)fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 1 -state_difference_weight 0" < submit.sh
-mkdir ../outputs/Uncertainty+Avoid_State(0,10)fruitbot/
-mkdir ../outputs/Uncertainty+Avoid_State(0,10)fruitbot/Markdown
-mkdir ../outputs/Uncertainty+Avoid_State(0,10)fruitbot/Agents
-mkdir ../outputs/Uncertainty+Avoid_State(0,10)fruitbot/Collectors
-bsub -o "../outputs/Uncertainty+Avoid_State(0,10)fruitbot/Markdown/Uncertainty+Avoid_State(0,10)fruitbot_0.md" -J "Uncertainty+Avoid_State(0,10)fruitbot_0" -P "Uncertainty+Avoid_State(0,10)fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 1 -state_difference_weight 10" < submit.sh
+mkdir ../outputs/Uncertainty+Avoid_State0and0fruitbot/
+mkdir ../outputs/Uncertainty+Avoid_State0and0fruitbot/Markdown
+mkdir ../outputs/Uncertainty+Avoid_State0and0fruitbot/Agents
+mkdir ../outputs/Uncertainty+Avoid_State0and0fruitbot/Collectors
+bsub -o "../outputs/Uncertainty+Avoid_State0and0fruitbot/Markdown/Uncertainty+Avoid_State0and0fruitbot_0.md" -J "Uncertainty+Avoid_State0and0fruitbot_0" -P "Uncertainty+Avoid_State0and0fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 0 -state_difference_weight 0" < submit.sh
+mkdir ../outputs/Uncertainty+Avoid_State0and-1fruitbot/
+mkdir ../outputs/Uncertainty+Avoid_State0and-1fruitbot/Markdown
+mkdir ../outputs/Uncertainty+Avoid_State0and-1fruitbot/Agents
+mkdir ../outputs/Uncertainty+Avoid_State0and-1fruitbot/Collectors
+bsub -o "../outputs/Uncertainty+Avoid_State0and-1fruitbot/Markdown/Uncertainty+Avoid_State0and-1fruitbot_0.md" -J "Uncertainty+Avoid_State0and-1fruitbot_0" -P "Uncertainty+Avoid_State0and-1fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 0 -state_difference_weight -1" < submit.sh
+mkdir ../outputs/Uncertainty+Avoid_State0and1fruitbot/
+mkdir ../outputs/Uncertainty+Avoid_State0and1fruitbot/Markdown
+mkdir ../outputs/Uncertainty+Avoid_State0and1fruitbot/Agents
+mkdir ../outputs/Uncertainty+Avoid_State0and1fruitbot/Collectors
+bsub -o "../outputs/Uncertainty+Avoid_State0and1fruitbot/Markdown/Uncertainty+Avoid_State0and1fruitbot_0.md" -J "Uncertainty+Avoid_State0and1fruitbot_0" -P "Uncertainty+Avoid_State0and1fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 0 -state_difference_weight 1" < submit.sh
+mkdir ../outputs/Uncertainty+Avoid_State-1and0fruitbot/
+mkdir ../outputs/Uncertainty+Avoid_State-1and0fruitbot/Markdown
+mkdir ../outputs/Uncertainty+Avoid_State-1and0fruitbot/Agents
+mkdir ../outputs/Uncertainty+Avoid_State-1and0fruitbot/Collectors
+bsub -o "../outputs/Uncertainty+Avoid_State-1and0fruitbot/Markdown/Uncertainty+Avoid_State-1and0fruitbot_0.md" -J "Uncertainty+Avoid_State-1and0fruitbot_0" -P "Uncertainty+Avoid_State-1and0fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight -1 -state_difference_weight 0" < submit.sh
+mkdir ../outputs/Uncertainty+Avoid_State1and0fruitbot/
+mkdir ../outputs/Uncertainty+Avoid_State1and0fruitbot/Markdown
+mkdir ../outputs/Uncertainty+Avoid_State1and0fruitbot/Agents
+mkdir ../outputs/Uncertainty+Avoid_State1and0fruitbot/Collectors
+bsub -o "../outputs/Uncertainty+Avoid_State1and0fruitbot/Markdown/Uncertainty+Avoid_State1and0fruitbot_0.md" -J "Uncertainty+Avoid_State1and0fruitbot_0" -P "Uncertainty+Avoid_State1and0fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 1 -state_difference_weight 0" < submit.sh
+mkdir ../outputs/Uncertainty+Avoid_State0and10fruitbot/
+mkdir ../outputs/Uncertainty+Avoid_State0and10fruitbot/Markdown
+mkdir ../outputs/Uncertainty+Avoid_State0and10fruitbot/Agents
+mkdir ../outputs/Uncertainty+Avoid_State0and10fruitbot/Collectors
+bsub -o "../outputs/Uncertainty+Avoid_State0and10fruitbot/Markdown/Uncertainty+Avoid_State0and10fruitbot_0.md" -J "Uncertainty+Avoid_State0and10fruitbot_0" -P "Uncertainty+Avoid_State0and10fruitbot-0 -environment fruitbot -uncertainty True -state_difference True -uncertainty_weight 0 -state_difference_weight 10" < submit.sh
