@@ -101,7 +101,7 @@ class Agent:
             label = torch.cat((label, true_uncertainty), 1)
         if self.state_difference:
             estimate_state_difference = torch.gather(state_differences, 1, action) * done.type(torch.float)
-            true_state_difference = torch.sum(abs(true_state_target - true_state), dim=2) * done.type(torch.float)
+            true_state_difference = (torch.sum((true_state_target - true_state)**2, dim=2))**(1/2) * done.type(torch.float)
             guess = torch.cat((guess, estimate_state_difference), 1)
             label = torch.cat((label, true_state_difference), 1)
 
@@ -114,8 +114,8 @@ class Agent:
 
     def convert_values(self, vals, uncertainties, state_differences):
         #if self.f % 100 == 0:
-        #    print(10000*vals[0].cpu().detach().numpy()//100)
-        #    print(10000*state_differences[0].cpu().detach().numpy()//100)
+        #    print([int(x)/100 for x in 100*vals[0].cpu().detach().numpy()])
+        #    print([int(x)/100 for x in 100*state_differences[0].cpu().detach().numpy()])
         return vals + (self.uncertainty_weight * uncertainties * self.uncertainty) + (self.state_difference_weight * state_differences * self.state_difference)
 
     def update_target_network(self):
