@@ -48,9 +48,14 @@ def genExperiments(name, n=1, **params):
 # genExperiments('NoDist_eps', environment='fruitbot', use_distribution=0)
 # genExperiments('Dist_LowMem_eps', environment='fruitbot', use_distribution=1, memory=50000)
 # genExperiments('NoDist_LowMem_eps', environment='fruitbot', use_distribution=0, memory=50000)
-environments = ['bigfish']
+environments = ['fruitbot']
 
 for env in environments:
-    genExperiments(f"greedyintosoftmax{env}", environment=env, memory=500000, exploration='greedyintosoftmax')
+    genExperiments(f"Uncertainty+Avoid_State(0,0){env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=0)
+    genExperiments(f"Uncertainty+Avoid_State(0,-1){env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=-1)
+    genExperiments(f"Uncertainty+Avoid_State(0,1){env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=1)
+    genExperiments(f"Uncertainty+Avoid_State(-1,0){env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=-1, state_difference_weight=0)
+    genExperiments(f"Uncertainty+Avoid_State(1,0){env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=1, state_difference_weight=0)
+    genExperiments(f"Uncertainty+Avoid_State(0,10){env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=1, state_difference_weight=10)
 
 file.close()

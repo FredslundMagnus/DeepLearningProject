@@ -14,7 +14,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.995, uncertainty=True, update_every=200, double=True, use_distribution=True, reward_normalization=False, encoder=None, hidden_size=40, state_difference=True, **kwargs) -> None:
+    def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.995, uncertainty=True, uncertainty_weight=1, update_every=200, double=True, use_distribution=True, reward_normalization=False, encoder=None, hidden_size=40, state_difference=True, state_difference_weight=1, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.hidden_size = hidden_size
         self.network = NetWork(self.hidden_size).to(device)
@@ -45,6 +45,8 @@ class Agent:
         self.reward_normalization = reward_normalization
         self.state_difference = state_difference
         self.true_state_trace = None
+        self.uncertainty_weight = uncertainty_weight
+        self.state_difference_weight = state_difference_weight
 
     def rememberMulti(self, *args):
         done = 1 - torch.tensor(list(args[8])).type(torch.float)
@@ -110,11 +112,11 @@ class Agent:
 
         # torch.cuda.empty_cache()
 
-    def convert_values(self, vals, uncertainties, state_differences, weight1=1, weight2=1):
-        if self.f % 100 == 0:
-            print(10000*vals[0].cpu().detach().numpy()//100)
-            print(10000*state_differences[0].cpu().detach().numpy()//100)
-        return vals + (weight1 * uncertainties * self.uncertainty) + (weight2 * state_differences * self.state_difference)
+    def convert_values(self, vals, uncertainties, state_differences):
+        #if self.f % 100 == 0:
+        #    print(10000*vals[0].cpu().detach().numpy()//100)
+        #    print(10000*state_differences[0].cpu().detach().numpy()//100)
+        return vals + (self.uncertainty_weight * uncertainties * self.uncertainty) + (self.state_difference_weight * state_differences * self.state_difference)
 
     def update_target_network(self):
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))
