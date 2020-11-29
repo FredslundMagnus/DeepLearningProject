@@ -20,8 +20,8 @@ defaults = {
     'exploration': 'epsilonGreedy',
     'hidden_size': 40,
     'uncertainty_weight': 1,
-    'state_difference': 0,
-    'state_difference_weight': 0,
+    'state_difference': 1,
+    'state_difference_weight': 1,
 }
 
 params = getvals(defaults) if isServer else None
