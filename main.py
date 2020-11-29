@@ -14,12 +14,16 @@ import matplotlib.pyplot as plt
 showPrint, save = False, False
 
 
-def on_press(key):
-    global showPrint, save
-    if keyboard.Key.f2 == key:
-        showPrint = True
-    if keyboard.Key.f3 == key:
-        save = True
+try:
+    keyboard.Listener(on_press=on_press).start()
+    def on_press(key):
+        global showPrint, save
+        if keyboard.Key.f2 == key:
+            showPrint = True
+        if keyboard.Key.f3 == key:
+            save = True
+except:
+    pass
 
 # class NetWork(Module):
 #     def __init__(self):
@@ -102,7 +106,6 @@ if isServer:
         saveCollector(collector, name)
     serverRun()
 else:
-    keyboard.Listener(on_press=on_press).start()
     total_agents, display_every = 20, 5000
     agent = Agent(memory=40000, discount=0.995, uncertainty=True, update_every=100, double=True, state_difference=True, uncertainty_weight=0, state_difference_weight=100)
     env = Environments(render=True, envs=['maze' for _ in range(total_agents)], agent=agent)
