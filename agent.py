@@ -50,7 +50,8 @@ class Agent:
 
     def rememberMulti(self, *args):
         done = 1 - torch.tensor(list(args[8])).type(torch.float)
-        self.true_state_trace = (done.to(device) * (self.true_state_trace.transpose(0,2))).transpose(0,2)
+        if self.true_state_trace is not None:
+            self.true_state_trace = (done.to(device) * (self.true_state_trace.transpose(0,2))).transpose(0,2)
         [self.remember(obs_old.cpu(), act, obs.cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done)) for obs_old, act, obs, rew, h0, c0, hn, cn, done in zip(*args)]
 
     def choose(self, pixels, hn, cn):
@@ -59,7 +60,7 @@ class Agent:
         vals.reshape(15)
         return self.explore(vals, uncertainty), pixels, hn, cn, self.network.hn, self.network.cn
 
-    def chooseMulti(self, pixels, hn, cn, lambda_decay=0.99, avoid_trace=None):
+    def chooseMulti(self, pixels, hn, cn, lambda_decay=0.99, avoid_trace=0):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
         vals, uncertainties, _, true_state = self.network(concatenation(pixels, 0).to(device))
         if self.state_difference:

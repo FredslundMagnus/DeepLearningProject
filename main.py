@@ -92,7 +92,7 @@ if isServer:
     def main():
         name, environment, hours, total_agents = params['name'], params['environment'], params['hours'], params['total_agents']
         agent = Agent(**params)
-        env = Environments(render=False, envs=[environment for _ in range(total_agents)])
+        env = Environments(render=False, envs=[environment for _ in range(total_agents)], agent=agent)
         collector = Collector(**params)
         tid = time() + 3600 * hours - 300
         while time() < tid:
