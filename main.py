@@ -13,17 +13,18 @@ import matplotlib.pyplot as plt
 showPrint, save = False, False
 
 
-try:
+if not isServer:
     from pynput import keyboard
-    keyboard.Listener(on_press=on_press).start()
+
     def on_press(key):
         global showPrint, save
         if keyboard.Key.f2 == key:
             showPrint = True
         if keyboard.Key.f3 == key:
             save = True
-except:
-    pass
+
+    keyboard.Listener(on_press=on_press).start()
+
 
 # class NetWork(Module):
 #     def __init__(self):
