@@ -51,11 +51,11 @@ def genExperiments(name, n=1, **params):
 environments = ['fruitbot']
 
 for env in environments:
-    genExperiments(f"Uncertainty+Avoid_State0and0{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=0)
-    genExperiments(f"Uncertainty+Avoid_State0and-1{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=-1)
-    genExperiments(f"Uncertainty+Avoid_State0and1{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=1)
-    genExperiments(f"Uncertainty+Avoid_State-1and0{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=-1, state_difference_weight=0)
-    genExperiments(f"Uncertainty+Avoid_State1and0{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=1, state_difference_weight=0)
-    genExperiments(f"Uncertainty+Avoid_State0and10{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=10)
+    genExperiments(f"UUncertainty+Avoid_State0and0{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=0)
+    genExperiments(f"UUncertainty+Avoid_State0and-1{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=-1)
+    genExperiments(f"UUncertainty+Avoid_State0and1{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=1)
+    genExperiments(f"UUncertainty+Avoid_State-1and0{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=-1, state_difference_weight=0)
+    genExperiments(f"UUncertainty+Avoid_State1and0{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=1, state_difference_weight=0)
+    genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=10)
 
 file.close()
