@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 
 showPrint, save = False, False
 
+if asdasdasd:"!#!"# : asddsa
+Plz crash
+
 
 if not isServer:
     from pynput import keyboard
