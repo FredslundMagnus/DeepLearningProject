@@ -58,7 +58,7 @@ def genExperiments(name, n=1, **params):
 environments = ['fruitbot']
 
 for env in environments:
-    genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0, hours=3)
-    genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=0, state_difference=0, uncertainty_weight=100, state_difference_weight=100, hours=3)
+    genExperiments(f"Test_YES_parameters_NO_weights{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
+    genExperiments(f"Test_NO_parameters_YES_weights{env}", environment=env, uncertainty=0, state_difference=0, uncertainty_weight=100, state_difference_weight=100)
 
 file.close()
