@@ -73,7 +73,7 @@ def parametres(agent: Agent, x: int = 1000, y: int = 0):
 def imageBig(state, x: int = 1000, y: int = 0):
     fig = plt.figure()
     move_figure(fig, x, y)
-    the_state = np.array(state).reshape(3, 64, 64).transpose(1, 2, 0) + 1
+    the_state = np.array(state.cpu()).reshape(3, 64, 64).transpose(1, 2, 0) + 1
     plt.imshow(the_state / 2)
     plt.show(block=False)
 
