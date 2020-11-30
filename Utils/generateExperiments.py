@@ -48,14 +48,17 @@ def genExperiments(name, n=1, **params):
 # genExperiments('NoDist_eps', environment='fruitbot', use_distribution=0)
 # genExperiments('Dist_LowMem_eps', environment='fruitbot', use_distribution=1, memory=50000)
 # genExperiments('NoDist_LowMem_eps', environment='fruitbot', use_distribution=0, memory=50000)
+
+#genExperiments(f"UUncertainty+Avoid_State0and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
+#genExperiments(f"UUncertainty+Avoid_State0and-1{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=-1)
+#genExperiments(f"UUncertainty+Avoid_State0and1{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=1)
+#genExperiments(f"UUncertainty+Avoid_State-1and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=-1, state_difference_weight=0)
+#genExperiments(f"UUncertainty+Avoid_State1and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=1, state_difference_weight=0)
+#genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=10)
 environments = ['fruitbot']
 
 for env in environments:
-    genExperiments(f"UUncertainty+Avoid_State0and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
-    genExperiments(f"UUncertainty+Avoid_State0and-1{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=-1)
-    genExperiments(f"UUncertainty+Avoid_State0and1{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=1)
-    genExperiments(f"UUncertainty+Avoid_State-1and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=-1, state_difference_weight=0)
-    genExperiments(f"UUncertainty+Avoid_State1and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=1, state_difference_weight=0)
-    genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=10)
+    genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0, hours=3)
+    genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=0, state_difference=0, uncertainty_weight=100, state_difference_weight=100, hours=3)
 
 file.close()

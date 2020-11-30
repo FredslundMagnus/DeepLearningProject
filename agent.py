@@ -97,12 +97,16 @@ class Agent:
         if self.uncertainty:
             estimate_uncertainties = torch.gather(uncertainties, 1, action)
             true_uncertainty = abs(label - guess.detach())
+            if self.uncertainty_weight == 0:
+                true_uncertainty = estimate_uncertainties.detach()
             guess = torch.cat((guess, estimate_uncertainties), 1)
             label = torch.cat((label, true_uncertainty), 1)
         if self.state_difference:
             estimate_state_difference = (torch.gather(state_differences, 1, action).view(-1) * done.type(torch.float)).view(-1,1)
             true_state_difference = ((torch.sum((true_state_target - true_state)**2, dim=2)).view(-1)**(1/2) * done.type(torch.float)).view(-1,1)
             guess = torch.cat((guess, estimate_state_difference), 1)
+            if self.state_difference_weight == 0:
+                true_state_difference = estimate_state_difference.detach()
             label = torch.cat((label, true_state_difference), 1)
         #print(guess[0], label[0])
         loss = self.criterion(guess, label)

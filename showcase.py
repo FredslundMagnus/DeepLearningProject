@@ -30,5 +30,5 @@ def showcase(name, environment, n=0):
 # Base_heist-0 0.7317073170731707
 # Base_jumper-0 6.25
 
-env = 'chaser'
-showcase('Uncertainty=0.5chaser', env)
+env = 'fruitbot'
+showcase('UUncertainty+Avoid_State0and-1fruitbot', env)
