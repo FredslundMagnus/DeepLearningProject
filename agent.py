@@ -13,6 +13,7 @@ from torch import cat as concatenation, float32
 import pickle
 
 
+
 class Agent:
     def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.995, uncertainty=True, uncertainty_weight=1, update_every=200, double=True, use_distribution=True, reward_normalization=False, encoder=None, hidden_size=40, state_difference=True, state_difference_weight=1, **kwargs) -> None:
         self.uncertainty = uncertainty
@@ -22,7 +23,6 @@ class Agent:
         self.network.hasEncoder = self.hasEncoder
         print("Number of parameters in network:", count_parameters(self.network))
         self.criterion = MSELoss()
-        self.optimizer = Adam(self.network.parameters(), lr=1e-4, weight_decay=1e-5)
         self.memory = ReplayBuffer(int(memory))
         self.remember = self.memory.remember()
         self.exploration = Exploration()
@@ -34,7 +34,6 @@ class Agent:
             self.explore = self.exploration.softmax
         elif exploration == 'greedyintosoftmax':
             self.explore = self.exploration.greedyintosoftmax
-
         self.target_network = NetWork(self.hidden_size).to(device)
         self.target_network.hasEncoder = self.hasEncoder
         self.placeholder_network = NetWork(self.hidden_size).to(device)
@@ -47,6 +46,18 @@ class Agent:
         self.true_state_trace = None
         self.uncertainty_weight = uncertainty_weight
         self.state_difference_weight = state_difference_weight
+        if encoder is not None:
+            self.optimizer_value = Adam(list(self.network.fromEncoder.parameters()) + list(self.network.lstm.parameters()) + list(self.network.linear.parameters()), lr=1e-4, weight_decay=1e-5)
+        else:
+            self.optimizer_value = Adam(list(self.network.color.parameters()) + list(self.network.conv1.parameters()) + list(self.network.lstm.parameters()) + list(self.network.linear.parameters()), lr=1e-4, weight_decay=1e-5)
+        if self.uncertainty == True:
+            self.optimizer_exploration = Adam(list(self.network.exploration_network.parameters()), lr=1e-4, weight_decay=1e-5)
+        if self.state_difference == True:
+            self.optimizer_state_avoidance = Adam(list(self.network.state_difference_network.parameters()), lr=1e-4, weight_decay=1e-5)
+
+
+
+
 
     def rememberMulti(self, *args):
         done = 1 - torch.tensor(list(args[8])).type(torch.float)
@@ -92,27 +103,28 @@ class Agent:
             v_s_next, _ = torch.max(vals_target, 1)
         self.network.hn, self.network.cn = h0, c0
         vals, uncertainties, state_differences, true_state = self.network(obs)
-        guess = torch.gather(vals, 1, action)
-        label = ((reward - self.memory.reward_avg) / self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+        vs = torch.gather(vals, 1, action)
+        td = ((reward - self.memory.reward_avg) / self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+
         if self.uncertainty:
             estimate_uncertainties = torch.gather(uncertainties, 1, action)
-            true_uncertainty = abs(label - guess.detach())
-            if self.uncertainty_weight == 0:
-                true_uncertainty = estimate_uncertainties.detach()
-            guess = torch.cat((guess, estimate_uncertainties), 1)
-            label = torch.cat((label, true_uncertainty), 1)
+            true_uncertainty = (vs - td.detach())**2
+            loss_uncertainty = self.criterion(estimate_uncertainties, true_uncertainty)
+            loss_uncertainty.backward(retain_graph=True)
+            self.optimizer_exploration.step()
+            self.optimizer_exploration.zero_grad()
         if self.state_difference:
             estimate_state_difference = (torch.gather(state_differences, 1, action).view(-1) * done.type(torch.float)).view(-1,1)
             true_state_difference = ((torch.sum((true_state_target - true_state)**2, dim=2)).view(-1)**(1/2) * done.type(torch.float)).view(-1,1)
-            guess = torch.cat((guess, estimate_state_difference), 1)
-            if self.state_difference_weight == 0:
-                true_state_difference = estimate_state_difference.detach()
-            label = torch.cat((label, true_state_difference), 1)
-        #print(guess[0], label[0])
-        loss = self.criterion(guess, label)
-        loss.backward()
-        self.optimizer.step()
-        self.optimizer.zero_grad()
+            loss_state_avoidance = self.criterion(estimate_state_difference, true_state_difference)
+            loss_state_avoidance.backward(retain_graph=True)
+            self.optimizer_state_avoidance.step()
+            self.optimizer_state_avoidance.zero_grad()
+        
+        loss_value_network = self.criterion(vs, td)
+        loss_value_network.backward()
+        self.optimizer_value.step()
+        self.optimizer_value.zero_grad()
 
         # torch.cuda.empty_cache()
 

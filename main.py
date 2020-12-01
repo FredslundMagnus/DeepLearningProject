@@ -7,11 +7,10 @@ from Utils.debug import disablePrint
 from time import time
 from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential, ReLU
 from helpers import hidden_size
-from display_input import showFilters, returnplot
+from display_input import showFilters, returnplot, displayer
 import matplotlib.pyplot as plt
 
 showPrint, save = False, False
-
 
 if not isServer:
     from pynput import keyboard
@@ -108,8 +107,8 @@ if isServer:
     serverRun()
 else:
     total_agents, display_every = 20, 5000
-    agent = Agent(memory=40000, discount=0.995, update_every=100, double=True, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=0)
-    env = Environments(render=True, envs=['maze' for _ in range(total_agents)], agent=agent)
+    agent = Agent(memory=40000, discount=0.995, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=0)
+    env = Environments(render=True, envs=['fruitbot' for _ in range(total_agents)], agent=agent)
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):
         obs, hn, cn = env.start()
@@ -121,6 +120,7 @@ else:
 
         if showPrint:
             plt.close('all')
-            showFilters(obs[0], y=200, x=600)
-            returnplot(collector.all_return, x=1200, y=200)
+            #showFilters(obs[0], y=200, x=600)
+            #returnplot(collector.all_return, x=1200, y=200)
+            displayer(obs[0], agent, collector)
             showPrint = False
