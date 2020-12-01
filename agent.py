@@ -4,7 +4,7 @@
 
 
 from torch.nn import Module, Conv2d, MaxPool2d, Linear, MSELoss, LSTM, LeakyReLU, Sequential, ReLU, Sigmoid
-from torch.optim import Adam
+from torch.optim import Adam, SGD
 from memory import ReplayBuffer
 from exploration import Exploration
 import torch
@@ -108,7 +108,7 @@ class Agent:
 
         if self.uncertainty:
             estimate_uncertainties = torch.gather(uncertainties, 1, action)
-            true_uncertainty = (vs - td.detach())**2
+            true_uncertainty = ((vs - td)**2).detach()
             loss_uncertainty = self.criterion(estimate_uncertainties, true_uncertainty)
             loss_uncertainty.backward(retain_graph=True)
             self.optimizer_exploration.step()
@@ -117,7 +117,7 @@ class Agent:
             estimate_state_difference = (torch.gather(state_differences, 1, action).view(-1) * done.type(torch.float)).view(-1,1)
             true_state_difference = ((torch.sum((true_state_target - true_state)**2, dim=2)).view(-1)**(1/2) * done.type(torch.float)).view(-1,1)
             loss_state_avoidance = self.criterion(estimate_state_difference, true_state_difference)
-            loss_state_avoidance.backward(retain_graph=True)
+            loss_state_avoidance.backward(retain_graph=True) 
             self.optimizer_state_avoidance.step()
             self.optimizer_state_avoidance.zero_grad()
         
@@ -129,9 +129,11 @@ class Agent:
         # torch.cuda.empty_cache()
 
     def convert_values(self, vals, uncertainties, state_differences):
-        #if self.f % 100 == 0:
-        #    print([int(x)/100 for x in 100*vals[0].cpu().detach().numpy()])
-        #    print([int(x)/100 for x in 100*state_differences[0].cpu().detach().numpy()])
+        if self.f % 100 == 0:
+            print([int(x)/100 for x in 100*vals[0].cpu().detach().numpy()])
+            print([int(x)/100 for x in 100*uncertainties[0].cpu().detach().numpy()])
+            print([int(x)/100 for x in 100*state_differences[0].cpu().detach().numpy()])
+            print(" ")
         return vals + (self.uncertainty_weight * uncertainties * self.uncertainty) + (self.state_difference_weight * state_differences * self.state_difference)
 
     def update_target_network(self):
@@ -172,7 +174,7 @@ class NetWork(Module):
             Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
-            Sigmoid(),
+            LeakyReLU(),
         )
 
         self.fromEncoder = Sequential(
@@ -181,7 +183,7 @@ class NetWork(Module):
             Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1),
             LeakyReLU(),
             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=4, stride=1),
-            Sigmoid(),
+            LeakyReLU(),
         )
 
         self.lstm = LSTM(self.size_after_conv, self.hidden_size, 1)

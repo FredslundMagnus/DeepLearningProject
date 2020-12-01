@@ -88,8 +88,11 @@ if not isServer:
 
 
 if isServer:
-    if hversødatcrash !=!=!= asdfasfd:
-        print(no way)
+
+    if fortheloveofgod =!=!= CRASH:
+        print(pis)
+        ::: is not none! :O
+
     # the server runs the main function (can be changed)
     def main():
         name, environment, hours, total_agents = params['name'], params['environment'], params['hours'], params['total_agents']
@@ -109,7 +112,7 @@ if isServer:
     serverRun()
 else:
     total_agents, display_every = 20, 5000
-    agent = Agent(memory=40000, discount=0.995, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=0)
+    agent = Agent(memory=40000, discount=0.995, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=1)
     env = Environments(render=True, envs=['fruitbot' for _ in range(total_agents)], agent=agent)
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):

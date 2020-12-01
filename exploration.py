@@ -32,7 +32,7 @@ class Exploration():
 
     def epsilonGreedy(self, vals):
         self.counter += 1
-        if self.counter % 1000 == 1:
+        if self.counter % 1000000 == 1:
             print(f"({str(float(vals.max()))[:4]}, {str(float(vals.std()))[:4]})", end=", ")
         return int(choice(15, 1)) if random() < self.epsilon else vals.detach().cpu().numpy().argmax()
 
