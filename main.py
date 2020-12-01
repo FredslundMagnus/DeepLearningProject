@@ -88,6 +88,8 @@ if not isServer:
 
 
 if isServer:
+    if hversødatcrash !=!=!= asdfasfd:
+        print(no way)
     # the server runs the main function (can be changed)
     def main():
         name, environment, hours, total_agents = params['name'], params['environment'], params['hours'], params['total_agents']
