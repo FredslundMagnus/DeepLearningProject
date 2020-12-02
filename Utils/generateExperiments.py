@@ -56,23 +56,13 @@ def genExperiments(name, n=1, **params):
 #genExperiments(f"UUncertainty+Avoid_State1and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=1, state_difference_weight=0)
 #genExperiments(f"UUncertainty+Avoid_State0and10{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=10)
 
-""" genExperiments(f"Final_stateUncertainty(-0.5_0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=-0.5, state_difference_weight=0)
-genExperiments(f"Final_stateUncertainty(0_-0.5){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=-0.5)
-genExperiments(f"Final_stateUncertainty(1_0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=1, state_difference_weight=0)
-genExperiments(f"Final_stateUncertainty(0_1){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=1)
-genExperiments(f"Final_stateUncertainty(0.5_0.5){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.5, state_difference_weight=0.5)
-genExperiments(f"Final_stateUncertainty(0.5_0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.5, state_difference_weight=0)
-genExperiments(f"Final_stateUncertainty(0_0.5){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.5)
-"""
-
-
 
 environments = ['bigfish']
 
 for env in environments:
-    genExperiments(f"Final_stateUncertainty(0and0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
-    genExperiments(f"Final_stateUncertainty(0dot25and0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0)
-    genExperiments(f"Final_stateUncertainty(0and0dot25){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.25)
-    genExperiments(f"Final_stateUncertainty(0dot25and0dot25){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0.25)
+    genExperiments(f"Final_stateUncertainty0and){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
+    genExperiments(f"Final_stateUncertainty0.25and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0)
+    genExperiments(f"Final_stateUncertainty0and0.25{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.25)
+    genExperiments(f"Final_stateUncertainty0.25and0.25{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0.25)
 
 file.close()
