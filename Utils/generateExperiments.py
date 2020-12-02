@@ -70,9 +70,9 @@ genExperiments(f"Final_stateUncertainty(0_0.5){env}", environment=env, uncertain
 environments = ['bigfish']
 
 for env in environments:
-    genExperiments(f"Final_stateUncertainty(0_0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
-    genExperiments(f"Final_stateUncertainty(0.25_0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0)
-    genExperiments(f"Final_stateUncertainty(0_0.25){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.25)
-    genExperiments(f"Final_stateUncertainty(0_0.25){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0.25)
+    genExperiments(f"Final_stateUncertainty(0and0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
+    genExperiments(f"Final_stateUncertainty(0dot25and0){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0)
+    genExperiments(f"Final_stateUncertainty(0and0dot25){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.25)
+    genExperiments(f"Final_stateUncertainty(0dot25and0dot25){env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0.25)
 
 file.close()
