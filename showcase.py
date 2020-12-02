@@ -31,4 +31,4 @@ def showcase(name, environment, n=0):
 # Base_jumper-0 6.25
 
 env = 'fruitbot'
-showcase('UUncertainty+Avoid_State0and0fruitbot', env)
+showcase('UUncertainty+Avoid_State0and10fruitbot', env)
