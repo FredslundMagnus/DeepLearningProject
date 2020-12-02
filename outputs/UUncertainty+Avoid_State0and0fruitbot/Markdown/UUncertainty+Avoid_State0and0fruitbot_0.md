@@ -541,3 +541,189 @@ Resource usage summary:
 
 The output (if any) is above this job summary.
 
+
+    Name :                      UUncertainty+Avoid_State0and0fruitbot-0
+    Discount :                  0.995
+    Environment :               fruitbot
+    Hours :                     23
+    Memory :                    500000
+    Update every :              500
+    Use distribution :          1
+    Double :                    1
+    Total agents :              20
+    Calculate every :           500
+    Uncertainty :               1
+    Reward normalization :      0
+    Exploration :               epsilonGreedy
+    Hidden size :               40
+    Uncertainty weight :        0
+    State difference :          1
+    State difference weight :   0
+    Minutes used :              1375 minutes.
+    Hours used :                22 hours.
+
+# Profiling
+
+
+      13914066042 function calls (13684423929 primitive calls) in 82514.18 seconds
+
+##    Ordered by: cumulative time
+   List reduced from 1356 to 100 due to restriction <100>
+
+                  ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+                   80/1    0.000    0.000 82514.180 82514.180 {built-in method builtins.exec}
+                      1    0.053    0.053 82514.180 82514.180 <string>:1(<module>)
+                      1  496.620  496.620 82514.126 82514.126 main.py:93(main)
+                2273935  159.838    0.000 56245.630    0.025 agent.py:75(learn)
+                2273435  770.460    0.000 55176.503    0.024 agent.py:85(TD_learn)
+                2273435  158.281    0.000 25159.947    0.011 memory.py:35(sample_distribution)
+                2273435  271.809    0.000 24395.120    0.011 helpers.py:15(stack)
+        241003610/11368175 1047.074    0.000 16320.197    0.001 module.py:715(_call_impl)
+                6820805  224.523    0.000 15390.456    0.002 agent.py:198(forward)
+               22736458 12529.024    0.001 12529.094    0.001 {method 'to' of 'torch._C._TensorBase' objects}
+               29556155 11430.199    0.000 11430.199    0.000 {built-in method cat}
+               36377960  309.960    0.000 10788.710    0.000 container.py:115(forward)
+                2273435   22.348    0.000 9436.062    0.004 grad_mode.py:23(decorate_context)
+                2273935   64.852    0.000 9435.812    0.004 environments.py:83(step)
+                2273435  243.926    0.000 9384.894    0.004 adam.py:55(step)
+                2273935  217.136    0.000 8656.263    0.004 agent.py:63(chooseMulti)
+                2273435 1729.235    0.001 8080.180    0.004 functional.py:53(adam)
+                2273935   96.356    0.000 7495.521    0.003 agent.py:51(rememberMulti)
+                2273935  300.522    0.000 7025.430    0.003 agent.py:55(<listcomp>)
+              307053554 6784.891    0.000 6784.891    0.000 {method 'cpu' of 'torch._C._TensorBase' objects}
+                2273435   23.127    0.000 5986.965    0.003 tensor.py:181(backward)
+                2273435   15.116    0.000 5963.838    0.003 __init__.py:68(backward)
+                2273435 5874.519    0.003 5874.519    0.003 {method 'run_backward' of 'torch._C._EngineBase' objects}
+               45975364 1335.510    0.000 5779.986    0.000 helpers.py:8(clean)
+                2273935   67.517    0.000 5776.667    0.003 environments.py:85(<listcomp>)
+               52795669 5021.084    0.000 5021.084    0.000 {built-in method as_tensor}
+               40924830   74.585    0.000 3902.476    0.000 conv.py:422(forward)
+               40924830   83.494    0.000 3795.287    0.000 conv.py:414(_conv_forward)
+               40924830 3697.564    0.000 3697.564    0.000 {built-in method conv2d}
+               54567440  120.532    0.000 3427.900    0.000 linear.py:92(forward)
+                2273935   47.082    0.000 3330.284    0.001 environments.py:84(<listcomp>)
+               45478700  180.513    0.000 3283.202    0.000 interop.py:274(step)
+               54567440  324.337    0.000 3252.757    0.000 functional.py:1669(linear)
+                6820811  427.901    0.000 2580.058    0.000 rnn.py:110(flatten_parameters)
+              504702678 1265.299    0.000 2002.626    0.000 tensor.py:933(grad)
+               47745635 1925.113    0.000 1925.113    0.000 {built-in method addmm}
+                2273435  186.292    0.000 1913.429    0.001 optimizer.py:167(zero_grad)
+                2273935  107.654    0.000 1879.326    0.001 agent.py:73(<listcomp>)
+                6820805   81.377    0.000 1842.058    0.000 rnn.py:555(forward)
+               45478700   21.956    0.000 1777.735    0.000 wrapper.py:25(act)
+               45478700   68.087    0.000 1755.779    0.000 env.py:197(act)
+              136406100 1734.681    0.000 1734.681    0.000 {method 'mul_' of 'torch._C._TensorBase' objects}
+                6820805 1667.569    0.000 1667.569    0.000 {built-in method lstm}
+               79576725   74.441    0.000 1666.393    0.000 activation.py:713(forward)
+                6820808 1656.065    0.000 1656.065    0.000 {built-in method _cudnn_rnn_flatten_weight}
+               45478700 1642.600    0.000 1646.851    0.000 libenv.py:352(act)
+               79576725  106.966    0.000 1591.952    0.000 functional.py:1292(leaky_relu)
+               79576725 1475.497    0.000 1475.497    0.000 {built-in method torch._C._nn.leaky_relu}
+               45478700  157.699    0.000 1462.475    0.000 exploration.py:33(epsilonGreedy)
+              136406100 1453.119    0.000 1453.119    0.000 {method 'add_' of 'torch._C._TensorBase' objects}
+              627473438  331.630    0.000  939.973    0.000 overrides.py:1073(has_torch_function)
+                   4547    1.687    0.000  909.289    0.200 agent.py:125(update_target_network)
+               68203050  876.521    0.000  876.521    0.000 {method 'add' of 'torch._C._TensorBase' objects}
+               91454064   74.801    0.000  822.403    0.000 extract_dict_ob.py:9(observe)
+               68203050  817.115    0.000  817.115    0.000 {method 'sqrt' of 'torch._C._TensorBase' objects}
+               68203050  767.622    0.000  767.622    0.000 {method 'addcdiv_' of 'torch._C._TensorBase' objects}
+               91454064   40.972    0.000  747.602    0.000 wrapper.py:19(observe)
+               91454064  180.916    0.000  706.630    0.000 libenv.py:344(observe)
+               68203050  679.011    0.000  679.011    0.000 {method 'addcmul_' of 'torch._C._TensorBase' objects}
+                2273935    6.332    0.000  652.885    0.000 agent.py:216(avoid_similar_state)
+                   4547  162.323    0.036  580.788    0.128 memory.py:45(update_distribution)
+              686587772  234.436    0.000  576.186    0.000 {built-in method builtins.any}
+               54567440  519.854    0.000  519.854    0.000 {method 't' of 'torch._C._TensorBase' objects}
+               68203050  519.212    0.000  519.212    0.000 {method 'zero_' of 'torch._C._TensorBase' objects}
+              344710162  517.180    0.000  517.180    0.000 {method 'detach' of 'torch._C._TensorBase' objects}
+              136932764  152.519    0.000  513.736    0.000 libenv.py:281(_maybe_copy_dict)
+               47761229  502.365    0.000  502.365    0.000 {built-in method numpy.array}
+              410802839  450.464    0.000  450.464    0.000 {method 'copy' of 'numpy.ndarray' objects}
+               11297346  161.605    0.000  409.478    0.000 {method 'choice' of 'numpy.random.mtrand.RandomState' objects}
+                6821805   13.730    0.000  403.354    0.000 functional.py:74(split)
+                6821805   31.848    0.000  388.768    0.000 tensor.py:460(split)
+               31831913  347.235    0.000  371.807    0.000 module.py:781(__setattr__)
+               45478700   40.410    0.000  364.876    0.000 wrapper.py:22(get_info)
+                6821805  355.269    0.000  355.269    0.000 {function Tensor.split at 0x7f7db95a4d30}
+             1309514316  270.144    0.000  339.641    0.000 overrides.py:1086(<genexpr>)
+                2273435  257.852    0.000  335.564    0.000 {method 'choice' of 'numpy.random._generator.Generator' objects}
+               45478700  170.350    0.000  324.466    0.000 libenv.py:363(get_info)
+               45478700  324.350    0.000  324.350    0.000 memory.py:17(inner)
+               45478700  309.197    0.000  309.197    0.000 {method 'reshape' of 'torch._C._TensorBase' objects}
+               24868267   24.038    0.000  290.474    0.000 <__array_function__ internals>:2(prod)
+               40923830  281.008    0.000  281.008    0.000 {method 'view' of 'torch._C._TensorBase' objects}
+                   9094  223.965    0.025  275.727    0.030 {built-in method _pickle.loads}
+                2273935  266.876    0.000  266.876    0.000 agent.py:119(convert_values)
+                6820805   16.767    0.000  264.619    0.000 pooling.py:152(forward)
+                2273935   29.251    0.000  264.008    0.000 environments.py:86(<listcomp>)
+               24868307   18.911    0.000  262.348    0.000 {built-in method numpy.core._multiarray_umath.implement_array_function}
+                9093740  254.044    0.000  254.044    0.000 {built-in method gather}
+                6820805   12.038    0.000  247.852    0.000 _jit_internal.py:257(fn)
+               24868267   30.628    0.000  243.437    0.000 fromnumeric.py:2881(prod)
+                6821805  241.934    0.000  241.934    0.000 {method 'matmul' of 'torch._C._TensorBase' objects}
+               45478720   34.181    0.000  234.771    0.000 environments.py:89(reset)
+                6820805   13.983    0.000  234.551    0.000 functional.py:574(_max_pool2d)
+                6820805  219.823    0.000  219.823    0.000 {built-in method max_pool2d}
+               24868267   59.993    0.000  212.809    0.000 fromnumeric.py:70(_wrapreduction)
+               27283232  175.395    0.000  196.789    0.000 __init__.py:67(is_acceptable)
+                2619505  193.232    0.000  193.232    0.000 {built-in method tensor}
+               68203320   87.015    0.000  187.339    0.000 tensor.py:596(__hash__)
+                2273435  178.511    0.000  178.511    0.000 memory.py:43(<listcomp>)
+                2273435    6.004    0.000  172.062    0.000 loss.py:445(forward)
+              241003610  167.328    0.000  167.328    0.000 {built-in method torch._C._get_tracing_state}
+
+
+# Other prints
+
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@n-62-20-3>
+Subject: Job 8458901: <UUncertainty+Avoid_State0and0fruitbot_0> in cluster <dcc> Done
+
+Job <UUncertainty+Avoid_State0and0fruitbot_0> was submitted from host <n-62-30-8> by user <s183914> in cluster <dcc> at Mon Nov 30 20:41:54 2020
+Job was executed on host(s) <n-62-20-3>, in queue <gpuv100>, as user <s183914> in cluster <dcc> at Mon Nov 30 23:25:44 2020
+</zhome/ea/9/137501> was used as the home directory.
+</zhome/ea/9/137501/Desktop/DeepAI/DeepLearningProject/Utils> was used as the working directory.
+Started at Mon Nov 30 23:25:44 2020
+Terminated at Tue Dec  1 22:21:02 2020
+Results reported at Tue Dec  1 22:21:02 2020
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/sh
+#BSUB -q hpc
+#BSUB -q gpuv100
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 1
+#BSUB -R "rusage[mem=60G]"
+#BSUB -R "span[hosts=1]"
+#BSUB -W 1440
+# end of BSUB options
+cd ..
+module -s load python3
+source ../project-env/bin/activate
+
+python main.py $LSB_PROJECT_NAME
+
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   84067.00 sec.
+    Max Memory :                                 54818 MB
+    Average Memory :                             54109.84 MB
+    Total Requested Memory :                     61440.00 MB
+    Delta Memory :                               6622.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                9
+    Run time :                                   82519 sec.
+    Turnaround time :                            92348 sec.
+
+The output (if any) is above this job summary.
+
