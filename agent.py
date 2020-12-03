@@ -32,8 +32,8 @@ class Agent:
             self.explore = self.exploration.epsilonGreedy
         elif exploration == 'softmax':
             self.explore = self.exploration.softmax
-        elif exploration == 'greedyintosoftmax':
-            self.explore = self.exploration.greedyintosoftmax
+        elif exploration == 'epsintosoftmax':
+            self.explore = self.exploration.epsintosoftmax
         self.target_network = NetWork(self.hidden_size).to(device)
         self.target_network.hasEncoder = self.hasEncoder
         self.placeholder_network = NetWork(self.hidden_size).to(device)
@@ -71,7 +71,7 @@ class Agent:
         vals.reshape(15)
         return self.explore(vals, uncertainty), pixels, hn, cn, self.network.hn, self.network.cn
 
-    def chooseMulti(self, pixels, hn, cn, lambda_decay=0.95, avoid_trace=0):
+    def chooseMulti(self, pixels, hn, cn, lambda_decay=0.99, avoid_trace=0):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
         vals, uncertainties, _, true_state = self.network(concatenation(pixels, 0).to(device))
         if self.state_difference:
