@@ -134,7 +134,7 @@ class Agent:
             print([int(x)/100 for x in 100*uncertainties[0].cpu().detach().numpy()])
             print([int(x)/100 for x in 100*state_differences[0].cpu().detach().numpy()])
             print(" ")
-        return vals + (self.uncertainty_weight * uncertainties * self.uncertainty) + (self.state_difference_weight * state_differences * self.state_difference)
+        return vals + (float(self.uncertainty_weight) * uncertainties * float(self.uncertainty)) + (float(self.state_difference_weight) * state_differences * float(self.state_difference))
 
     def update_target_network(self):
         self.target_network = pickle.loads(pickle.dumps(self.placeholder_network))

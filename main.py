@@ -107,8 +107,8 @@ if isServer:
     serverRun()
 else:
     total_agents, display_every = 20, 5000
-    agent = Agent(memory=40000, discount=0.995, uncertainty=True, state_difference=True, uncertainty_weight=0, state_difference_weight=0, exploration='epsintosoftmax')
-    env = Environments(render=True, envs=['maze' for _ in range(total_agents)], agent=agent)
+    agent = Agent(memory=40000, discount=0.995, uncertainty=1, state_difference=1, uncertainty_weight=0.25, state_difference_weight=0.25, exploration='epsintosoftmax')
+    env = Environments(render=True, envs=['bigfish' for _ in range(total_agents)], agent=agent)
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):
         obs, hn, cn = env.start()

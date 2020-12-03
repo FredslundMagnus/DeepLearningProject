@@ -11,7 +11,7 @@ def evaluate(name, environment, n=0):
     agent.uncertainty = False
     env = Environments(render=False, envs=[environment for _ in range(20)], agent=agent)
     rews, dones = [], []
-    for i in range(10000):
+    for i in range(20000):
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
@@ -62,9 +62,9 @@ rMax = {
 
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
 # environments = ['chaser']
-environments = ['fruitbot']
+environments = ['bigfish']
 for env in environments:
-    evaluate(f'UUncertainty+Avoid_State-1and0fruitbot', env)
+    evaluate(f'Final_stateUncertainty0and0bigfish', env)
 # V1
 # n=20000
 # Base_bigfish-0        0.15    7.07592190889371
