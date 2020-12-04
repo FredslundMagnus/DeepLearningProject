@@ -75,3 +75,4 @@ Resource usage summary:
 
 The output (if any) is above this job summary.
 
+[W TensorIterator.cpp:924] Warning: Mixed memory format inputs detected while calling the operator. The operator will output channels_last tensor even if some of the inputs are not in channels_last format. (function operator())
