@@ -9,6 +9,7 @@ def evaluate(name, environment, n=0):
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
     agent.explore = agent.exploration.greedy
     agent.uncertainty = False
+    agent.state_avoidance = False
     env = Environments(render=False, envs=[environment for _ in range(20)], agent=agent)
     rews, dones = [], []
     for i in range(20000):
@@ -64,7 +65,8 @@ environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinr
 # environments = ['chaser']
 environments = ['bigfish']
 for env in environments:
-    evaluate(f'Final_stateUncertainty0and0bigfish', env)
+    evaluate(f'Final_stateUncertainty0.25and0bigfish', env)
+
 # V1
 # n=20000
 # Base_bigfish-0        0.15    7.07592190889371

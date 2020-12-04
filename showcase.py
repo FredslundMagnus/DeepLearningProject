@@ -4,10 +4,13 @@ from display_input import displayer
 import matplotlib.pyplot as plt
 
 
-def showcase(name, environment, n=0):
+def showcase(name, environment, n=0, max_values=True):
     name = name + '-' + str(n)
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
-    # agent.explore = agent.exploration.greedy
+    if max_values == True:
+        agent.explore = agent.exploration.greedy
+        agent.uncertainty = False
+        agent.state_avoidance = False
     env = Environments(render=True, envs=[environment], agent=agent)
     collector = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Collectors/{name}.collect", "rb"))
     for i in range(10000):
@@ -31,4 +34,4 @@ def showcase(name, environment, n=0):
 # Base_jumper-0 6.25
 
 env = 'bigfish'
-showcase('Final_stateUncertainty0and0bigfish', env)
+showcase('fepsintosoftmax_stateUncertainty0and0bigfish', env)
