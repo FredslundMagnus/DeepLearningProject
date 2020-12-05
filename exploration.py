@@ -16,8 +16,8 @@ class Exploration():
 
     @property
     def K(self):
-        C = 2000000 if isServer else 100000
-        return max(0.1, C / self.counter)
+        C = 500000 if isServer else 50000
+        return max(0.02, C / self.counter)
 
     def softmax(self, vals):
         self.counter += 1
