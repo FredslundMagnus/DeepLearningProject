@@ -63,9 +63,9 @@ rMax = {
 
 environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
 # environments = ['chaser']
-environments = ['dodgeball']
+# environments = ['dodgeball']
 for env in environments:
-    evaluate(f'Uncertainty0state_difference0dodgeball', env)
+    evaluate(f'Base_v2_{env}', env)
 
 # V1
 # n=20000

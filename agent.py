@@ -13,7 +13,6 @@ from torch import cat as concatenation, float32
 import pickle
 
 
-
 class Agent:
     def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.99, uncertainty=True, uncertainty_weight=1, update_every=200, double=True, use_distribution=True, reward_normalization=False, encoder=None, hidden_size=40, state_difference=True, state_difference_weight=1, **kwargs) -> None:
         self.uncertainty = uncertainty
@@ -55,14 +54,10 @@ class Agent:
         if self.state_difference == True:
             self.optimizer_state_avoidance = Adam(list(self.network.state_difference_network.parameters()), lr=1e-4, weight_decay=1e-5)
 
-
-
-
-
     def rememberMulti(self, *args):
         done = 1 - torch.tensor(list(args[8])).type(torch.float)
         if self.true_state_trace is not None:
-            self.true_state_trace = (done.to(device) * (self.true_state_trace.transpose(0,2))).transpose(0,2)
+            self.true_state_trace = (done.to(device) * (self.true_state_trace.transpose(0, 2))).transpose(0, 2)
         [self.remember(obs_old.cpu(), act, obs.cpu(), rew, h0.detach().cpu(), c0.detach().cpu(), hn.detach().cpu(), cn.detach().cpu(), int(not done)) for obs_old, act, obs, rew, h0, c0, hn, cn, done in zip(*args)]
 
     def choose(self, pixels, hn, cn):
@@ -114,13 +109,13 @@ class Agent:
             self.optimizer_exploration.step()
             self.optimizer_exploration.zero_grad()
         if self.state_difference:
-            estimate_state_difference = (torch.gather(state_differences, 1, action).view(-1) * done.type(torch.float)).view(-1,1)
-            true_state_difference = ((torch.sum((true_state_target - true_state)**2, dim=2)).view(-1)**(1/2) * done.type(torch.float)).view(-1,1)
+            estimate_state_difference = (torch.gather(state_differences, 1, action).view(-1) * done.type(torch.float)).view(-1, 1)
+            true_state_difference = ((torch.sum((true_state_target - true_state)**2, dim=2)).view(-1)**(1 / 2) * done.type(torch.float)).view(-1, 1)
             loss_state_avoidance = self.criterion(estimate_state_difference, true_state_difference)
-            loss_state_avoidance.backward(retain_graph=True) 
+            loss_state_avoidance.backward(retain_graph=True)
             self.optimizer_state_avoidance.step()
             self.optimizer_state_avoidance.zero_grad()
-        
+
         loss_value_network = self.criterion(vs, td)
         loss_value_network.backward()
         self.optimizer_value.step()
@@ -130,9 +125,9 @@ class Agent:
 
     def convert_values(self, vals, uncertainties, state_differences):
         if self.f % 1000 == 0:
-            print([int(x)/100 for x in 100*vals[0].cpu().detach().numpy()])
-            print([int(x)/100 for x in 100*uncertainties[0].cpu().detach().numpy()])
-            print([int(x)/100 for x in 100*state_differences[0].cpu().detach().numpy()])
+            print([int(x) / 100 for x in 100 * vals[0].cpu().detach().numpy()])
+            print([int(x) / 100 for x in 100 * uncertainties[0].cpu().detach().numpy()])
+            print([int(x) / 100 for x in 100 * state_differences[0].cpu().detach().numpy()])
             print(" ")
         return vals + (float(self.uncertainty_weight) * uncertainties * float(self.uncertainty)) + (float(self.state_difference_weight) * state_differences * float(self.state_difference))
 
@@ -197,9 +192,9 @@ class NetWork(Module):
             LeakyReLU(),
             Linear(self.hidden_size, self.hidden_size),
             LeakyReLU(),
-            Linear(self.hidden_size, self.hidden_size//2),
+            Linear(self.hidden_size, self.hidden_size // 2),
             LeakyReLU(),
-            Linear(self.hidden_size//2, 15),
+            Linear(self.hidden_size // 2, 15),
         )
 
         self.state_difference_network = Sequential(
@@ -209,6 +204,7 @@ class NetWork(Module):
             LeakyReLU(),
             Linear(self.hidden_size, 15),
         )
+
     def forward(self, x):
         self.lstm.flatten_parameters()
         if self.hasEncoder:
