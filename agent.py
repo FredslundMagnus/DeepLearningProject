@@ -15,7 +15,7 @@ import pickle
 
 
 class Agent:
-    def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.995, uncertainty=True, uncertainty_weight=1, update_every=200, double=True, use_distribution=True, reward_normalization=False, encoder=None, hidden_size=40, state_difference=True, state_difference_weight=1, **kwargs) -> None:
+    def __init__(self, exploration='epsilonGreedy', memory=10000, discount=0.99, uncertainty=True, uncertainty_weight=1, update_every=200, double=True, use_distribution=True, reward_normalization=False, encoder=None, hidden_size=40, state_difference=True, state_difference_weight=1, **kwargs) -> None:
         self.uncertainty = uncertainty
         self.hidden_size = hidden_size
         self.network = NetWork(self.hidden_size).to(device)
@@ -108,7 +108,7 @@ class Agent:
 
         if self.uncertainty:
             estimate_uncertainties = torch.gather(uncertainties, 1, action)
-            true_uncertainty = ((vs - td)**2).detach()
+            true_uncertainty = (abs(vs - td)).detach()
             loss_uncertainty = self.criterion(estimate_uncertainties, true_uncertainty)
             loss_uncertainty.backward(retain_graph=True)
             self.optimizer_exploration.step()
@@ -129,7 +129,7 @@ class Agent:
         # torch.cuda.empty_cache()
 
     def convert_values(self, vals, uncertainties, state_differences):
-        if self.f % 100 == 0:
+        if self.f % 1000 == 0:
             print([int(x)/100 for x in 100*vals[0].cpu().detach().numpy()])
             print([int(x)/100 for x in 100*uncertainties[0].cpu().detach().numpy()])
             print([int(x)/100 for x in 100*state_differences[0].cpu().detach().numpy()])
