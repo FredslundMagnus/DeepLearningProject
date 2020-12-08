@@ -62,16 +62,12 @@ def genExperiments(name, n=1, **params):
 #genExperiments(f"Eps_state_transition0.25{env}", environment=env, uncertainty=0, state_difference=1, uncertainty_weight=0, state_difference_weight=0.25)
 
 
-environments = ['dodgeball']
+environments = ['bigfish']
 
 for env in environments:
-    #genExperiments(f"Final_stateUncertainty0and0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
-    genExperiments(f"Uncertainty0state_difference0.1softeps{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1, exploration='epsintosoftmax')
-    genExperiments(f"Uncertainty0state_difference0.1{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
-    genExperiments(f"Uncertainty0.1state_difference0softeps{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0, exploration='epsintosoftmax')
-    genExperiments(f"Uncertainty0.1state_difference0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0)
-    genExperiments(f"Uncertainty0state_difference0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
-    genExperiments(f"Uncertainty0state_difference0softeps{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0, exploration='epsintosoftmax')
+    genExperiments(f"BIGFISH_U_S_0_0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
+    genExperiments(f"BIGFISH_U_S_0.1_0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0)
+    genExperiments(f"BIGFISH_U_S_0_0.1{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
 
 
 file.close()
