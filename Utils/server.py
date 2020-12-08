@@ -14,7 +14,7 @@ defaults = {
     'use_distribution': 1,
     'double': 1,
     'total_agents': 20,
-    'calculate_every': 500,
+    'calculate_every': 1000,
     'uncertainty': 1,
     'reward_normalization': 0,
     'exploration': 'epsilonGreedy',

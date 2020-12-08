@@ -99,8 +99,9 @@ if isServer:
             obs, hn, cn = env.start()
             act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
             obs, rew, done, info = env.step(act, hn, cn)
-            collector.collect(rew, done, act)
-            agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
+            collector.collect(rew, done, act, agent.onpolicy)
+            if not agent.onpolicy:
+                agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
             agent.learn()
         saveAgent(agent, name)
         saveCollector(collector, name)
@@ -114,8 +115,9 @@ else:
         obs, hn, cn = env.start()
         act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
-        collector.collect(rew, done, act)
-        agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
+        collector.collect(rew, done, act, agent.onpolicy)
+        if not agent.onpolicy:
+            agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
         agent.learn()
 
         if showPrint:

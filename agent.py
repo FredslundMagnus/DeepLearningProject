@@ -49,10 +49,11 @@ class Agent:
             self.optimizer_value = Adam(list(self.network.fromEncoder.parameters()) + list(self.network.lstm.parameters()) + list(self.network.linear.parameters()), lr=1e-4, weight_decay=1e-5)
         else:
             self.optimizer_value = Adam(list(self.network.color.parameters()) + list(self.network.conv1.parameters()) + list(self.network.lstm.parameters()) + list(self.network.linear.parameters()), lr=1e-4, weight_decay=1e-5)
-        if self.uncertainty == True:
+        if self.uncertainty:
             self.optimizer_exploration = Adam(list(self.network.exploration_network.parameters()), lr=1e-4, weight_decay=1e-5)
-        if self.state_difference == True:
+        if self.state_difference:
             self.optimizer_state_avoidance = Adam(list(self.network.state_difference_network.parameters()), lr=1e-4, weight_decay=1e-5)
+        self.onpolicy = True
 
     def rememberMulti(self, *args):
         done = 1 - torch.tensor(list(args[8])).type(torch.float)
@@ -69,6 +70,8 @@ class Agent:
     def chooseMulti(self, pixels, hn, cn, lambda_decay=0.99, avoid_trace=0):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
         vals, uncertainties, _, true_state = self.network(concatenation(pixels, 0).to(device))
+        if self.onpolicy:
+            return [val.reshape(15).detach().cpu().numpy().argmax() for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1)
         if self.state_difference:
             if self.true_state_trace is None:
                 self.true_state_trace = true_state.detach()
@@ -84,6 +87,11 @@ class Agent:
             self.update_target_network()
             if self.reward_normalization:
                 self.memory.average_reward()
+        if self.f % 50000 > 48000:
+            self.onpolicy = True
+            return
+        else:
+            self.onpolicy = False
         if self.f > self.update_every:
             for _ in range(1):
                 self.TD_learn()
