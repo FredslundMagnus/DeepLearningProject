@@ -33,5 +33,5 @@ def showcase(name, environment, n=0, max_values=True):
 # Base_heist-0 0.7317073170731707
 # Base_jumper-0 6.25
 
-env = 'bigfish'
-showcase('base_v2_bigfish', env, max_values=True)
+env = 'dodgeball'
+showcase('Uncertainty0.1state_difference0dodgeball', env, max_values=True)
