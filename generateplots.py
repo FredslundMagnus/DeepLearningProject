@@ -33,31 +33,41 @@ def standardPlot(name, label, width=100):
     plt.fill_between(list(range(len(mean))), [r - sd for r, sd in zip(mean, sd)], [r + sd for r, sd in zip(mean, sd)], alpha=0.4)
 
 
-# standardPlot('Uncertainty0state_difference0chaser', "No State Difference")
-# standardPlot('Uncertainty0state_difference0.1chaser', "State Difference")
-# plt.legend(loc='upper left')
-# plt.title("State difference")
-# plt.show()
+# for env in ['maze', 'miner', 'ninja', 'plunder', 'starpilot']:
+#     standardPlot(f'Base_v2_{env}', f"{env.capitalize()} V2")
+#     standardPlot(f'Base_{env}', f"{env.capitalize()} V1")
+#     plt.legend(loc='upper left')
+#     plt.title(env.capitalize())
+#     plt.show()
 
 
-names = ['Uncertainty0state_difference0.1chaser', 'Uncertainty0state_difference0chaser']
-total_agents, display_every = 20, 5000
-names = [name + '-0' for name in names]
-agents = [pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb")) for name in names]
-env = Environments(render=True, envs=['chaser' for _ in range(total_agents)], agent=agents[0])
-collector = Collector(calculate_every=500, total_agents=total_agents)
-for f in range(1, 10000000):
-    obs, hn, cn = env.start()
-    act, obs_old, h0, c0, hn, cn = agents[0].chooseMulti(obs, hn, cn)
-    obs, rew, done, info = env.step(act, hn, cn)
-    collector.collect(rew, done, act)
-    # agents[0].rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
-    # agents[0].learn()
+standardPlot('Final_stateUncertainty0and0bigfish', "No Unsertainty")
+standardPlot('Final_stateUncertainty0.25and0bigfish', "Unsertainty")
+plt.plot([9.6] * 5000, '--', linewidth=1.0, label="No Unsertainty Evaluate")
+plt.plot([15.8] * 5000, '--', linewidth=1.0, label="Unsertainty Evaluate")
+plt.legend(loc='upper left')
+plt.title("Unsertainty")
+plt.show()
 
-    if showPrint:
-        plt.close('all')
-        #showFilters(obs[0], y=200, x=600)
-        #returnplot(collector.all_return, x=1200, y=200)
-        for agent in agents:
-            displayer(obs[0], agent, collector)
-        showPrint = False
+
+# names = ['Uncertainty0state_difference0.1chaser', 'Uncertainty0state_difference0chaser']
+# total_agents, display_every = 20, 5000
+# names = [name + '-0' for name in names]
+# agents = [pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb")) for name in names]
+# env = Environments(render=True, envs=['chaser' for _ in range(total_agents)], agent=agents[0])
+# collector = Collector(calculate_every=500, total_agents=total_agents)
+# for f in range(1, 10000000):
+#     obs, hn, cn = env.start()
+#     act, obs_old, h0, c0, hn, cn = agents[0].chooseMulti(obs, hn, cn)
+#     obs, rew, done, info = env.step(act, hn, cn)
+#     collector.collect(rew, done, act)
+#     # agents[0].rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
+#     # agents[0].learn()
+
+#     if showPrint:
+#         plt.close('all')
+#         #showFilters(obs[0], y=200, x=600)
+#         #returnplot(collector.all_return, x=1200, y=200)
+#         for agent in agents:
+#             displayer(obs[0], agent, collector)
+#         showPrint = False
