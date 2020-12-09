@@ -6,6 +6,7 @@ from environments import Environments
 from display_input import displayer
 import matplotlib.pyplot as plt
 from pynput import keyboard
+from seaborn import heatmap
 
 showPrint, save = False, False
 
@@ -71,3 +72,16 @@ plt.show()
 #         for agent in agents:
 #             displayer(obs[0], agent, collector)
 #         showPrint = False
+
+def standardPlot(name):
+    name = f"{name}-0"
+    temp = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Collectors/{name}.collect", "rb")).action_dist_all
+    data = []
+    for d in temp:
+        if sum(d):
+            data.append(d)
+    heatmap(np.array(data).T, vmin=0, vmax=1)
+    plt.show()
+
+
+standardPlot('CHASER_U_S_0_0.1chaser')
