@@ -61,12 +61,15 @@ rMax = {
     'starpilot': 64,
 }
 
-environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
-# environments = ['chaser']
-# environments = ['dodgeball']
-for env in environments:
-    evaluate(f'Base_v2_{env}', env)
+# environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
+# # environments = ['chaser']
+# # environments = ['dodgeball']
+# for env in environments:
+#     evaluate(f'Base_v2_{env}', env)
 
+
+evaluate('Final_stateUncertainty0.25and0bigfish', 'bigfish')
+evaluate('Final_stateUncertainty0and0bigfish', 'bigfish')
 # V1
 # n=20000
 # Base_bigfish-0        0.15    7.07592190889371

@@ -27,26 +27,37 @@ def move_figure(f, x, y):
 
 
 def displayer(state, agent: Agent, collector: Collector):
-    returns, dones, names = collector.all_return, collector.all_dones, f"seen frames in {collector.total_agents * collector.calculate_every}'s"
+    returns, dones, names, true_returns, true_dones = collector.all_return, collector.all_dones, f"seen frames in {collector.total_agents * collector.calculate_every}'s", collector.onpolicy_all_return, collector.onpolicy_all_dones
     plt.close('all')
-    returnplot(returns, x=100, y=500, xlabel=names)
-    returnplot(dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)
+    returnplot(returns, true_returns, x=100, y=500, xlabel=names)
+    returnplot(dones, true_dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)
     parametres(agent, x=1300, y=0)
     imageBig(state, x=700, y=500)
     showFilters(agent.network.conv1(agent.network.color(state.to(device))), x=1300, y=500)
     showFilters(agent.network.color(state.to(device)), x=700, y=0)
 
 
-def returnplot(returns, x: int = 1000, y: int = 500, xlabel=None, ylabel="Return (per game)"):
+def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, ylabel="Return (per game)"):
     runnings = [0] * len(returns)
+    true_runnings = [0] * len(true_returns)
     for i in range(1, len(runnings) + 1):
         if i < 50:
             runnings[i - 1] = sum(returns[:i]) / i
         else:
             runnings[i - 1] = sum(returns[(i - 50):i]) / 50
+    for i in range(1, len(true_runnings) + 1):
+        if i < 30:
+            true_runnings[i - 1] = sum(true_returns[:i]) / i
+        else:
+            true_runnings[i - 1] = sum(true_returns[(i - 30):i]) / 30
+    extend_true_runnings = [0] * len(returns)
+    for i in range(int(len(runnings))):
+        extend_true_runnings[i] = (i % (len(extend_true_runnings)//len(true_runnings)))/(len(extend_true_runnings)//len(true_runnings)) * true_runnings[int(min((i*len(true_runnings))//len(extend_true_runnings),len(true_runnings)))] + true_runnings[int(min((i*len(true_runnings))//len(extend_true_runnings)+1,len(true_runnings)-1))] * (1 - (i % (len(extend_true_runnings)//len(true_runnings)))/(len(extend_true_runnings)//len(true_runnings)))
+
     fig = plt.figure()
     move_figure(fig, x, y)
     plt.plot(runnings)
+    plt.plot(extend_true_runnings)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.show(block=False)

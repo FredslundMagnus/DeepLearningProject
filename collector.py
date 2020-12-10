@@ -18,17 +18,17 @@ class Collector:
             self.total_rew += sum(rew) / len(rew)
             self.dones += sum(done) / len(done)
 
-        if self.f % self.calculate_every == 0:
+        if self.f % self.calculate_every == 0 and not onpolicy:
             self.k += 1
             if self.dones != 0:
                 self.all_dones.append(self.k * self.calculate_every / self.dones)
                 self.all_return.append(self.total_rew / self.dones)
                 self.dones, self.total_rew, self.k = 0, 0, 0
 
-        if self.onpolicy_f % self.calculate_every == 0:
+        if self.onpolicy_f % self.calculate_every == 0 and onpolicy:
             self.onpolicy_k += 1
             if self.onpolicy_dones != 0:
-                self.onpolicy_all_dones.append(self.onpolicy_k * self.calculate_every * 10 / self.onpolicy_dones)
+                self.onpolicy_all_dones.append(self.onpolicy_k * self.calculate_every / self.onpolicy_dones)
                 self.onpolicy_all_return.append(self.onpolicy_total_rew / self.onpolicy_dones)
                 self.onpolicy_dones, self.onpolicy_total_rew, self.onpolicy_k = 0, 0, 0
             self.action_dist_all.append([s / self.calculate_every / self.total_agents for s in self.action_dist])
