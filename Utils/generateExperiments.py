@@ -65,9 +65,17 @@ def genExperiments(name, n=1, **params):
 environments = ['chaser']
 
 for env in environments:
-    genExperiments(f"CHASER_U_S_0_0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
-    genExperiments(f"CHASER_U_S_0.1_0{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0)
-    genExperiments(f"CHASER_U_S_0_0.1{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
+    genExperiments(f"CHASER_U_S_0.1_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0)
+    genExperiments(f"CHASER_U_S_0_0.1return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
+    genExperiments(f"CHASER_U_S_0.2_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.2, state_difference_weight=0)
+    genExperiments(f"CHASER_U_S_0_0.2return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.2)
+    genExperiments(f"CHASER_U_S_0.01_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.01, state_difference_weight=0)
+    genExperiments(f"CHASER_U_S_0_0.01return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.01)
+    genExperiments(f"CHASER_U_S_0.05_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.05, state_difference_weight=0)
+    genExperiments(f"CHASER_U_S_0_0.05return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.05)
+    genExperiments(f"CHASER_U_S_0.01_0.01return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.01, state_difference_weight=0.01)
+    genExperiments(f"CHASER_U_S_0.001_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.001, state_difference_weight=0)
+    genExperiments(f"CHASER_U_S_0_0.001return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.001)
 
 
 file.close()
