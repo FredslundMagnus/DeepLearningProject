@@ -99,27 +99,42 @@ class Agent:
     def TD_learn(self):
         obs, action, obs_next, reward, h0, c0, hn, sn, done = self.memory.sample_distribution(256) if self.use_distribution else self.memory.sample(256)
         self.network.hn, self.network.cn, self.target_network.hn, self.target_network.cn = hn, sn, hn, sn
-        vals_target, _, _, true_state_target = self.target_network(obs_next)
+        vals_target, uncertainties_target, state_differences_target, true_state_target = self.target_network(obs_next)
+
         if self.double:
             v_s_next = torch.gather(vals_target, 1, torch.argmax(vals_target, 1).view(-1, 1)).squeeze(1)
         else:
             v_s_next, _ = torch.max(vals_target, 1)
+
+        if self.uncertainty:
+            if self.double:
+                uncer_next = torch.gather(uncertainties_target, 1, torch.argmax(uncertainties_target, 1).view(-1, 1)).squeeze(1)
+            else:
+                uncer_next, _ = torch.max(uncertainties_target, 1)
+        if self.state_difference:
+            if self.double:
+                state_next = torch.gather(state_differences_target, 1, torch.argmax(state_differences_target, 1).view(-1, 1)).squeeze(1)
+            else:
+                state_next, _ = torch.max(state_differences_target, 1)
+
         self.network.hn, self.network.cn = h0, c0
         vals, uncertainties, state_differences, true_state = self.network(obs)
         vs = torch.gather(vals, 1, action)
-        td = ((reward - self.memory.reward_avg) / self.memory.reward_std + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
+        td = (reward + self.gamma * v_s_next * done.type(torch.float)).detach().view(-1, 1)
 
         if self.uncertainty:
             estimate_uncertainties = torch.gather(uncertainties, 1, action)
-            true_uncertainty = (abs(vs - td)).detach()
-            loss_uncertainty = self.criterion(estimate_uncertainties, true_uncertainty)
+            reward_uncertainty = (abs(vs - td)).detach().view(-1)
+            td_uncertainty = (reward_uncertainty + self.gamma * uncer_next * done.type(torch.float)).detach().view(-1, 1)
+            loss_uncertainty = self.criterion(estimate_uncertainties, td_uncertainty)
             loss_uncertainty.backward(retain_graph=True)
             self.optimizer_exploration.step()
             self.optimizer_exploration.zero_grad()
         if self.state_difference:
             estimate_state_difference = (torch.gather(state_differences, 1, action).view(-1) * done.type(torch.float)).view(-1, 1)
-            true_state_difference = ((torch.sum((true_state_target - true_state)**2, dim=2)).view(-1)**(1 / 2) * done.type(torch.float)).view(-1, 1)
-            loss_state_avoidance = self.criterion(estimate_state_difference, true_state_difference)
+            reward_state_difference = ((torch.sum((true_state_target - true_state)**2, dim=2)).view(-1)**(1 / 2) * done.type(torch.float)).view(-1)
+            td_state_difference = (reward_state_difference + self.gamma * state_next * done.type(torch.float)).detach().view(-1, 1)
+            loss_state_avoidance = self.criterion(estimate_state_difference, td_state_difference)
             loss_state_avoidance.backward(retain_graph=True)
             self.optimizer_state_avoidance.step()
             self.optimizer_state_avoidance.zero_grad()
@@ -132,7 +147,7 @@ class Agent:
         # torch.cuda.empty_cache()
 
     def convert_values(self, vals, uncertainties, state_differences):
-        if self.f % 1000 == 0:
+        if self.f % 100 == 0:
             print([int(x) / 100 for x in 100 * vals[0].cpu().detach().numpy()])
             print([int(x) / 100 for x in 100 * uncertainties[0].cpu().detach().numpy()])
             print([int(x) / 100 for x in 100 * state_differences[0].cpu().detach().numpy()])
