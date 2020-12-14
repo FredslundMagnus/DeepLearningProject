@@ -50,9 +50,9 @@ class Agent:
         else:
             self.optimizer_value = Adam(list(self.network.color.parameters()) + list(self.network.conv1.parameters()) + list(self.network.lstm.parameters()) + list(self.network.linear.parameters()), lr=1e-4, weight_decay=1e-5)
         if self.uncertainty:
-            self.optimizer_exploration = Adam(list(self.network.exploration_network.parameters()), lr=1e-4, weight_decay=1e-5)
+            self.optimizer_exploration = Adam(list(self.network.exploration_network.parameters()), lr=1e-5, weight_decay=1e-5)
         if self.state_difference:
-            self.optimizer_state_avoidance = Adam(list(self.network.state_difference_network.parameters()), lr=1e-4, weight_decay=1e-5)
+            self.optimizer_state_avoidance = Adam(list(self.network.state_difference_network.parameters()), lr=1e-6, weight_decay=1e-5)
         self.onpolicy = True
 
     def rememberMulti(self, *args):
