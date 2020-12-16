@@ -6,7 +6,7 @@ isServer = checkServer()
 
 defaults = {
     'name': "Agent",
-    'discount': 0.995,
+    'discount': 0.99,
     'environment': 'bigfish',
     'hours': 23,
     'memory': 500000,
@@ -19,9 +19,9 @@ defaults = {
     'reward_normalization': 0,
     'exploration': 'epsilonGreedy',
     'hidden_size': 40,
-    'uncertainty_weight': 1,
+    'uncertainty_weight': 0.1,
     'state_difference': 1,
-    'state_difference_weight': 1,
+    'state_difference_weight': 0,
 }
 
 params = getvals(defaults) if isServer else None
