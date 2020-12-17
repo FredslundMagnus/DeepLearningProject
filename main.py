@@ -98,11 +98,11 @@ if isServer:
         while time() < tid:
             f += 1
             obs, hn, cn = env.start()
-            act, obs_old, h0, c0, hn, cn, before_trace, state_diff_label = agent.chooseMulti(obs, hn, cn, done=done)
+            act, obs_old, h0, c0, hn, cn, before_trace, after_trace = agent.chooseMulti(obs, hn, cn, done=done)
             obs, rew, done, info = env.step(act, hn, cn)
             collector.collect(rew, done, act, agent.onpolicy)
             if not agent.onpolicy and f > 10:
-                agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done, before_trace, state_diff_label)
+                agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done, before_trace, after_trace)
             agent.learn()
         saveAgent(agent, name)
         saveCollector(collector, name)
@@ -114,11 +114,11 @@ else:
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):
         obs, hn, cn = env.start()
-        act, obs_old, h0, c0, hn, cn, before_trace, state_diff_label = agent.chooseMulti(obs, hn, cn, done=done)
+        act, obs_old, h0, c0, hn, cn, before_trace, after_trace = agent.chooseMulti(obs, hn, cn, done=done)
         obs, rew, done, info = env.step(act, hn, cn)
         collector.collect(rew, done, act, agent.onpolicy)
         if not agent.onpolicy and f > 10:
-            agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done, before_trace, state_diff_label)
+            agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done, before_trace, after_trace)
         agent.learn()
 
         if showPrint:
