@@ -90,34 +90,35 @@ if not isServer:
 if isServer:
     # the server runs the main function (can be changed)
     def main():
-        name, environment, hours, total_agents = params['name'], params['environment'], params['hours'], params['total_agents']
+        name, environment, hours, total_agents, done = params['name'], params['environment'], params['hours'], params['total_agents'], None
         agent = Agent(**params)
         env = Environments(render=False, envs=[environment for _ in range(total_agents)], agent=agent)
         collector = Collector(**params)
-        tid = time() + 3600 * hours - 300
+        tid, f = time() + 3600 * hours - 300, 0
         while time() < tid:
+            f += 1
             obs, hn, cn = env.start()
-            act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
+            act, obs_old, h0, c0, hn, cn, before_trace, state_diff_label = agent.chooseMulti(obs, hn, cn, done=done)
             obs, rew, done, info = env.step(act, hn, cn)
             collector.collect(rew, done, act, agent.onpolicy)
-            if not agent.onpolicy:
-                agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
+            if not agent.onpolicy and f > 10:
+                agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done, before_trace, state_diff_label)
             agent.learn()
         saveAgent(agent, name)
         saveCollector(collector, name)
     serverRun()
 else:
-    total_agents, display_every = 20, 5000
-    agent = Agent(memory=40000, discount=0.99, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0)
+    total_agents, display_every, done = 20, 5000, None
+    agent = Agent(memory=40000, discount=0.99, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
     env = Environments(render=True, envs=['maze' for _ in range(total_agents)], agent=agent)
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):
         obs, hn, cn = env.start()
-        act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
+        act, obs_old, h0, c0, hn, cn, before_trace, state_diff_label = agent.chooseMulti(obs, hn, cn, done=done)
         obs, rew, done, info = env.step(act, hn, cn)
         collector.collect(rew, done, act, agent.onpolicy)
-        if not agent.onpolicy:
-            agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done)
+        if not agent.onpolicy and f > 10:
+            agent.rememberMulti(obs_old, act, obs, rew, h0, c0, hn, cn, done, before_trace, state_diff_label)
         agent.learn()
 
         if showPrint:
