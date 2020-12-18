@@ -34,4 +34,4 @@ def showcase(name, environment, n=0, max_values=True, done=None):
 # Base_jumper-0 6.25
 
 env = 'bigfish'
-showcase('BIGFISH_U_S_0.1_0returnbigfish', env, max_values=False)
+showcase('BIGFISH_U_S_0.1_0bigfish', env, max_values=False)
