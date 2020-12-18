@@ -109,7 +109,7 @@ if isServer:
     serverRun()
 else:
     total_agents, display_every, done = 20, 5000, None
-    agent = Agent(memory=40000, discount=0.99, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
+    agent = Agent(memory=40000, discount=0.99, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0.1)
     env = Environments(render=True, envs=['maze' for _ in range(total_agents)], agent=agent)
     collector = Collector(calculate_every=500, total_agents=total_agents)
     for f in range(1, 10000000):

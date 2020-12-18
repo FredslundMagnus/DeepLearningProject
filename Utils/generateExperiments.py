@@ -62,12 +62,12 @@ def genExperiments(name, n=1, **params):
 #genExperiments(f"Eps_state_transition0.25{env}", environment=env, uncertainty=0, state_difference=1, uncertainty_weight=0, state_difference_weight=0.25)
 
 
-environments = ['maze']
+environments = ['maze', 'bigfish', 'fruitbot', 'chaser', 'dodgeball', 'starpilot', 'leaper']
 
 for env in environments:
-    genExperiments(f"MAZE_U_S_0.1_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0)
-    genExperiments(f"MAZE_U_S_0_0.1return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
-    genExperiments(f"MAZE_U_S_0_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
+    genExperiments(f"U_S_0.1_0.1return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0.1)
+    #genExperiments(f"MAZE_U_S_0_0.1return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
+    #genExperiments(f"MAZE_U_S_0_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
     #genExperiments(f"BIGFISH_U_S_0.2_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.2, state_difference_weight=0)
     #genExperiments(f"BIGFISH_U_S_0_0.2return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.2)
     #genExperiments(f"BIGFISH_U_S_0.01_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.01, state_difference_weight=0)

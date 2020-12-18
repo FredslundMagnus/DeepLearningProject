@@ -50,9 +50,9 @@ class Agent:
         else:
             self.optimizer_value = Adam(list(self.network.color.parameters()) + list(self.network.conv1.parameters()) + list(self.network.lstm.parameters()) + list(self.network.linear.parameters()), lr=1e-4, weight_decay=1e-5)
         if self.uncertainty:
-            self.optimizer_exploration = Adam(list(self.network.exploration_network.parameters()), lr=1e-5, weight_decay=1e-5)
+            self.optimizer_exploration = Adam(list(self.network.exploration_network.parameters()), lr=1e-4, weight_decay=1e-5)
         if self.state_difference:
-            self.optimizer_state_avoidance = Adam(list(self.network.state_difference_network.parameters()), lr=1e-6, weight_decay=1e-5)
+            self.optimizer_state_avoidance = Adam(list(self.network.state_difference_network.parameters()), lr=1e-4, weight_decay=1e-5)
         self.onpolicy = True
 
     def rememberMulti(self, *args):
@@ -82,9 +82,8 @@ class Agent:
                 self.true_state_trace = self.true_state_trace * lambda_decay + true_state * (1 - lambda_decay)
             avoid_trace = self.network.avoid_similar_state(self.true_state_trace)[0]
 
-        if self.onpolicy:
-            return [val.reshape(15).detach().cpu().numpy().argmax() for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1), before_trace, self.true_state_trace
-        vals = self.convert_values(vals, uncertainties, avoid_trace)
+        if not self.onpolicy:
+            vals = self.convert_values(vals, uncertainties, avoid_trace)
         return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1), before_trace, self.true_state_trace
 
     def learn(self):
@@ -118,13 +117,6 @@ class Agent:
             else:
                 uncer_next, _ = torch.max(uncertainties_target, 1)
 
-        if self.state_difference:
-            avoid_trace = self.network.avoid_similar_state(after_trace)
-            if self.double:
-                state_next = torch.gather(avoid_trace, 1, torch.argmax(avoid_trace, 1).view(-1, 1)).squeeze(1)
-            else:
-                state_next, _ = torch.max(avoid_trace, 1)
-
         self.network.hn, self.network.cn = h0, c0
         vals, uncertainties, _ = self.network(obs)
         vs = torch.gather(vals, 1, action)
@@ -139,7 +131,7 @@ class Agent:
             self.optimizer_exploration.step()
             self.optimizer_exploration.zero_grad()
         if self.state_difference:
-            estimate_state_difference = (torch.gather(self.network.avoid_similar_state(before_trace), 1, action).view(-1) * done.type(torch.float)).view(-1, 1)
+            estimate_state_difference = (torch.gather(self.network.avoid_similar_state(before_trace), 1, action).view(-1) * done.type(torch.float)).view(-1)
             reward_state_difference = ((((torch.sum((before_trace - after_trace)**2, dim=1))**(1 / 2)).view(-1) * done.type(torch.float)).view(-1)).detach()
             loss_state_avoidance = self.criterion(estimate_state_difference, reward_state_difference)
             loss_state_avoidance.backward(retain_graph=True)
