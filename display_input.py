@@ -46,16 +46,16 @@ def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, 
         else:
             runnings[i - 1] = sum(returns[(i - 50):i]) / 50
 
-    extend_true_runnings = [0] * len(returns)
-    final_true_runnings = [0] * len(returns)
-    for i in range(int(len(runnings))):
-        extend_true_runnings[i] = (i % (len(extend_true_runnings)//len(true_returns)))/(len(extend_true_runnings)//len(true_returns)) * true_returns[int(min((i*len(true_returns))//len(extend_true_runnings),len(true_returns)))] + true_returns[int(min((i*len(true_returns))//len(extend_true_runnings)+1,len(true_returns)-1))] * (1 - (i % (len(extend_true_runnings)//len(true_returns)))/(len(extend_true_runnings)//len(true_returns)))
+    # extend_true_runnings = [0] * len(returns)
+    # final_true_runnings = [0] * len(returns)
+    # for i in range(int(len(runnings))):
+    #     extend_true_runnings[i] = (i % (len(extend_true_runnings)//len(true_returns)))/(len(extend_true_runnings)//len(true_returns)) * true_returns[int(min((i*len(true_returns))//len(extend_true_runnings),len(true_returns)))] + true_returns[int(min((i*len(true_returns))//len(extend_true_runnings)+1,len(true_returns)-1))] * (1 - (i % (len(extend_true_runnings)//len(true_returns)))/(len(extend_true_runnings)//len(true_returns)))
     
-    for i in range(1, len(extend_true_runnings) + 1):
-        if i < 350:
-            final_true_runnings[i - 1] = sum(extend_true_runnings[:i]) / i
-        else:
-            final_true_runnings[i - 1] = sum(extend_true_runnings[(i - 350):i]) / 350
+    # for i in range(1, len(extend_true_runnings) + 1):
+    #     if i < 350:
+    #         final_true_runnings[i - 1] = sum(extend_true_runnings[:i]) / i
+    #     else:
+    #         final_true_runnings[i - 1] = sum(extend_true_runnings[(i - 350):i]) / 350
 
 
 
@@ -63,7 +63,7 @@ def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, 
     fig = plt.figure()
     move_figure(fig, x, y)
     plt.plot(runnings)
-    plt.plot(final_true_runnings)
+    # plt.plot(final_true_runnings)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.show(block=False)

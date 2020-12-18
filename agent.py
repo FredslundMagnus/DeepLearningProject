@@ -69,7 +69,7 @@ class Agent:
         vals.reshape(15)
         return self.explore(vals, uncertainty), pixels, hn, cn, self.network.hn, self.network.cn
 
-    def chooseMulti(self, pixels, hn, cn, lambda_decay=0.95, avoid_trace=0, done=0):
+    def chooseMulti(self, pixels, hn, cn, lambda_decay=0.95, avoid_trace=0, done=None):
         self.network.hn, self.network.cn = concatenation(hn, 1).to(device), concatenation(cn, 1).to(device)
         vals, uncertainties, true_state = self.network(concatenation(pixels, 0).to(device))
         before_trace = self.true_state_trace
