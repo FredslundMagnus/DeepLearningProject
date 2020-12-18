@@ -141,8 +141,7 @@ class Agent:
         if self.state_difference:
             estimate_state_difference = (torch.gather(self.network.avoid_similar_state(before_trace), 1, action).view(-1) * done.type(torch.float)).view(-1, 1)
             reward_state_difference = ((((torch.sum((before_trace - after_trace)**2, dim=1))**(1 / 2)).view(-1) * done.type(torch.float)).view(-1)).detach()
-            td_state_difference = (reward_state_difference + self.gamma * state_next * done.type(torch.float)).detach().view(-1, 1)
-            loss_state_avoidance = self.criterion(estimate_state_difference, td_state_difference)
+            loss_state_avoidance = self.criterion(estimate_state_difference, reward_state_difference)
             loss_state_avoidance.backward(retain_graph=True)
             self.optimizer_state_avoidance.step()
             self.optimizer_state_avoidance.zero_grad()
