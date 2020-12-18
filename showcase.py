@@ -4,7 +4,7 @@ from display_input import displayer
 import matplotlib.pyplot as plt
 
 
-def showcase(name, environment, n=0, max_values=True):
+def showcase(name, environment, n=0, max_values=True, done=None):
     name = name + '-' + str(n)
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
     if max_values == True:
@@ -15,7 +15,7 @@ def showcase(name, environment, n=0, max_values=True):
     collector = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Collectors/{name}.collect", "rb"))
     for i in range(10000):
         obs, hn, cn = env.start()
-        act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
+        act, obs_old, h0, c0, hn, cn, before_trace, after_trace = agent.chooseMulti(obs, hn, cn, done=done)
         obs, rew, done, info = env.step(act, hn, cn)
 
         if i == 100:
@@ -34,4 +34,4 @@ def showcase(name, environment, n=0, max_values=True):
 # Base_jumper-0 6.25
 
 env = 'bigfish'
-showcase('BIGFISH_U_S_0.1_0bigfish', env, max_values=False)
+showcase('BIGFISH_U_S_0.1_0returnbigfish', env, max_values=False)
