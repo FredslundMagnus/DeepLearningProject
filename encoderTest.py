@@ -43,7 +43,7 @@ class NetWork(Module):
             LeakyReLU(),
             Conv2d(in_channels=16, out_channels=8, kernel_size=2, stride=1),
             LeakyReLU(),
-            Conv2d(in_channels=12, out_channels=3, kernel_size=1, stride=1),
+            Conv2d(in_channels=8, out_channels=3, kernel_size=1, stride=1),
         )
 
     def forward(self, x):
