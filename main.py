@@ -25,73 +25,73 @@ if not isServer:
     keyboard.Listener(on_press=on_press).start()
 
 
-# class NetWork(Module):
-#     def __init__(self):
-#         self.size_after_conv = 128
 
-#         super(NetWork, self).__init__()
+class NetWork(Module):
+    def __init__(self, h):
+        self.size_after_conv = 128
+        self.hidden_size = h
+        self.current_state = None
 
-#         self.color = Sequential(
-#             Conv2d(in_channels=3, out_channels=8, kernel_size=1, stride=1),
-#             LeakyReLU(),
-#             Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=2),
-#             LeakyReLU(),
-#         )
+        super(NetWork, self).__init__()
 
-#         self.conv1 = Sequential(
-#             Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=1),
-#             MaxPool2d(2, 2, padding=0),
-#             LeakyReLU(),
-#             Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
-#             LeakyReLU(),
-#             Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
-#             LeakyReLU(),
-#             Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
-#             LeakyReLU(),
-#         )
+        self.color = Sequential(
+            Conv2d(in_channels=3, out_channels=8, kernel_size=1, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=8, out_channels=16, kernel_size=4, stride=2),
+            LeakyReLU(),
+        )
 
-#         self.fromEncoder = Sequential(
-#             Conv2d(in_channels=12, out_channels=32, kernel_size=4, stride=2),
-#             LeakyReLU(),
-#             Conv2d(in_channels=32, out_channels=self.size_after_conv, kernel_size=4, stride=1),
-#             LeakyReLU(),
-#         )
+        self.conv1 = Sequential(
+            Conv2d(in_channels=16, out_channels=32, kernel_size=4, stride=1),
+            MaxPool2d(2, 2, padding=0),
+            LeakyReLU(),
+            Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=2),
+            LeakyReLU(),
+            Conv2d(in_channels=64, out_channels=64, kernel_size=4, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=3, stride=1),
+            LeakyReLU(),
+        )
 
-#         self.lstm = LSTM(self.size_after_conv, hidden_size, 1)
+        self.fromEncoder = Sequential(
+            Conv2d(in_channels=12, out_channels=32, kernel_size=4, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=32, out_channels=64, kernel_size=4, stride=1),
+            LeakyReLU(),
+            Conv2d(in_channels=64, out_channels=self.size_after_conv, kernel_size=4, stride=1),
+            LeakyReLU(),
+        )
 
-#         self.linear = Sequential(
-#             LeakyReLU(),
-#             Linear(hidden_size, 15),
-#         )
+        self.lstm = LSTM(self.size_after_conv, self.hidden_size, 1)
 
-#         self.exploration_network = Sequential(
-#             LeakyReLU(),
-#             Linear(hidden_size, hidden_size),
-#             LeakyReLU(),
-#             Linear(hidden_size, 15),
-#         )
+        self.linear = Sequential(
+            LeakyReLU(),
+            Linear(self.hidden_size, 15),
+        )
 
-#  def forward(self, x):
-#       self.lstm.flatten_parameters()
-#        if self.hasEncoder:
-#             x = self.fromEncoder(x)
-#         else:
-#             x = self.color(x)
-#             x = self.conv1(x)
-#         x = x.view(1, -1, self.size_after_conv)
-#         x, (self.hn, self.cn) = self.lstm(x, (self.hn, self.cn))
-#         x = x.view(-1, hidden_size)
-#         y = x.clone()
-#         y = self.exploration_network(y.detach())
-#         x = self.linear(x)
-#         return x, y
+        self.exploration_network = Sequential(
+            LeakyReLU(),
+            Linear(self.hidden_size, self.hidden_size),
+            LeakyReLU(),
+            Linear(self.hidden_size, self.hidden_size // 2),
+            LeakyReLU(),
+            Linear(self.hidden_size // 2, 15),
+        )
+
+        self.state_difference_network = Sequential(
+            Linear(self.size_after_conv, self.size_after_conv),
+            LeakyReLU(),
+            Linear(self.size_after_conv, self.hidden_size),
+            LeakyReLU(),
+            Linear(self.hidden_size, 15),
+        )
 
 
 if isServer:
     # the server runs the main function (can be changed)
     def main():
         name, environment, hours, total_agents, done = params['name'], params['environment'], params['hours'], params['total_agents'], None
-        agent = Agent(**params)
+        agent = Agent(**params, encoder='encoder324400')
         env = Environments(render=False, envs=[environment for _ in range(total_agents)], agent=agent)
         collector = Collector(**params)
         tid, f = time() + 3600 * hours - 300, 0

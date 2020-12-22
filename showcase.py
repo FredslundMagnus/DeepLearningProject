@@ -33,5 +33,5 @@ def showcase(name, environment, n=0, max_values=True, done=None):
 # Base_heist-0 0.7317073170731707
 # Base_jumper-0 6.25
 
-env = 'dodgeball'
-showcase('U_S_0.1_0.1returndodgeball', env, max_values=False)
+env = 'bigfish'
+showcase('U_S_0.1_0.1returnbigfish', env, max_values=True)
