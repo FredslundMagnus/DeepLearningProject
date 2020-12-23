@@ -32,9 +32,9 @@ def displayer(state, agent: Agent, collector: Collector):
     returnplot(returns, true_returns, x=100, y=500, xlabel=names)
     returnplot(dones, true_dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)
     parametres(agent, x=1300, y=0)
-    imageBig(state, x=700, y=500)
-    showFilters(agent.network.conv1(agent.network.color(state.to(device))), x=1300, y=500)
-    showFilters(agent.network.color(state.to(device)), x=700, y=0)
+    #imageBig(state, x=700, y=500)
+    #showFilters(agent.network.conv1(agent.network.color(state.to(device))), x=1300, y=500)
+    #showFilters(agent.network.color(state.to(device)), x=700, y=0)
 
 
 def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, ylabel="Return (per game)"):

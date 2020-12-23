@@ -83,8 +83,12 @@ class Agent:
             avoid_trace = self.network.avoid_similar_state(self.true_state_trace)[0]
 
         if not self.onpolicy:
+            self.explore = self.exploration.epsilonGreedy
             vals = self.convert_values(vals, uncertainties, avoid_trace)
-        return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1), before_trace, self.true_state_trace
+            return [self.explore(val.reshape(15)) for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1), before_trace, self.true_state_trace
+        else:
+            self.explore = self.exploration.greedy
+            return [(val.reshape(15)).detach().cpu().numpy().argmax() for val in torch.split(vals, 1)], pixels, hn, cn, torch.split(self.network.hn, 1, dim=1), torch.split(self.network.cn, 1, dim=1), before_trace, self.true_state_trace
 
     def learn(self):
         self.f += 1

@@ -6,7 +6,7 @@ isServer = checkServer()
 
 defaults = {
     'name': "Agent",
-    'discount': 0.99,
+    'discount': 0.995,
     'environment': 'bigfish',
     'hours': 12,
     'memory': 500000,
