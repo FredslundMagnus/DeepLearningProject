@@ -11,12 +11,12 @@ class Exploration():
 
     @property
     def epsilon(self):
-        K = 10000000 if isServer else 1000000
+        K = 10000000 if isServer else 2000000
         return max(0.1, 1 - self.counter / K)
 
     @property
     def K(self):
-        C = 500000 if isServer else 50000
+        C = 500000 if isServer else 100000
         return max(0.01, C / self.counter)
 
     def softmax(self, vals):
