@@ -8,7 +8,7 @@ defaults = {
     'name': "Agent",
     'discount': 0.995,
     'environment': 'bigfish',
-    'hours': 12,
+    'hours': 18,
     'memory': 500000,
     'update_every': 1000,
     'use_distribution': 1,
@@ -20,8 +20,8 @@ defaults = {
     'exploration': 'epsilonGreedy',
     'hidden_size': 40,
     'uncertainty_weight': 0.1,
-    'state_difference': 1,
-    'state_difference_weight': 0.1,
+    'state_difference': 0,
+    'state_difference_weight': 0.0,
 }
 
 params = getvals(defaults) if isServer else None

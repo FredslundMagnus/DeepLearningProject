@@ -1,16 +1,16 @@
 #!/bin/sh
-mkdir ../outputs/NOPEfruitbot/
-mkdir ../outputs/NOPEfruitbot/Markdown
-mkdir ../outputs/NOPEfruitbot/Agents
-mkdir ../outputs/NOPEfruitbot/Collectors
-bsub -o "../outputs/NOPEfruitbot/Markdown/NOPEfruitbot_0.md" -J "NOPEfruitbot_0" -P "NOPEfruitbot-0 -environment fruitbot -uncertainty 1 -state_difference 1 -uncertainty_weight 0.1 -state_difference_weight 0.1" < submit.sh
-mkdir ../outputs/NOPEmaze/
-mkdir ../outputs/NOPEmaze/Markdown
-mkdir ../outputs/NOPEmaze/Agents
-mkdir ../outputs/NOPEmaze/Collectors
-bsub -o "../outputs/NOPEmaze/Markdown/NOPEmaze_0.md" -J "NOPEmaze_0" -P "NOPEmaze-0 -environment maze -uncertainty 1 -state_difference 1 -uncertainty_weight 0.1 -state_difference_weight 0.1" < submit.sh
-mkdir ../outputs/NOPEchaser/
-mkdir ../outputs/NOPEchaser/Markdown
-mkdir ../outputs/NOPEchaser/Agents
-mkdir ../outputs/NOPEchaser/Collectors
-bsub -o "../outputs/NOPEchaser/Markdown/NOPEchaser_0.md" -J "NOPEchaser_0" -P "NOPEchaser-0 -environment chaser -uncertainty 1 -state_difference 1 -uncertainty_weight 0.1 -state_difference_weight 0.1" < submit.sh
+mkdir ../outputs/NOPE_final_bigfish/
+mkdir ../outputs/NOPE_final_bigfish/Markdown
+mkdir ../outputs/NOPE_final_bigfish/Agents
+mkdir ../outputs/NOPE_final_bigfish/Collectors
+bsub -o "../outputs/NOPE_final_bigfish/Markdown/NOPE_final_bigfish_0.md" -J "NOPE_final_bigfish_0" -P "NOPE_final_bigfish-0 -environment bigfish -uncertainty 1 -uncertainty_weight 0.1" < submit.sh
+mkdir ../outputs/NOPE_final_fruitbot/
+mkdir ../outputs/NOPE_final_fruitbot/Markdown
+mkdir ../outputs/NOPE_final_fruitbot/Agents
+mkdir ../outputs/NOPE_final_fruitbot/Collectors
+bsub -o "../outputs/NOPE_final_fruitbot/Markdown/NOPE_final_fruitbot_0.md" -J "NOPE_final_fruitbot_0" -P "NOPE_final_fruitbot-0 -environment fruitbot -uncertainty 1 -uncertainty_weight 0.1" < submit.sh
+mkdir ../outputs/NOPE_final_chaser/
+mkdir ../outputs/NOPE_final_chaser/Markdown
+mkdir ../outputs/NOPE_final_chaser/Agents
+mkdir ../outputs/NOPE_final_chaser/Collectors
+bsub -o "../outputs/NOPE_final_chaser/Markdown/NOPE_final_chaser_0.md" -J "NOPE_final_chaser_0" -P "NOPE_final_chaser-0 -environment chaser -uncertainty 1 -uncertainty_weight 0.1" < submit.sh

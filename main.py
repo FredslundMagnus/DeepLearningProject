@@ -25,7 +25,6 @@ if not isServer:
     keyboard.Listener(on_press=on_press).start()
 
 
-
 class NetWork(Module):
     def __init__(self, h):
         self.size_after_conv = 128
@@ -91,7 +90,7 @@ if isServer:
     # the server runs the main function (can be changed)
     def main():
         name, environment, hours, total_agents, done = params['name'], params['environment'], params['hours'], params['total_agents'], None
-        agent = Agent(**params, encoder='encoder324400')
+        agent = Agent(**params)
         env = Environments(render=False, envs=[environment for _ in range(total_agents)], agent=agent)
         collector = Collector(**params)
         tid, f = time() + 3600 * hours - 300, 0
