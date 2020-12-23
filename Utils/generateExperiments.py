@@ -65,7 +65,7 @@ def genExperiments(name, n=1, **params):
 environments_jakob = ['starpilot', 'bossfight', 'jumper']
 environments_magnus = ['fruitbot', 'maze', 'chaser']
 
-for env in environments_jakob:
+for env in environments_magnus:
     genExperiments(f"NOPE{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0.1, state_difference_weight=0.1)
     #genExperiments(f"MAZE_U_S_0_0.1return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0.1)
     #genExperiments(f"MAZE_U_S_0_0return{env}", environment=env, uncertainty=1, state_difference=1, uncertainty_weight=0, state_difference_weight=0)
