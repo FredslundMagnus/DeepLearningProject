@@ -14,7 +14,7 @@ def evaluate(name, environment, n=0):
     rews, dones = [], []
     for i in range(20000):
         obs, hn, cn = env.start()
-        act, obs_old, h0, c0, hn, cn = agent.chooseMulti(obs, hn, cn)
+        act, obs_old, h0, c0, hn, cn, _, _ = agent.chooseMulti(obs, hn, cn)
         obs, rew, done, info = env.step(act, hn, cn)
         rews.append(sum(rew))
         dones.append(sum(done))
@@ -68,8 +68,9 @@ rMax = {
 #     evaluate(f'Base_v2_{env}', env)
 
 
-evaluate('Final_stateUncertainty0.25and0bigfish', 'bigfish')
-evaluate('Final_stateUncertainty0and0bigfish', 'bigfish')
+evaluate('NOPEfruitbot', 'fruitbot')
+evaluate('NOPEstarpilot', 'starpilot')
+evaluate('NOPEmaze', 'maze')
 # V1
 # n=20000
 # Base_bigfish-0        0.15    7.07592190889371
