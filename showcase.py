@@ -33,5 +33,5 @@ def showcase(name, environment, n=0, max_values=True, done=None):
 # Base_heist-0 0.7317073170731707
 # Base_jumper-0 6.25
 
-env = 'starpilot'
-showcase('NOPEstarpilot', env, max_values=True)
+env = 'maze'
+showcase(f'NOPE{env}', env, max_values=True)
