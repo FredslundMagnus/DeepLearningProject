@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def showcase(name, environment, n=0, max_values=True, done=None):
     name = name + '-' + str(n)
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
-    agent.exploration.counter = 10000000
+    # agent.exploration.counter = 10000000
     if max_values == True:
         agent.explore = agent.exploration.greedy
         agent.uncertainty = False
@@ -34,5 +34,5 @@ def showcase(name, environment, n=0, max_values=True, done=None):
 # Base_heist-0 0.7317073170731707
 # Base_jumper-0 6.25
 
-env = 'maze'
-showcase(f'MAZE_U_S_0.1_0return{env}', env, max_values=False)
+env = 'fruitbot'
+showcase(f'NOPE_final_{env}', env, max_values=True)
