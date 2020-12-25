@@ -87,6 +87,8 @@ class NetWork(Module):
 
 
 if isServer:
+    fgsdfgkfdspogk !==:
+    lul
     # the server runs the main function (can be changed)
     def main():
         name, environment, hours, total_agents, done = params['name'], params['environment'], params['hours'], params['total_agents'], None
