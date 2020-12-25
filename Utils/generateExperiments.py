@@ -62,8 +62,8 @@ def genExperiments(name, n=1, **params):
 #genExperiments(f"Eps_state_transition0.25{env}", environment=env, uncertainty=0, state_difference=1, uncertainty_weight=0, state_difference_weight=0.25)
 
 
-environments_jakob = ['starpilot', 'bossfight', 'jumper']
-# environments_magnus = ['bigfish', 'fruitbot', 'chaser']
+environments_jakob = ['leaper', 'maze', 'miner', 'ninja', 'plunder']
+# environments_magnus = ['caveflyer', 'climber', 'coinrun', 'dodgeball', 'heist']
 
 for env in environments_jakob:
     genExperiments(f"NOPE_final_{env}", environment=env, uncertainty=1, uncertainty_weight=0.1)
