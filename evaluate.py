@@ -61,16 +61,11 @@ rMax = {
     'starpilot': 64,
 }
 
-# environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
-# # environments = ['chaser']
-# # environments = ['dodgeball']
-# for env in environments:
-#     evaluate(f'Base_v2_{env}', env)
+environments = ['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
+for env in environments:
+    evaluate(f'NOPE_final_{env}', env)
 
 
-evaluate('NOPEfruitbot', 'fruitbot')
-evaluate('NOPEstarpilot', 'starpilot')
-evaluate('NOPEmaze', 'maze')
 # V1
 # n=20000
 # Base_bigfish-0        0.15    7.07592190889371
@@ -108,3 +103,6 @@ evaluate('NOPEmaze', 'maze')
 # Base_v2_ninja-0      -0.08    2.943396226415094
 # Base_v2_plunder-0    0.15    8.524390243902438
 # Base_v2_starpilot-0  0.47    31.75
+
+# NOPE
+# n=20000
