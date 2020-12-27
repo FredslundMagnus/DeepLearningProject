@@ -3,13 +3,14 @@ from environments import Environments
 from Utils.debug import disablePrint, enablePrint
 
 
-def evaluate(name, environment, n=0):
+def evaluate(name, environment, n=0, uncertainty=0):
     disablePrint()
     name = name + '-' + str(n)
     agent = pickle.load(open(f"outputs/{'-'.join(name.split('-')[:-1])}/Agents/{name}.agent", "rb"))
     agent.explore = agent.exploration.greedy
-    agent.uncertainty = False
+    agent.uncertainty = True
     agent.state_avoidance = False
+    agent.uncertainty_weight = uncertainty
     env = Environments(render=False, envs=[environment for _ in range(20)], agent=agent)
     rews, dones = [], []
     for i in range(20000):
@@ -106,3 +107,19 @@ for env in environments:
 
 # NOPE
 # n=20000
+# NOPE_final_bigfish-0 0.19    8.65365025466893
+# NOPE_final_bossfight-0 0.52    7.021459227467811
+# NOPE_final_caveflyer-0 0.05    3.9856972586412396
+# NOPE_final_chaser-0  0.08    1.58410132545602
+# NOPE_final_climber-0 0.0    2.0
+# NOPE_final_coinrun-0 -0.18    4.065155807365439
+# NOPE_final_dodgeball-0 -0.05    0.5059493016037248
+# NOPE_final_fruitbot-0 0.75    24.081967213114755
+# NOPE_final_heist-0   -0.47    0.4444444444444444
+# NOPE_final_jumper-0  0.62    7.400084139671855
+# NOPE_final_leaper-0  0.07    3.556019485038274
+# NOPE_final_maze-0    -0.2    3.998294970161978
+# NOPE_final_miner-0   0.0    1.459090909090909
+# NOPE_final_ninja-0   -0.06    3.083219645293315
+# NOPE_final_plunder-0 -0.04    3.3014586709886546
+# NOPE_final_starpilot-0 0.58    38.21848739495798
