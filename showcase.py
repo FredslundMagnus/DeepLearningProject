@@ -19,8 +19,8 @@ def showcase(name, environment, n=0, max_values=True, done=None):
         act, obs_old, h0, c0, hn, cn, before_trace, after_trace = agent.chooseMulti(obs, hn, cn, done=done)
         obs, rew, done, info = env.step(act, hn, cn)
 
-        if i == 100:
-            displayer(obs[0].cpu(), agent, collector)
+        if i == 10:
+            displayer(obs[0].cpu(), agent, collector, environment=environment)
 
 
 # Base_bigfish-0 5.264150943396227
@@ -34,5 +34,8 @@ def showcase(name, environment, n=0, max_values=True, done=None):
 # Base_heist-0 0.7317073170731707
 # Base_jumper-0 6.25
 
-env = 'fruitbot'
+env = 'bigfish'
 showcase(f'NOPE_final_{env}', env, max_values=True)
+
+
+['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']

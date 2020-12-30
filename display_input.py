@@ -26,18 +26,18 @@ def move_figure(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-def displayer(state, agent: Agent, collector: Collector):
+def displayer(state, agent: Agent, collector: Collector, environment=None):
     returns, dones, names, true_returns, true_dones = collector.all_return, collector.all_dones, f"seen frames in {collector.total_agents * collector.calculate_every}'s", collector.onpolicy_all_return, collector.onpolicy_all_dones
     plt.close('all')
-    returnplot(returns, true_returns, x=100, y=500, xlabel=names)
-    returnplot(dones, true_dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names)
+    returnplot(returns, true_returns, x=100, y=500, xlabel=names, environment=environment)
+    returnplot(dones, true_dones, x=100, y=0, ylabel="Game length (frames per game)", xlabel=names, environment=environment)
     parametres(agent, x=1300, y=0)
     #imageBig(state, x=700, y=500)
     #showFilters(agent.network.conv1(agent.network.color(state.to(device))), x=1300, y=500)
     #showFilters(agent.network.color(state.to(device)), x=700, y=0)
 
 
-def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, ylabel="Return (per game)"):
+def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, ylabel="Return (per game)", environment: str = None):
     runnings = [0] * len(returns)
     true_runnings = [0] * len(true_returns)
     for i in range(1, len(runnings) + 1):
@@ -49,7 +49,7 @@ def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, 
     final_true_runnings = [0] * len(returns)
     try:
         for i in range(int(len(runnings))):
-            extend_true_runnings[i] = (i % (len(extend_true_runnings)//len(true_returns)))/(len(extend_true_runnings)//len(true_returns)) * true_returns[int(min((i*len(true_returns))//len(extend_true_runnings),len(true_returns)))] + true_returns[int(min((i*len(true_returns))//len(extend_true_runnings)+1,len(true_returns)-1))] * (1 - (i % (len(extend_true_runnings)//len(true_returns)))/(len(extend_true_runnings)//len(true_returns)))
+            extend_true_runnings[i] = (i % (len(extend_true_runnings) // len(true_returns))) / (len(extend_true_runnings) // len(true_returns)) * true_returns[int(min((i * len(true_returns)) // len(extend_true_runnings), len(true_returns)))] + true_returns[int(min((i * len(true_returns)) // len(extend_true_runnings) + 1, len(true_returns) - 1))] * (1 - (i % (len(extend_true_runnings) // len(true_returns))) / (len(extend_true_runnings) // len(true_returns)))
         for i in range(1, len(extend_true_runnings) + 1):
             if i < 350:
                 final_true_runnings[i - 1] = sum(extend_true_runnings[:i]) / i
@@ -57,12 +57,15 @@ def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, 
                 final_true_runnings[i - 1] = sum(extend_true_runnings[(i - 350):i]) / 350
     except ZeroDivisionError:
         pass
-    fig = plt.figure()
+    fig = plt.figure(figsize=(3.2, 2.3), dpi=200)
     move_figure(fig, x, y)
-    plt.plot(runnings)
-    plt.plot(final_true_runnings)
-    plt.xlabel(xlabel)
+    plt.plot([a / 50 for a in range(len(runnings))], runnings, label='Off-Policy')
+    plt.plot([a / 50 for a in range(len(final_true_runnings))], final_true_runnings, label='On-Policy')
+    # plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    if (environment != None):
+        plt.title(environment.capitalize())
+    plt.legend(loc='lower right')
     plt.show(block=False)
 
 
