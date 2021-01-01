@@ -62,7 +62,7 @@ def returnplot(returns, true_returns, x: int = 1000, y: int = 500, xlabel=None, 
     plt.plot([a / 50 for a in range(len(runnings))], runnings, label='Off-Policy')
     plt.plot([a / 50 for a in range(len(final_true_runnings))], final_true_runnings, label='On-Policy')
     # plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    # plt.ylabel(ylabel)
     if (environment != None):
         plt.title(environment.capitalize())
     plt.legend(loc='lower right')

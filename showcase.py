@@ -51,8 +51,8 @@ def showcase(name, environment, n=0, max_values=True, done=None):
 # Base_v2_plunder-0    0.15    8.524390243902438
 # Base_v2_starpilot-0  0.47    31.75
 
-env = 'chaser'
+env = 'starpilot'
 showcase(f'NOPE_final_{env}', env, max_values=True)
 
 
-['bigfish', 'bossfight', 'caveflyer', 'chaser', 'climber', 'coinrun', 'dodgeball', 'fruitbot', 'heist', 'jumper', 'leaper', 'maze', 'miner', 'ninja', 'plunder', 'starpilot']
+['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
