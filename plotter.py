@@ -12,9 +12,10 @@ def returnplot(environment: str):
     y1 = getData(collectorV1.all_return)
     y2 = getData(collectorV2.all_return)
     y3 = getData(collectorNOPE.all_return, k=50)
-    plotOne(plt, y1, 'Base 1')
-    plotOne(plt, y2, 'Base 2')
+
     plotOne(plt, y3, 'NOPE', k=50)
+    plotOne(plt, y2, 'Base 2')
+    plotOne(plt, y1, 'Base 1')
 
     plt.title(environment.capitalize())
     plt.legend(loc='lower right')
